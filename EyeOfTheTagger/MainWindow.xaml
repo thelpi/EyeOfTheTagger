@@ -3,13 +3,23 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:EyeOfTheTagger"
+        xmlns:cvt="clr-namespace:EyeOfTheTagger.Converters"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
-        Title="MainWindow" Height="450" Width="800">
+        Height="450" Width="800">
+    <Window.Resources>
+        <cvt:LogToBackgroundConverter x:Key="LogToBackgroundConverter" />
+        <cvt:LogToForegroundConverter x:Key="LogToForegroundConverter" />
+    </Window.Resources>
     <DockPanel>
         <ProgressBar DockPanel.Dock="Bottom" Width="200" IsIndeterminate="False" Height="20" HorizontalAlignment="Left" Name="LoadingBar" Minimum="0" Maximum="100" />
-        <ListBox DockPanel.Dock="Top" Visibility="Visible" Name="Console" />
+        <ListBox DockPanel.Dock="Top" Visibility="Visible" Name="Console">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Label Content="{Binding Path=Message}" Background="{Binding Path=Level, Converter={StaticResource LogToBackgroundConverter}}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
         <ListBox DockPanel.Dock="Top" Visibility="Collapsed" Name="MainView" />
     </DockPanel>
 </Window>

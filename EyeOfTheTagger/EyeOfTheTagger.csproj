@@ -57,9 +57,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Constants.cs" />
-    <Compile Include="Data\Event\CountTrackComputedEventArgs.cs" />
-    <Compile Include="Data\Event\TrackLoadingErrorEventArgs.cs" />
-    <Compile Include="Data\Event\NewTrackAddedEventArgs.cs" />
+    <Compile Include="Converters\LogToBackgroundConverter.cs" />
+    <Compile Include="Converters\LogToForegroundConverter.cs" />
+    <Compile Include="Data\Enum\LogLevel.cs" />
+    <Compile Include="Data\Event\LoadingLogEventArgs.cs" />
+    <Compile Include="Data\LogData.cs" />
     <Compile Include="Tools.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

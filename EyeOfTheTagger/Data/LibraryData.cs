@@ -9,9 +9,20 @@ namespace EyeOfTheTagger.Data
 {
     public class LibraryData
     {
-        public event EventHandler<NewTrackAddedEventArgs> NewTrackAdded;
-        public event EventHandler<TrackLoadingErrorEventArgs> TrackLoadingError;
-        public event EventHandler<CountTrackComputedEventArgs> CountTrackComputed;
+        /// <summary>
+        /// Event sent when something noticeable occurs while loading files tags.
+        /// </summary>
+        public event EventHandler<LoadingLogEventArgs> LoadingLogHandler;
+
+        /// <summary>
+        /// Number of files retrieved; default value is <c>-1</c>.
+        /// Might be different than <see cref="Tracks"/> count in two cases :
+        /// <list type="bullet">
+        /// <item>Loading is not set yet.</item>
+        /// <item>Tags extraction of the file has failed.</item>
+        /// </list>
+        /// </summary>
+        public int TotalFilesCount { get; private set; }
 
         private readonly List<string> _paths;
         private readonly List<TrackData> _tracks;
@@ -58,6 +69,7 @@ namespace EyeOfTheTagger.Data
 
         public LibraryData(List<string> paths, bool instantLoad)
         {
+            TotalFilesCount = -1;
             _tracks = new List<TrackData>();
             _paths = (paths ?? new List<string>()).Distinct().ToList();
             if (instantLoad)
@@ -68,6 +80,7 @@ namespace EyeOfTheTagger.Data
 
         public void Reload()
         {
+            TotalFilesCount = -1;
             _tracks.Clear();
             Load();
         }
@@ -90,7 +103,7 @@ namespace EyeOfTheTagger.Data
                             }
                         }
 
-                        CountTrackComputed?.Invoke(this, new CountTrackComputedEventArgs(files.Count));
+                        TotalFilesCount = files.Count;
 
                         int i = 1;
                         foreach (string file in files)
@@ -128,12 +141,12 @@ namespace EyeOfTheTagger.Data
                                         track = new TrackData(tagFile.Name);
                                     }
                                     _tracks.Add(track);
-                                    NewTrackAdded?.Invoke(this, new NewTrackAddedEventArgs(file, i));
+                                    LoadingLogHandler?.Invoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", Enum.LogLevel.Information), i));
                                 }
                             }
                             catch (Exception exLocal)
                             {
-                                TrackLoadingError?.Invoke(this, new TrackLoadingErrorEventArgs(file, i, exLocal));
+                                LoadingLogHandler?.Invoke(this, new LoadingLogEventArgs(new LogData($"Error while processing {file}.", Enum.LogLevel.Error, new KeyValuePair<string, string>("Error message", exLocal.Message)), i));
                             }
                             i++;
                         }
@@ -141,7 +154,7 @@ namespace EyeOfTheTagger.Data
                 }
                 catch (Exception exGlobal)
                 {
-                    exGlobal.ManageException();
+                    LoadingLogHandler?.Invoke(this, new LoadingLogEventArgs(new LogData($"An error has occured, the process has been stopped.", Enum.LogLevel.Critical, new KeyValuePair<string, string>("Error message", exGlobal.Message)), -1));
                 }
             }
         }

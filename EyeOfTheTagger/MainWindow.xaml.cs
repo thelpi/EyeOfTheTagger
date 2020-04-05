@@ -14,33 +14,18 @@ namespace EyeOfTheTagger
     {
         private LibraryData _library;
         private BackgroundWorker _bgw;
-        private int _expectedTracksCount;
 
         public MainWindow()
         {
             InitializeComponent();
+            Title = Constants.AppName;
             _library = new LibraryData(new List<string> { Constants.LibraryPath }, false);
-            _library.NewTrackAdded += delegate (object sender, NewTrackAddedEventArgs e)
+            _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
             {
-                if (e != null)
+                if (e?.Log != null && _library.TotalFilesCount > -1)
                 {
-                    _bgw.ReportProgress(Convert.ToInt32(e.CurrentCount / (decimal)_expectedTracksCount * 100),
-                        $"Added track : {e.FileName}");
-                }
-            };
-            _library.TrackLoadingError += delegate (object sender, TrackLoadingErrorEventArgs e)
-            {
-                if (e != null)
-                {
-                    _bgw.ReportProgress(Convert.ToInt32(e.CurrentCount / (decimal)_expectedTracksCount),
-                        $"Error : {e?.FileName ?? Constants.UnknownInfo} - {e?.ErrorMessage ?? Constants.UnknownInfo}");
-                }
-            };
-            _library.CountTrackComputed += delegate (object sender, CountTrackComputedEventArgs e)
-            {
-                if (e != null)
-                {
-                    _expectedTracksCount = e.TrackCount;
+                    int progressPercentage = e.TrackIndex == -1 ? 100 : Convert.ToInt32(e.TrackIndex / (decimal)_library.TotalFilesCount * 100);
+                    _bgw.ReportProgress(progressPercentage, e.Log);
                 }
             };
 
@@ -56,14 +41,15 @@ namespace EyeOfTheTagger
             _bgw.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
             {
                 LoadingBar.Value = e.ProgressPercentage;
-                if (e.UserState != null)
+                if (e.UserState is LogData)
                 {
-                    Console.Items.Add(e.UserState);
+                    Console.Items.Add(e.UserState as LogData);
                 }
             };
             _bgw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
             {
                 LoadingBar.Visibility = Visibility.Collapsed;
+                LoadingBar.Value = 0;
                 Console.Visibility = Visibility.Collapsed;
                 MainView.Visibility = Visibility.Visible;
                 MainView.ItemsSource = _library.Tracks;
