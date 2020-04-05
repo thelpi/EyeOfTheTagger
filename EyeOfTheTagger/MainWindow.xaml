@@ -5,8 +5,11 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:EyeOfTheTagger"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        
-    </Grid>
+    <DockPanel>
+        <ProgressBar DockPanel.Dock="Bottom" Width="200" IsIndeterminate="False" Height="20" HorizontalAlignment="Left" Name="LoadingBar" Minimum="0" Maximum="100" />
+        <ListBox DockPanel.Dock="Top" Visibility="Visible" Name="Console" />
+        <ListBox DockPanel.Dock="Top" Visibility="Collapsed" Name="MainView" />
+    </DockPanel>
 </Window>
