@@ -8,13 +8,17 @@ using EyeOfTheTagger.Data.Event;
 namespace EyeOfTheTagger
 {
     /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
+    /// Interaction logic for <c>MainWindow.xaml</c>
     /// </summary>
+    /// <seealso cref="Window"/>
     public partial class MainWindow : Window
     {
         private LibraryData _library;
         private BackgroundWorker _bgw;
 
+        /// <summary>
+        /// Constructor.
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();

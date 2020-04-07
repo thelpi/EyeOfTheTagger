@@ -2,16 +2,31 @@
 
 namespace EyeOfTheTagger
 {
+    /// <summary>
+    /// Constants.
+    /// </summary>
     public static class Constants
     {
-        public const string AppName = "EyeOfTheTagger";
-        public static readonly string ErrorLabel = $"{AppName} - Error";
-        public static readonly List<string> Extensions = new List<string>
+        /// <summary>
+        /// Application name.
+        /// </summary>
+        public const string AppName = "EyeOfTheTagger"; // TODO : get from reflection.
+        /// <summary>
+        /// File extensions managed.
+        /// </summary>
+        public static IReadOnlyCollection<string> Extensions { get; } = new List<string>
         {
+            // TODO : configuration.
             "mp3",
             "wma"
         };
-        public const string LibraryPath = @"D:\Ma musique";
+        /// <summary>
+        /// Library directory path.
+        /// </summary>
+        public const string LibraryPath = @"D:\Ma musique"; // TODO : configuration.
+        /// <summary>
+        /// Default label for unknown data.
+        /// </summary>
         public const string UnknownInfo = "[unset]";
     }
 }

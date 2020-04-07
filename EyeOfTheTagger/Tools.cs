@@ -1,37 +1,52 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Windows;
 
 namespace EyeOfTheTagger
 {
+    /// <summary>
+    /// Tool methods.
+    /// </summary>
     public static class Tools
     {
-        public static void ManageException(this Exception ex, params Tuple<string, string>[] additionalDatas)
-        {
-            if (ex != null)
-            {
-                var messageBuilder = new StringBuilder();
-                messageBuilder.AppendLine(ex.Message);
-                messageBuilder.AppendLine(ex.StackTrace);
-                if (ex.InnerException != null)
-                {
-                    messageBuilder.AppendLine($"Inner message - {ex.InnerException.Message}");
-                }
-                if (additionalDatas != null)
-                {
-                    foreach (Tuple<string, string> dataTuple in additionalDatas.Where(ad => !string.IsNullOrWhiteSpace(ad?.Item1)))
-                    {
-                        messageBuilder.AppendLine($"{dataTuple.Item1} - {dataTuple.Item2 ?? "<no value>"}");
-                    }
-                }
-                MessageBox.Show(messageBuilder.ToString(), Constants.ErrorLabel, MessageBoxButton.OK);
-            }
-        }
-
+        /// <summary>
+        /// Checks the equality between two strings.
+        /// <list type="bullet">
+        /// <item><c>Null</c> versus <c>Null</c> is considered equal.</item>
+        /// <item>Case insensitive.</item>
+        /// <item>Strings are trimmed before comparison.</item>
+        /// </list>
+        /// </summary>
+        /// <param name="s1">The first string.</param>
+        /// <param name="s2">The second string.</param>
+        /// <returns><c>True</c> if equals; <c>False</c> otherwise.</returns>
         public static bool TrueEquals(this string s1, string s2)
         {
             return s1?.Trim()?.ToLowerInvariant() == s2?.Trim()?.ToLowerInvariant();
+        }
+
+        /// <summary>
+        /// Sets a clean <see cref="List{T}"/> from an <see cref="IEnumerable{T}"/> without reference duplicates.
+        /// </summary>
+        /// <typeparam name="T">The type of elements in the collection.</typeparam>
+        /// <param name="datas">The datas to add.</param>
+        /// <param name="defaultData">Default value for the collection if empty; <c>Null</c> to let the collection empty.</param>
+        /// <returns>The final collection; can't be <c>Null</c>.</returns>
+        public static List<T> EnumerableToDistinctList<T>(this IEnumerable<T> datas, T defaultData) where T : class
+        {
+            List<T> finalDatas = new List<T>();
+
+            if (datas != null)
+            {
+                datas = datas.Where(d => d != null).Distinct();
+                finalDatas.AddRange(datas);
+            }
+
+            if (finalDatas.Count == 0 && defaultData != null)
+            {
+                finalDatas.Add(defaultData);
+            }
+
+            return finalDatas;
         }
     }
 }
