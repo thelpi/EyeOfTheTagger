@@ -10,16 +10,49 @@
     <Window.Resources>
         <cvt:LogToBackgroundConverter x:Key="LogToBackgroundConverter" />
         <cvt:LogToForegroundConverter x:Key="LogToForegroundConverter" />
+        <cvt:ListToCellConverter x:Key="ListToCellConverter" />
     </Window.Resources>
-    <DockPanel>
-        <ProgressBar DockPanel.Dock="Bottom" Width="200" IsIndeterminate="False" Height="20" HorizontalAlignment="Left" Name="LoadingBar" Minimum="0" Maximum="100" />
-        <ListBox DockPanel.Dock="Top" Visibility="Visible" Name="Console">
+    <DockPanel Margin="5">
+        <StackPanel Margin="5" DockPanel.Dock="Bottom" Orientation="Horizontal">
+            <Button Height="22" Width="100" Name="LoadingButton" Click="LoadingButton_Click" />
+            <ProgressBar Margin="10, 0, 0, 0" Width="200" IsIndeterminate="False" Height="20" Name="LoadingBar" Minimum="0" Maximum="100" />
+        </StackPanel>
+        <ListBox DockPanel.Dock="Top" Name="Console">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <Label Content="{Binding Path=Message}" Background="{Binding Path=Level, Converter={StaticResource LogToBackgroundConverter}}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-        <ListBox DockPanel.Dock="Top" Visibility="Collapsed" Name="MainView" />
+        <DockPanel DockPanel.Dock="Top" Name="MainView">
+            <Expander ExpandDirection="Left" IsExpanded="False" DockPanel.Dock="Left">
+                <StackPanel Margin="10, 0, 0, 0" VerticalAlignment="Center" Orientation="Vertical">
+                    <CheckBox Name="CheckTracks0" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks1" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks2" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks3" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks4" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks5" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks6" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks7" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks8" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                    <CheckBox Name="CheckTracks9" Content="Tracks without track number" Margin="0, 5, 0, 0" Click="CheckTracks_Click" />
+                </StackPanel>
+            </Expander>
+            <ListView DockPanel.Dock="Right" Name="TracksView">
+                <ListView.View>
+                    <GridView AllowsColumnReorder="True">
+                        <GridViewColumn Header="Number" DisplayMemberBinding="{Binding Path=Number}" />
+                        <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Path=Title}" />
+                        <GridViewColumn Header="Album" DisplayMemberBinding="{Binding Path=Album.Name}" />
+                        <GridViewColumn Header="Album artist" DisplayMemberBinding="{Binding Path=Album.AlbumArtist.Name}" />
+                        <GridViewColumn Header="Artists" DisplayMemberBinding="{Binding Path=Artists, Converter={StaticResource ListToCellConverter}}" />
+                        <GridViewColumn Header="Genres" DisplayMemberBinding="{Binding Path=Genres, Converter={StaticResource ListToCellConverter}}" />
+                        <GridViewColumn Header="Year" DisplayMemberBinding="{Binding Path=Year}" />
+                        <GridViewColumn Header="File path" DisplayMemberBinding="{Binding Path=FilePath}" />
+                    </GridView>
+                </ListView.View>
+            </ListView>
+        </DockPanel>
     </DockPanel>
 </Window>

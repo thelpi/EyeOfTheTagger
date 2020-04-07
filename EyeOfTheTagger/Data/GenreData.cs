@@ -23,5 +23,11 @@
         /// Default instance for unknown datas.
         /// </summary>
         public static GenreData Unknown { get; } = new GenreData(Constants.UnknownInfo);
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

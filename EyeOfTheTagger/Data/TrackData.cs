@@ -44,6 +44,14 @@ namespace EyeOfTheTagger.Data
         /// Indicates if the original tag file has multiple album artists.
         /// </summary>
         public bool MultipleAlbumArtistsTag { get; private set; }
+        /// <summary>
+        /// Indicates if the original tag file has genre duplicates.
+        /// </summary>
+        public bool HasGenreDuplicates { get; private set; }
+        /// <summary>
+        /// Indicates if the original tag file has artist duplicates.
+        /// </summary>
+        public bool HasArtistDuplicates { get; private set; }
 
         /// <summary>
         /// Constructor.
@@ -68,11 +76,13 @@ namespace EyeOfTheTagger.Data
             Number = trackNumber;
             Title = title ?? Constants.UnknownInfo;
             Album = album ?? AlbumData.Unknown;
-            _artists = artists.EnumerableToDistinctList(ArtistData.Unknown);
-            _genres = genres.EnumerableToDistinctList(GenreData.Unknown);
+            _artists = artists.EnumerableToDistinctList(ArtistData.Unknown, out bool hasArtistDuplicates);
+            _genres = genres.EnumerableToDistinctList(GenreData.Unknown, out bool hasGenreDuplicates);
             Year = year;
             FilePath = filePath;
             MultipleAlbumArtistsTag = multipleAlbumArtistsTag;
+            HasArtistDuplicates = hasArtistDuplicates;
+            HasGenreDuplicates = hasArtistDuplicates;
         }
 
         /// <summary>

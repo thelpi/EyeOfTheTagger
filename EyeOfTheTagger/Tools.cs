@@ -30,15 +30,18 @@ namespace EyeOfTheTagger
         /// <typeparam name="T">The type of elements in the collection.</typeparam>
         /// <param name="datas">The datas to add.</param>
         /// <param name="defaultData">Default value for the collection if empty; <c>Null</c> to let the collection empty.</param>
+        /// <param name="hasDuplicates">Out; indicates if the source list contains duplicates.</param>
         /// <returns>The final collection; can't be <c>Null</c>.</returns>
-        public static List<T> EnumerableToDistinctList<T>(this IEnumerable<T> datas, T defaultData) where T : class
+        public static List<T> EnumerableToDistinctList<T>(this IEnumerable<T> datas, T defaultData, out bool hasDuplicates) where T : class
         {
             List<T> finalDatas = new List<T>();
+            hasDuplicates = false;
 
             if (datas != null)
             {
-                datas = datas.Where(d => d != null).Distinct();
-                finalDatas.AddRange(datas);
+                datas = datas.Where(d => d != null);
+                finalDatas.AddRange(datas.Distinct());
+                hasDuplicates = finalDatas.Count < datas.Count();
             }
 
             if (finalDatas.Count == 0 && defaultData != null)

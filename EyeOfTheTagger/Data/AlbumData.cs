@@ -29,5 +29,11 @@
         /// Default instance for unknown datas.
         /// </summary>
         public static AlbumData Unknown { get; } = new AlbumData(AlbumArtistData.Unknown, Constants.UnknownInfo);
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return $"{Name} - {AlbumArtist.Name}";
+        }
     }
 }

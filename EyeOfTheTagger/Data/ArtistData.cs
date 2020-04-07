@@ -23,5 +23,11 @@
         /// Default instance for unknown datas.
         /// </summary>
         public static ArtistData Unknown { get; } = new ArtistData(Constants.UnknownInfo);
+
+        /// <inheritdoc />
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

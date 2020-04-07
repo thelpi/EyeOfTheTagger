@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
+using System.Windows.Controls;
 using EyeOfTheTagger.Data;
 using EyeOfTheTagger.Data.Event;
 
@@ -22,7 +23,20 @@ namespace EyeOfTheTagger
         public MainWindow()
         {
             InitializeComponent();
+
             Title = Constants.AppName;
+            CheckTracks0.Content = "Tracks without track number";
+            CheckTracks1.Content = "Tracks without year";
+            CheckTracks2.Content = "Tracks without genre";
+            CheckTracks3.Content = "Tracks without artist";
+            CheckTracks4.Content = "Tracks with duplicate genre";
+            CheckTracks5.Content = "Tracks with duplicate artist";
+            CheckTracks6.Content = "Tracks without album";
+            CheckTracks7.Content = "Tracks without album artist";
+            CheckTracks8.Content = "Tracks with several album artists";
+            CheckTracks9.Content = "Tracks without title";
+
+            // First thing to do!
             _library = new LibraryData(new List<string> { Constants.LibraryPath }, false);
             _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
             {
@@ -52,13 +66,46 @@ namespace EyeOfTheTagger
             };
             _bgw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
             {
-                LoadingBar.Visibility = Visibility.Collapsed;
-                LoadingBar.Value = 0;
-                Console.Visibility = Visibility.Collapsed;
-                MainView.Visibility = Visibility.Visible;
-                MainView.ItemsSource = _library.Tracks;
+                DisplayWhileNotLoading();
             };
-            _bgw.RunWorkerAsync();
+
+            DisplayWhileNotLoading();
+
+            //LoadingButton_Click(null, null);
+        }
+
+        private void DisplayWhileNotLoading()
+        {
+            LoadingBar.Visibility = Visibility.Collapsed;
+            Console.Visibility = Visibility.Collapsed;
+            MainView.Visibility = Visibility.Visible;
+            TracksView.ItemsSource = _library.Tracks;
+            LoadingButton.IsEnabled = true;
+            LoadingButton.Content = "Reload";
+        }
+
+        private void DisplayWhileLoading()
+        {
+            LoadingBar.Visibility = Visibility.Visible;
+            LoadingBar.Value = 0;
+            Console.Visibility = Visibility.Visible;
+            MainView.Visibility = Visibility.Collapsed;
+            LoadingButton.IsEnabled = false;
+            LoadingButton.Content = "Loading...";
+        }
+
+        private void LoadingButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (_bgw != null && !_bgw.IsBusy)
+            {
+                DisplayWhileLoading();
+                _bgw.RunWorkerAsync();
+            }
+        }
+
+        private void CheckTracks_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
