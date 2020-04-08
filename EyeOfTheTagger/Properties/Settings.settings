@@ -1,7 +1,12 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="uri:settings" CurrentProfile="(Default)">
-  <Profiles>
-    <Profile Name="(Default)" />
-  </Profiles>
-  <Settings />
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="EyeOfTheTagger.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="LibraryDirectories" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\Ma musique</Value>
+    </Setting>
+    <Setting Name="LibraryExtensions" Type="System.String" Scope="User">
+      <Value Profile="(Default)">mp3;wma</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>

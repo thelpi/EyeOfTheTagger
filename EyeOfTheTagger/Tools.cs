@@ -51,5 +51,24 @@ namespace EyeOfTheTagger
 
             return finalDatas;
         }
+
+        /// <summary>
+        /// Parse a list of values stored in configuration as a single string.
+        /// </summary>
+        /// <param name="configurationValue">Configuration raw value.</param>
+        /// <returns>List of values.</returns>
+        public static List<string> ParseConfigurationList(string configurationValue)
+        {
+            return (configurationValue ?? string.Empty).Split(Constants.ConfigurationSeparator).ToList();
+        }
+
+        /// <summary>
+        /// Gets the application name.
+        /// </summary>
+        /// <returns>The application name.</returns>
+        public static string GetAppName()
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+        }
     }
 }

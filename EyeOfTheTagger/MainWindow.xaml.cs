@@ -24,7 +24,7 @@ namespace EyeOfTheTagger
         {
             InitializeComponent();
 
-            Title = Constants.AppName;
+            Title = Tools.GetAppName();
             CheckTracks0.Content = "Tracks without track number";
             CheckTracks1.Content = "Tracks without year";
             CheckTracks2.Content = "Tracks without genre";
@@ -37,7 +37,7 @@ namespace EyeOfTheTagger
             CheckTracks9.Content = "Tracks without title";
 
             // First thing to do!
-            _library = new LibraryData(new List<string> { Constants.LibraryPath }, false);
+            _library = new LibraryData(false);
             _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
             {
                 if (e?.Log != null && _library.TotalFilesCount > -1)

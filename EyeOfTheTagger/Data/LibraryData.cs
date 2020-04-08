@@ -99,13 +99,12 @@ namespace EyeOfTheTagger.Data
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="paths">Music directories.</param>
         /// <param name="instantLoad"><c>True</c> to load the library immediately.</param>
-        public LibraryData(List<string> paths, bool instantLoad)
+        public LibraryData(bool instantLoad)
         {
             TotalFilesCount = -1;
             _tracks = new List<TrackData>();
-            _paths = (paths ?? new List<string>()).Distinct().ToList();
+            _paths = Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories);
             if (instantLoad)
             {
                 Load();
@@ -132,7 +131,7 @@ namespace EyeOfTheTagger.Data
                     if (Directory.Exists(path))
                     {
                         List<string> files = new List<string>();
-                        foreach (string extension in Constants.Extensions)
+                        foreach (string extension in Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions))
                         {
                             string[] extensionFiles = Directory.GetFiles(path, $"*.{extension}", SearchOption.AllDirectories);
                             if (extensionFiles != null)
