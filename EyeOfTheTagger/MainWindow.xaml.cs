@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using EyeOfTheTagger.Data;
 using EyeOfTheTagger.Data.Event;
+using EyeOfTheTagger.ViewData;
 
 namespace EyeOfTheTagger
 {
@@ -25,16 +26,6 @@ namespace EyeOfTheTagger
             InitializeComponent();
 
             Title = Tools.GetAppName();
-            CheckTracks0.Content = "Tracks without track number";
-            CheckTracks1.Content = "Tracks without year";
-            CheckTracks2.Content = "Tracks without genre";
-            CheckTracks3.Content = "Tracks without artist";
-            CheckTracks4.Content = "Tracks with duplicate genre";
-            CheckTracks5.Content = "Tracks with duplicate artist";
-            CheckTracks6.Content = "Tracks without album";
-            CheckTracks7.Content = "Tracks without album artist";
-            CheckTracks8.Content = "Tracks with several album artists";
-            CheckTracks9.Content = "Tracks without title";
 
             // First thing to do!
             _library = new LibraryData(false);
@@ -71,7 +62,7 @@ namespace EyeOfTheTagger
 
             DisplayWhileNotLoading();
 
-            //LoadingButton_Click(null, null);
+            LoadingButton_Click(null, null);
         }
 
         private void DisplayWhileNotLoading()
@@ -80,6 +71,7 @@ namespace EyeOfTheTagger
             Console.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
             TracksView.ItemsSource = _library.Tracks;
+            AlbumArtistsView.ItemsSource = GetAlbumArtistsViewData();
             LoadingButton.IsEnabled = true;
             LoadingButton.Content = "Reload";
         }
@@ -103,9 +95,11 @@ namespace EyeOfTheTagger
             }
         }
 
-        private void CheckTracks_Click(object sender, RoutedEventArgs e)
+        private IEnumerable<AlbumArtistViewData> GetAlbumArtistsViewData()
         {
-
+            return _library.AlbumArtists
+                            .Select(aa => new AlbumArtistViewData(aa, _library))
+                            .OrderBy(aa => aa.Name);
         }
     }
 }

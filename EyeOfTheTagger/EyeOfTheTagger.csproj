@@ -65,6 +65,7 @@
     <Compile Include="Data\Event\LoadingLogEventArgs.cs" />
     <Compile Include="Data\LogData.cs" />
     <Compile Include="Tools.cs" />
+    <Compile Include="ViewData\AlbumArtistViewData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

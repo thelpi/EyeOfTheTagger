@@ -48,7 +48,10 @@ namespace EyeOfTheTagger.Data
         {
             get
             {
-                return _tracks.Select(t => t.Album.AlbumArtist).Distinct().ToList();
+                return _tracks
+                        .GroupBy(t => t.Album.AlbumArtist.Name)
+                        .Select(tg => tg.First().Album.AlbumArtist)
+                        .ToList();
             }
         }
 
@@ -59,7 +62,10 @@ namespace EyeOfTheTagger.Data
         {
             get
             {
-                return _tracks.Select(t => t.Album).Distinct().ToList();
+                return _tracks
+                        .GroupBy(t => t.Album.Name)
+                        .Select(tg => tg.First().Album)
+                        .ToList();
             }
         }
 
@@ -70,7 +76,11 @@ namespace EyeOfTheTagger.Data
         {
             get
             {
-                return _tracks.SelectMany(t => t.Genres).Distinct().ToList();
+                return _tracks
+                        .SelectMany(t => t.Genres)
+                        .GroupBy(g => g.Name)
+                        .Select(gg => gg.First())
+                        .ToList();
             }
         }
 
@@ -81,7 +91,11 @@ namespace EyeOfTheTagger.Data
         {
             get
             {
-                return _tracks.SelectMany(t => t.Artists).Distinct().ToList();
+                return _tracks
+                        .SelectMany(t => t.Artists)
+                        .GroupBy(a => a.Name)
+                        .Select(ag => ag.First())
+                        .ToList();
             }
         }
 
