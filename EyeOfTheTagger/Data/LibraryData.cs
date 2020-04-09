@@ -221,11 +221,12 @@ namespace EyeOfTheTagger.Data
                             album = new AlbumData(albumArtist, tagFile.Tag.Album);
                         }
 
-                        track = new TrackData(tagFile.Tag.Track, tagFile.Tag.Title, album, artists, genres, tagFile.Tag.Year, tagFile.Name, multipleAlbumArtists);
+                        track = new TrackData(tagFile.Tag.Track, tagFile.Tag.Title, album, artists, genres,
+                            tagFile.Tag.Year, tagFile.Properties?.Duration, tagFile.Name, multipleAlbumArtists);
                     }
                     else
                     {
-                        track = new TrackData(tagFile.Name);
+                        track = new TrackData(tagFile.Name, tagFile.Properties?.Duration);
                     }
                     _tracks.Add(track);
                     LoadingLogHandler?.Invoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", Enum.LogLevel.Information), i));

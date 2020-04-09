@@ -21,6 +21,10 @@ namespace EyeOfTheTagger.ViewData
         /// Tracks count.
         /// </summary>
         public int TracksCount { get; private set; }
+        /// <summary>
+        /// Tracks length.
+        /// </summary>
+        public TimeSpan TracksLength { get; private set; }
 
         /// <summary>
         /// Constructor.
@@ -44,6 +48,7 @@ namespace EyeOfTheTagger.ViewData
             Name = sourceData.Name;
             AlbumsCount = library.Albums.Count(a => a.AlbumArtist.Name == sourceData.Name);
             TracksCount = library.Tracks.Count(t => t.Album.AlbumArtist.Name == sourceData.Name);
+            TracksLength = new TimeSpan(0, 0, (int)library.Tracks.Where(t => t.Album.AlbumArtist.Name == sourceData.Name).Sum(t => t.Length.TotalSeconds));
         }
     }
 }

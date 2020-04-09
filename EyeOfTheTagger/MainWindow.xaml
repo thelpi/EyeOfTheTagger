@@ -32,6 +32,7 @@
                             <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
                             <GridViewColumn Header="Albums count" DisplayMemberBinding="{Binding Path=AlbumsCount}" />
                             <GridViewColumn Header="Tracks count" DisplayMemberBinding="{Binding Path=TracksCount}" />
+                            <GridViewColumn Header="Tracks length" DisplayMemberBinding="{Binding Path=TracksLength}" />
                         </GridView>
                     </ListView.View>
                 </ListView>

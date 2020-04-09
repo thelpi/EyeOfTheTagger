@@ -37,6 +37,10 @@ namespace EyeOfTheTagger.Data
         /// </summary>
         public uint Year { get; private set; }
         /// <summary>
+        /// Length.
+        /// </summary>
+        public TimeSpan Length { get; private set; }
+        /// <summary>
         /// File path.
         /// </summary>
         public string FilePath { get; private set; }
@@ -62,11 +66,12 @@ namespace EyeOfTheTagger.Data
         /// <param name="artists"><see cref="Artists"/></param>
         /// <param name="genres"><see cref="Genres"/></param>
         /// <param name="year"><see cref="Year"/></param>
+        /// <param name="length"><see cref="Length"/></param>
         /// <param name="filePath"><see cref="FilePath"/></param>
         /// <param name="multipleAlbumArtistsTag"><see cref="MultipleAlbumArtistsTag"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
         public TrackData(uint trackNumber, string title, AlbumData album, IEnumerable<ArtistData> artists,
-            IEnumerable<GenreData> genres, uint year, string filePath, bool multipleAlbumArtistsTag)
+            IEnumerable<GenreData> genres, uint year, TimeSpan? length, string filePath, bool multipleAlbumArtistsTag)
         {
             if (!System.IO.File.Exists(filePath))
             {
@@ -79,6 +84,7 @@ namespace EyeOfTheTagger.Data
             _artists = artists.EnumerableToDistinctList(ArtistData.Unknown, out bool hasArtistDuplicates);
             _genres = genres.EnumerableToDistinctList(GenreData.Unknown, out bool hasGenreDuplicates);
             Year = year;
+            Length = length.GetValueOrDefault(TimeSpan.Zero);
             FilePath = filePath;
             MultipleAlbumArtistsTag = multipleAlbumArtistsTag;
             HasArtistDuplicates = hasArtistDuplicates;
@@ -89,8 +95,9 @@ namespace EyeOfTheTagger.Data
         /// Constructor for track without <see cref="TagLib.File.Tag"/>.
         /// </summary>
         /// <param name="filePath"><see cref="FilePath"/></param>
+        /// <param name="length"><see cref="Length"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
-        public TrackData(string filePath)
+        public TrackData(string filePath, TimeSpan? length)
         {
             if (!System.IO.File.Exists(filePath))
             {
@@ -103,6 +110,7 @@ namespace EyeOfTheTagger.Data
             _artists = new List<ArtistData> { ArtistData.Unknown };
             _genres = new List<GenreData> { GenreData.Unknown };
             Year = 0;
+            Length = length.GetValueOrDefault(TimeSpan.Zero);
             FilePath = filePath;
             MultipleAlbumArtistsTag = false;
         }
