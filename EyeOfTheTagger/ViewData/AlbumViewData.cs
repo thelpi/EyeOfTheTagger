@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using EyeOfTheTaggerLib;
 
@@ -14,6 +15,11 @@ namespace EyeOfTheTagger.ViewData
         /// <see cref="AlbumData.Name"/>
         /// </summary>
         public string Name { get; private set; }
+        /// <summary>
+        /// Release year.
+        /// If several, takes the more likely.
+        /// </summary>
+        public uint Year { get; private set; }
         /// <summary>
         /// Tracks count.
         /// </summary>
@@ -42,9 +48,12 @@ namespace EyeOfTheTagger.ViewData
                 throw new ArgumentNullException(nameof(library));
             }
 
+            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Album == sourceData);
+
             Name = sourceData.Name;
-            TracksCount = library.Tracks.Count(t => t.Album == sourceData);
-            TracksLength = new TimeSpan(0, 0, (int)library.Tracks.Where(t => t.Album == sourceData).Sum(t => t.Length.TotalSeconds));
+            Year = tracks.Select(t => t.Year).GroupBy(y => y).OrderByDescending(y => y.Count()).First().Key;
+            TracksCount = tracks.Count();
+            TracksLength = new TimeSpan(0, 0, (int)tracks.Sum(t => t.Length.TotalSeconds));
         }
     }
 }

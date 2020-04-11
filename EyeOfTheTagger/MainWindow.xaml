@@ -79,6 +79,14 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn>
+                                <GridViewColumnHeader Content="Year" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Year}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
                                 <GridViewColumnHeader Content="Tracks count" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
