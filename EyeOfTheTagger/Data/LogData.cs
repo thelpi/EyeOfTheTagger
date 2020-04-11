@@ -9,6 +9,8 @@ namespace EyeOfTheTagger.Data
     /// </summary>
     public class LogData
     {
+        private const string _DEFAULT = "<unknown>";
+
         /// <summary>
         /// Message.
         /// Cannot be <c>Null</c>.
@@ -36,7 +38,7 @@ namespace EyeOfTheTagger.Data
         /// <param name="additionalDatas"><see cref="AdditionalDatas"/></param>
         public LogData(string message, LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
         {
-            Message = message ?? Constants.UnknownInfo;
+            Message = message ?? _DEFAULT;
             Date = DateTime.Now;
             Level = level;
 
@@ -47,7 +49,7 @@ namespace EyeOfTheTagger.Data
                 {
                     if (!string.IsNullOrWhiteSpace(kvp.Key) && !datas.ContainsKey(kvp.Key.Trim()))
                     {
-                        datas.Add(kvp.Key.Trim(), kvp.Value ?? Constants.UnknownInfo);
+                        datas.Add(kvp.Key.Trim(), kvp.Value ?? _DEFAULT);
                     }
                 }
             }

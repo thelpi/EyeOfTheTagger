@@ -48,14 +48,6 @@ namespace EyeOfTheTagger.Data
         /// Indicates if the original tag file has multiple album artists.
         /// </summary>
         public bool MultipleAlbumArtistsTag { get; private set; }
-        /// <summary>
-        /// Indicates if the original tag file has genre duplicates.
-        /// </summary>
-        public bool HasGenreDuplicates { get; private set; }
-        /// <summary>
-        /// Indicates if the original tag file has artist duplicates.
-        /// </summary>
-        public bool HasArtistDuplicates { get; private set; }
 
         /// <summary>
         /// Constructor.
@@ -70,8 +62,8 @@ namespace EyeOfTheTagger.Data
         /// <param name="filePath"><see cref="FilePath"/></param>
         /// <param name="multipleAlbumArtistsTag"><see cref="MultipleAlbumArtistsTag"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
-        public TrackData(uint trackNumber, string title, AlbumData album, IEnumerable<ArtistData> artists,
-            IEnumerable<GenreData> genres, uint year, TimeSpan? length, string filePath, bool multipleAlbumArtistsTag)
+        internal TrackData(uint trackNumber, string title, AlbumData album, List<ArtistData> artists,
+            List<GenreData> genres, uint year, TimeSpan length, string filePath, bool multipleAlbumArtistsTag)
         {
             if (!System.IO.File.Exists(filePath))
             {
@@ -79,16 +71,14 @@ namespace EyeOfTheTagger.Data
             }
 
             Number = trackNumber;
-            Title = title ?? Constants.UnknownInfo;
-            Album = album ?? AlbumData.Unknown;
-            _artists = artists.EnumerableToDistinctList(ArtistData.Unknown, out bool hasArtistDuplicates);
-            _genres = genres.EnumerableToDistinctList(GenreData.Unknown, out bool hasGenreDuplicates);
+            Title = title;
+            Album = album;
+            _artists = artists;
+            _genres = genres;
             Year = year;
-            Length = length.GetValueOrDefault(TimeSpan.Zero);
+            Length = length;
             FilePath = filePath;
             MultipleAlbumArtistsTag = multipleAlbumArtistsTag;
-            HasArtistDuplicates = hasArtistDuplicates;
-            HasGenreDuplicates = hasArtistDuplicates;
         }
 
         /// <summary>
@@ -96,8 +86,9 @@ namespace EyeOfTheTagger.Data
         /// </summary>
         /// <param name="filePath"><see cref="FilePath"/></param>
         /// <param name="length"><see cref="Length"/></param>
+        /// <param name="album"><see cref="Album"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
-        public TrackData(string filePath, TimeSpan? length)
+        internal TrackData(string filePath, TimeSpan length, AlbumData album)
         {
             if (!System.IO.File.Exists(filePath))
             {
@@ -105,12 +96,12 @@ namespace EyeOfTheTagger.Data
             }
 
             Number = 0;
-            Title = Constants.UnknownInfo;
-            Album = AlbumData.Unknown;
-            _artists = new List<ArtistData> { ArtistData.Unknown };
-            _genres = new List<GenreData> { GenreData.Unknown };
+            Title = null;
+            Album = album;
+            _artists = new List<ArtistData>();
+            _genres = new List<GenreData>();
             Year = 0;
-            Length = length.GetValueOrDefault(TimeSpan.Zero);
+            Length = length;
             FilePath = filePath;
             MultipleAlbumArtistsTag = false;
         }

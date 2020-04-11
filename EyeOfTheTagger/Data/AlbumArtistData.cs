@@ -14,15 +14,10 @@
         /// Constructor.
         /// </summary>
         /// <param name="name"><see cref="Name"/></param>
-        public AlbumArtistData(string name)
+        internal AlbumArtistData(string name)
         {
-            Name = name ?? Constants.UnknownInfo;
+            Name = name;
         }
-
-        /// <summary>
-        /// Default instance for unknown datas.
-        /// </summary>
-        public static AlbumArtistData Unknown { get; } = new AlbumArtistData(Constants.UnknownInfo);
 
         /// <inheritdoc />
         public override string ToString()

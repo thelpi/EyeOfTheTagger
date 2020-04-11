@@ -6,7 +6,7 @@
     public class AlbumData
     {
         /// <summary>
-        /// <see cref="AlbumArtistData"/>; cannot be <c>Null</c>.
+        /// <see cref="AlbumArtistData"/>.
         /// </summary>
         public AlbumArtistData AlbumArtist { get; private set; }
         /// <summary>
@@ -19,16 +19,11 @@
         /// </summary>
         /// <param name="albumArtist"><see cref="AlbumArtist"/></param>
         /// <param name="name"><see cref="Name"/></param>
-        public AlbumData(AlbumArtistData albumArtist, string name)
+        internal AlbumData(AlbumArtistData albumArtist, string name)
         {
-            AlbumArtist = albumArtist ?? AlbumArtistData.Unknown;
-            Name = name ?? Constants.UnknownInfo;
+            AlbumArtist = albumArtist;
+            Name = name;
         }
-
-        /// <summary>
-        /// Default instance for unknown datas.
-        /// </summary>
-        public static AlbumData Unknown { get; } = new AlbumData(AlbumArtistData.Unknown, Constants.UnknownInfo);
 
         /// <inheritdoc />
         public override string ToString()

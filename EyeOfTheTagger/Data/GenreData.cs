@@ -14,15 +14,10 @@
         /// Constructor.
         /// </summary>
         /// <param name="name"><see cref="Name"/></param>
-        public GenreData(string name)
+        internal GenreData(string name)
         {
-            Name = name ?? Constants.UnknownInfo;
+            Name = name;
         }
-
-        /// <summary>
-        /// Default instance for unknown datas.
-        /// </summary>
-        public static GenreData Unknown { get; } = new GenreData(Constants.UnknownInfo);
 
         /// <inheritdoc />
         public override string ToString()

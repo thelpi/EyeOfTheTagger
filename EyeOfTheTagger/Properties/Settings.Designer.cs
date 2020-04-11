@@ -58,14 +58,5 @@ namespace EyeOfTheTagger.Properties {
                 this["DumpLogPath"] = value;
             }
         }
-        
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool ParallelLibraryProcess {
-            get {
-                return ((bool)(this["ParallelLibraryProcess"]));
-            }
-        }
     }
 }

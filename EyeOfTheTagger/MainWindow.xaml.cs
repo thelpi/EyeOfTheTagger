@@ -142,7 +142,7 @@ namespace EyeOfTheTagger
                         sw.WriteLine($"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")}\t{log.Level}\t{log.Message}");
                         foreach (string adKey in log.AdditionalDatas.Keys)
                         {
-                            sw.WriteLine($"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")}\t{adKey}\t{log.AdditionalDatas[adKey] ?? Constants.UnknownInfo}");
+                            sw.WriteLine($"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")}\t{adKey}\t{log.AdditionalDatas[adKey]}");
                         }
                     }
                 }
