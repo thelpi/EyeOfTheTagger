@@ -23,6 +23,7 @@ namespace EyeOfTheTagger
         private Dictionary<string, bool> _albumsViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _genresViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _performersViewSort = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _tracksViewSort = new Dictionary<string, bool>();
 
         /// <summary>
         /// Constructor.
@@ -78,7 +79,7 @@ namespace EyeOfTheTagger
             LoadingBar.Visibility = Visibility.Collapsed;
             Console.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
-            TracksView.ItemsSource = _library.Tracks;
+            TracksView.ItemsSource = BaseViewData.GetTracksViewData(_library);
             AlbumArtistsView.ItemsSource = BaseViewData.GetAlbumArtistsViewData(_library);
             AlbumsView.ItemsSource = BaseViewData.GetAlbumsViewData(_library);
             GenresView.ItemsSource = BaseViewData.GetGenresViewData(_library);
@@ -169,45 +170,51 @@ namespace EyeOfTheTagger
         private void AlbumArtistsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             AlbumArtistsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                BaseViewData.GetAlbumArtistsViewData,
-                _albumArtistsViewSort);
+                _albumArtistsViewSort,
+                BaseViewData.GetAlbumArtistsViewData(_library));
         }
 
         private void AlbumsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             AlbumsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                BaseViewData.GetAlbumsViewData,
-                _albumsViewSort);
+                _albumsViewSort,
+                BaseViewData.GetAlbumsViewData(_library));
         }
 
         private void GenresView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GenresView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                BaseViewData.GetGenresViewData,
-                _genresViewSort);
+                _genresViewSort,
+                BaseViewData.GetGenresViewData(_library));
         }
 
         private void PerformersView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             PerformersView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                BaseViewData.GetPerformersViewData,
-                _performersViewSort);
+                _performersViewSort,
+                BaseViewData.GetPerformersViewData(_library));
+        }
+
+        private void TracksView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            TracksView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
+                _tracksViewSort,
+                BaseViewData.GetTracksViewData(_library));
         }
 
         private IEnumerable<T> ManageSort<T>(GridViewColumnHeader header,
-            Func<LibraryData, IEnumerable<T>> dataRetriever,
-            Dictionary<string, bool> sortState) where T : BaseViewData
+            Dictionary<string, bool> sortState,
+            IEnumerable<T> dataRetrieved) where T : BaseViewData
         {
             string propertyName = header.Tag.ToString();
-
-            IEnumerable<T> defaultSortedDatas = dataRetriever(_library);
+            
             if (!sortState.ContainsKey(propertyName) || !sortState[propertyName])
             {
-                defaultSortedDatas = defaultSortedDatas.OrderByDescending(d => d.GetValue(propertyName));
+                dataRetrieved = dataRetrieved.OrderByDescending(d => d.GetValue(propertyName));
             }
             else
             {
-                defaultSortedDatas = defaultSortedDatas.OrderBy(d => d.GetValue(propertyName));
+                dataRetrieved = dataRetrieved.OrderBy(d => d.GetValue(propertyName));
             }
 
             if (!sortState.ContainsKey(propertyName))
@@ -219,7 +226,7 @@ namespace EyeOfTheTagger
                 sortState[propertyName] = !sortState[propertyName];
             }
 
-            return defaultSortedDatas;
+            return dataRetrieved;
         }
     }
 }

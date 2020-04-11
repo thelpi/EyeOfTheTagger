@@ -7,14 +7,14 @@ using EyeOfTheTaggerLib.Enum;
 namespace EyeOfTheTagger.Converters
 {
     /// <summary>
-    /// Transforms a <see cref="Data.Enum.LogLevel"/> to a foreground brush.
+    /// Transforms a <see cref="EyeOfTheTaggerLib.Enum.LogLevel"/> to a foreground brush.
     /// </summary>
     public class LogToForegroundConverter : IValueConverter
     {
         /// <summary>
         /// Proceeds to convert.
         /// </summary>
-        /// <param name="value">The <see cref="Data.Enum.LogLevel"/> value.</param>
+        /// <param name="value">The <see cref="EyeOfTheTaggerLib.Enum.LogLevel"/> value.</param>
         /// <param name="targetType">Not used.</param>
         /// <param name="parameter">Not used.</param>
         /// <param name="culture">Not used.</param>

@@ -10,7 +10,6 @@
     <Window.Resources>
         <cvt:LogToBackgroundConverter x:Key="LogToBackgroundConverter" />
         <cvt:LogToForegroundConverter x:Key="LogToForegroundConverter" />
-        <cvt:ListToCellConverter x:Key="ListToCellConverter" />
         <Style TargetType="ListViewItem">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
@@ -85,6 +84,14 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Label Content="{Binding Path=Name}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="AlbumArtist" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumArtist" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=AlbumArtist}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -189,17 +196,81 @@
                 </ListView>
             </TabItem>
             <TabItem Header="Tracks">
-                <ListView Name="TracksView">
+                <ListView AlternationCount="2" Name="TracksView">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True">
-                            <GridViewColumn Header="Number" DisplayMemberBinding="{Binding Path=Number}" />
-                            <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Path=Title}" />
-                            <GridViewColumn Header="Album" DisplayMemberBinding="{Binding Path=Album.Name}" />
-                            <GridViewColumn Header="Album artist" DisplayMemberBinding="{Binding Path=Album.AlbumArtist.Name}" />
-                            <GridViewColumn Header="Performers" DisplayMemberBinding="{Binding Path=Performers, Converter={StaticResource ListToCellConverter}}" />
-                            <GridViewColumn Header="Genres" DisplayMemberBinding="{Binding Path=Genres, Converter={StaticResource ListToCellConverter}}" />
-                            <GridViewColumn Header="Year" DisplayMemberBinding="{Binding Path=Year}" />
-                            <GridViewColumn Header="File path" DisplayMemberBinding="{Binding Path=FilePath}" />
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Number" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Number" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Number}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Title" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Title" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Title}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Album" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Album" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Album}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="AlbumArtist" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumArtist" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=AlbumArtist}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Performers" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Performers" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Performers}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Genres" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Genres" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Genres}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Year" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Year}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Length" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Length" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Length}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="FilePath" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="FilePath" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=FilePath}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>

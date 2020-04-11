@@ -22,8 +22,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <DocumentationFile>
-    </DocumentationFile>
+    <DocumentationFile>bin\Debug\EyeOfTheTagger.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -55,7 +54,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Converters\ListToCellConverter.cs" />
     <Compile Include="Converters\LogToBackgroundConverter.cs" />
     <Compile Include="Converters\LogToForegroundConverter.cs" />
     <Compile Include="Tools.cs" />
@@ -64,6 +62,7 @@
     <Compile Include="ViewData\BaseViewData.cs" />
     <Compile Include="ViewData\GenreViewData.cs" />
     <Compile Include="ViewData\PerformerViewData.cs" />
+    <Compile Include="ViewData\TrackViewData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>

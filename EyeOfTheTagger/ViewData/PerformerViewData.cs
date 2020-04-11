@@ -11,10 +11,12 @@ namespace EyeOfTheTagger.ViewData
     /// <seealso cref="BaseViewData"/>
     internal class PerformerViewData : BaseViewData
     {
+        private readonly PerformerData _sourceData;
+
         /// <summary>
         /// <see cref="PerformerData.Name"/>
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get { return _sourceData.Name; } }
         /// <summary>
         /// Tracks count.
         /// </summary>
@@ -33,19 +35,15 @@ namespace EyeOfTheTagger.ViewData
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
         public PerformerViewData(PerformerData sourceData, LibraryData library)
         {
-            if (sourceData == null)
-            {
-                throw new ArgumentNullException(nameof(sourceData));
-            }
-
             if (library == null)
             {
                 throw new ArgumentNullException(nameof(library));
             }
 
-            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Performers.Contains(sourceData));
+            _sourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
 
-            Name = sourceData.Name;
+            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Performers.Contains(sourceData));
+            
             TracksCount = tracks.Count();
             TracksLength = new TimeSpan(0, 0, (int)tracks.Sum(t => t.Length.TotalSeconds));
         }

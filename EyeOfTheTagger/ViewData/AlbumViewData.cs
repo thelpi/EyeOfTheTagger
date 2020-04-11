@@ -11,10 +11,16 @@ namespace EyeOfTheTagger.ViewData
     /// <seealso cref="BaseViewData"/>
     internal class AlbumViewData : BaseViewData
     {
+        private readonly AlbumData _sourceData;
+
         /// <summary>
         /// <see cref="AlbumData.Name"/>
         /// </summary>
-        public string Name { get; private set; }
+        public string Name { get { return _sourceData.Name; } }
+        /// <summary>
+        /// <see cref="AlbumData.AlbumArtist"/> name.
+        /// </summary>
+        public string AlbumArtist { get { return _sourceData.AlbumArtist.Name; } }
         /// <summary>
         /// Release year.
         /// If several, takes the more likely.
@@ -43,19 +49,15 @@ namespace EyeOfTheTagger.ViewData
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
         public AlbumViewData(AlbumData sourceData, LibraryData library)
         {
-            if (sourceData == null)
-            {
-                throw new ArgumentNullException(nameof(sourceData));
-            }
-
             if (library == null)
             {
                 throw new ArgumentNullException(nameof(library));
             }
 
-            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Album == sourceData);
+            _sourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
 
-            Name = sourceData.Name;
+            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Album == sourceData);
+            
             Year = tracks.Select(t => t.Year).GroupBy(y => y).OrderByDescending(y => y.Count()).First().Key;
             Genre = tracks.SelectMany(t => t.Genres).GroupBy(g => g).OrderByDescending(g => g.Count()).FirstOrDefault()?.Key?.Name ?? string.Empty;
             TracksCount = tracks.Count();
