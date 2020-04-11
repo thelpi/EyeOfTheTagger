@@ -8,5 +8,11 @@
     <Setting Name="LibraryExtensions" Type="System.String" Scope="User">
       <Value Profile="(Default)">mp3;wma</Value>
     </Setting>
+    <Setting Name="DumpLogPath" Type="System.String" Scope="User">
+      <Value Profile="(Default)">D:\</Value>
+    </Setting>
+    <Setting Name="ParallelLibraryProcess" Type="System.Boolean" Scope="Application">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

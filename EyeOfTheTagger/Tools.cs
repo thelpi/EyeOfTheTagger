@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace EyeOfTheTagger
@@ -69,6 +71,24 @@ namespace EyeOfTheTagger
         public static string GetAppName()
         {
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Name;
+        }
+
+        /// <summary>
+        /// Checks if the current user can write files into the specified folder.
+        /// </summary>
+        /// <param name="folderPath">The folder path to check.</param>
+        /// <returns><c>True</c> if the user can write files into the folder; <c>False</c> otherwise.</returns>
+        public static bool HasWriteAccessToFolder(string folderPath)
+        {
+            try
+            {
+                System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl(folderPath);
+                return true;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return false;
+            }
         }
     }
 }

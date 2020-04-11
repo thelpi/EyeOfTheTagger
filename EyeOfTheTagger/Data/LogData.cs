@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using EyeOfTheTagger.Data.Enum;
 
 namespace EyeOfTheTagger.Data
@@ -13,6 +14,10 @@ namespace EyeOfTheTagger.Data
         /// Cannot be <c>Null</c>.
         /// </summary>
         public string Message { get; private set; }
+        /// <summary>
+        /// Date.
+        /// </summary>
+        public DateTime Date { get; private set; }
         /// <summary>
         /// <see cref="LogLevel"/>
         /// </summary>
@@ -32,6 +37,7 @@ namespace EyeOfTheTagger.Data
         public LogData(string message, LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
         {
             Message = message ?? Constants.UnknownInfo;
+            Date = DateTime.Now;
             Level = level;
 
             var datas = new Dictionary<string, string>();

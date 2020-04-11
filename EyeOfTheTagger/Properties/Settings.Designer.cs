@@ -46,5 +46,26 @@ namespace EyeOfTheTagger.Properties {
                 this["LibraryExtensions"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("D:\\")]
+        public string DumpLogPath {
+            get {
+                return ((string)(this["DumpLogPath"]));
+            }
+            set {
+                this["DumpLogPath"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ParallelLibraryProcess {
+            get {
+                return ((bool)(this["ParallelLibraryProcess"]));
+            }
+        }
     }
 }

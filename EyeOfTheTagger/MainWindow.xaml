@@ -16,6 +16,7 @@
         <StackPanel Margin="5" DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Height="22" Width="100" Name="LoadingButton" Click="LoadingButton_Click" />
             <ProgressBar Margin="10, 0, 0, 0" Width="200" IsIndeterminate="False" Height="20" Name="LoadingBar" Minimum="0" Maximum="100" />
+            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="DumpButton" Click="DumpButton_Click" Content="Dump logs" />
         </StackPanel>
         <ListBox DockPanel.Dock="Top" Name="Console">
             <ListBox.ItemTemplate>

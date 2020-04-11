@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using EyeOfTheTagger.Data.Event;
 using TagFile = TagLib.File;
 
@@ -29,6 +30,11 @@ namespace EyeOfTheTagger.Data
 
         private readonly List<string> _paths;
         private readonly List<TrackData> _tracks;
+
+        private readonly object _albumArtistLock = new object();
+        private readonly object _albumLock = new object();
+        private readonly object _genreLock = new object();
+        private readonly object _artistLock = new object();
 
         /// <summary>
         /// List of every <see cref="TrackData"/>.
@@ -154,20 +160,47 @@ namespace EyeOfTheTagger.Data
                             }
                         }
 
+                        files = files.Distinct().ToList();
+
                         TotalFilesCount = files.Count;
+
+                        int filesCountByProcessor = TotalFilesCount / Environment.ProcessorCount;
+                        List<List<string>> filesBalancer =
+                            Enumerable.Range(0, Environment.ProcessorCount)
+                                .Select(_ => _ == Environment.ProcessorCount - 1 ?
+                                    files.Skip(filesCountByProcessor * (Environment.ProcessorCount - 1)).ToList()
+                                    : files.GetRange(_ * filesCountByProcessor, filesCountByProcessor))
+                                .ToList();
 
                         var localAlbumArtistDatas = new Dictionary<string, AlbumArtistData>();
                         var localAlbumDatas = new Dictionary<string, AlbumData>();
                         var localGenreDatas = new Dictionary<string, GenreData>();
                         var localArtistDatas = new Dictionary<string, ArtistData>();
-
+                        
+                        DateTime startProcessTime = DateTime.Now;
                         int i = 1;
-                        foreach (string file in files)
+                        if (Properties.Settings.Default.ParallelLibraryProcess)
                         {
-                            TreatSingleFile(i, file,
-                                localAlbumArtistDatas, localAlbumDatas, localGenreDatas, localArtistDatas);
-                            i++;
+                            Parallel.ForEach(filesBalancer, (List<string> subFiles) =>
+                            {
+                                foreach (string file in subFiles)
+                                {
+                                    TreatSingleFile(i, file,
+                                        localAlbumArtistDatas, localAlbumDatas, localGenreDatas, localArtistDatas);
+                                    i++;
+                                }
+                            });
                         }
+                        else
+                        {
+                            foreach (string file in files)
+                            {
+                                TreatSingleFile(i, file,
+                                    localAlbumArtistDatas, localAlbumDatas, localGenreDatas, localArtistDatas);
+                                i++;
+                            }
+                        }
+                        System.Diagnostics.Debug.WriteLine($"Exec total : {(DateTime.Now - startProcessTime).TotalSeconds}");
                     }
                 }
                 catch (Exception exGlobal)
@@ -185,67 +218,93 @@ namespace EyeOfTheTagger.Data
         {
             try
             {
-                if (!_tracks.Any(t => t.FilePath.TrueEquals(file)))
-                {
-                    TagFile tagFile = TagFile.Create(file);
+                TagFile tagFile = TagFile.Create(file);
 
-                    TrackData track;
+                TrackData track;
+                if (tagFile != null)
+                {
                     if (tagFile.Tag != null)
                     {
-                        bool multipleAlbumArtists = tagFile.Tag.AlbumArtists.Length > 1;
-                        if (multipleAlbumArtists)
+                        int albumArtistsCount = tagFile.Tag.AlbumArtists == null ? 0 : tagFile.Tag.AlbumArtists.Length;
+                        if (albumArtistsCount > 1)
                         {
                             LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Multiple album artists for the file : {file}.", Enum.LogLevel.Warning), i), null, null);
                         }
-                        
-                        string albumArtistKey = tagFile.Tag.FirstAlbumArtist.Trim().ToLowerInvariant();
-                        if (!localAlbumArtistDatas.TryGetValue(albumArtistKey, out AlbumArtistData albumArtist))
+
+                        AlbumArtistData albumArtist = AlbumArtistData.Unknown;
+                        if (albumArtistsCount > 0)
                         {
-                            albumArtist = new AlbumArtistData(tagFile.Tag.FirstAlbumArtist);
-                            localAlbumArtistDatas.Add(albumArtistKey, albumArtist);
+                            string albumArtistKey = tagFile.Tag.FirstAlbumArtist?.Trim()?.ToLowerInvariant() ?? string.Empty;
+                            lock (_albumArtistLock)
+                            {
+                                if (!localAlbumArtistDatas.TryGetValue(albumArtistKey, out albumArtist))
+                                {
+                                    albumArtist = new AlbumArtistData(tagFile.Tag.FirstAlbumArtist);
+                                    localAlbumArtistDatas.Add(albumArtistKey, albumArtist);
+                                }
+                            }
                         }
 
                         var artists = new List<ArtistData>();
-                        foreach (string artistString in tagFile.Tag.Performers)
+                        foreach (string artistString in tagFile.Tag.Performers.Select(p => p ?? string.Empty))
                         {
+                            ArtistData artist;
                             string artistKey = artistString.Trim().ToLowerInvariant();
-                            if (!localArtistDatas.TryGetValue(artistKey, out ArtistData artist))
+                            lock (_artistLock)
                             {
-                                artist = new ArtistData(artistString);
-                                localArtistDatas.Add(artistKey, artist);
+                                if (!localArtistDatas.TryGetValue(artistKey, out artist))
+                                {
+                                    artist = new ArtistData(artistString);
+                                    localArtistDatas.Add(artistKey, artist);
+                                }
                             }
                             artists.Add(artist);
                         }
 
                         var genres = new List<GenreData>();
-                        foreach (string genreString in tagFile.Tag.Genres)
+                        foreach (string genreString in tagFile.Tag.Genres.Select(g =>  g ?? string.Empty))
                         {
-                            string genreKey = genreString.Trim().ToLowerInvariant();
-                            if (!localGenreDatas.TryGetValue(genreKey, out GenreData genre))
+                            GenreData genre;
+                            lock (_genreLock)
                             {
-                                genre = new GenreData(genreString);
-                                localGenreDatas.Add(genreKey, genre);
+                                string genreKey = genreString.Trim().ToLowerInvariant();
+                                if (!localGenreDatas.TryGetValue(genreKey, out genre))
+                                {
+                                    genre = new GenreData(genreString);
+                                    localGenreDatas.Add(genreKey, genre);
+                                }
                             }
                             genres.Add(genre);
                         }
 
-                        string albumKey = string.Concat(tagFile.Tag.Album.Trim().ToLowerInvariant(), '|', albumArtist.Name.Trim().ToLowerInvariant());
-                        if (!localAlbumDatas.TryGetValue(albumKey, out AlbumData album))
+                        AlbumData album = AlbumData.Unknown;
+                        if (tagFile.Tag.Album != null)
                         {
-                            album = new AlbumData(albumArtist, tagFile.Tag.Album);
-                            localAlbumDatas.Add(albumKey, album);
+                            string albumKey = string.Concat(tagFile.Tag.Album.Trim().ToLowerInvariant(), '|', albumArtist.Name.Trim().ToLowerInvariant());
+                            lock (_albumLock)
+                            {
+                                if (!localAlbumDatas.TryGetValue(albumKey, out album))
+                                {
+                                    album = new AlbumData(albumArtist, tagFile.Tag.Album);
+                                    localAlbumDatas.Add(albumKey, album);
+                                }
+                            }
                         }
 
                         track = new TrackData(tagFile.Tag.Track, tagFile.Tag.Title, album, artists, genres,
-                            tagFile.Tag.Year, tagFile.Properties?.Duration, tagFile.Name, multipleAlbumArtists);
+                            tagFile.Tag.Year, tagFile.Properties?.Duration, tagFile.Name, albumArtistsCount > 1);
                     }
                     else
                     {
                         track = new TrackData(tagFile.Name, tagFile.Properties?.Duration);
                     }
-                    _tracks.Add(track);
-                    LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", Enum.LogLevel.Information), i), null, null);
                 }
+                else
+                {
+                    track = new TrackData(file, TimeSpan.Zero);
+                }
+                _tracks.Add(track);
+                LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", Enum.LogLevel.Information), i), null, null);
             }
             catch (Exception exLocal)
             {
