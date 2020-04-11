@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
+using System.Windows.Controls;
 using EyeOfTheTagger.ViewData;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Event;
@@ -18,6 +19,8 @@ namespace EyeOfTheTagger
     {
         private LibraryData _library;
         private BackgroundWorker _bgw;
+        private Dictionary<string, bool> _albumArtistsViewSort = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _albumsViewSort = new Dictionary<string, bool>();
 
         /// <summary>
         /// Constructor.
@@ -74,7 +77,8 @@ namespace EyeOfTheTagger
             Console.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
             TracksView.ItemsSource = _library.Tracks;
-            AlbumArtistsView.ItemsSource = GetAlbumArtistsViewData();
+            AlbumArtistsView.ItemsSource = BaseViewData.GetAlbumArtistsViewData(_library);
+            AlbumsView.ItemsSource = BaseViewData.GetAlbumsViewData(_library);
             LoadingButton.IsEnabled = true;
             LoadingButton.Content = "Reload";
             DumpButton.IsEnabled = true;
@@ -98,13 +102,6 @@ namespace EyeOfTheTagger
                 DisplayWhileLoading();
                 _bgw.RunWorkerAsync();
             }
-        }
-
-        private IEnumerable<AlbumArtistViewData> GetAlbumArtistsViewData()
-        {
-            return _library.AlbumArtists
-                            .Select(aa => new AlbumArtistViewData(aa, _library))
-                            .OrderBy(aa => aa.Name);
         }
 
         private void DumpButton_Click(object sender, RoutedEventArgs e)
@@ -163,6 +160,48 @@ namespace EyeOfTheTagger
                 }
             };
             dumpWorker.RunWorkerAsync(Console.Items.Cast<LogData>());
+        }
+
+        private void AlbumArtistsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            AlbumArtistsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
+                BaseViewData.GetAlbumArtistsViewData,
+                _albumArtistsViewSort);
+        }
+
+        private void AlbumsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            AlbumsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
+                BaseViewData.GetAlbumsViewData,
+                _albumsViewSort);
+        }
+
+        private IEnumerable<T> ManageSort<T>(GridViewColumnHeader header,
+            Func<LibraryData, IEnumerable<T>> dataRetriever,
+            Dictionary<string, bool> sortState) where T : BaseViewData
+        {
+            string propertyName = header.Tag.ToString();
+
+            IEnumerable<T> defaultSortedDatas = dataRetriever(_library);
+            if (!sortState.ContainsKey(propertyName) || !sortState[propertyName])
+            {
+                defaultSortedDatas = defaultSortedDatas.OrderByDescending(d => d.GetValue(propertyName));
+            }
+            else
+            {
+                defaultSortedDatas = defaultSortedDatas.OrderBy(d => d.GetValue(propertyName));
+            }
+
+            if (!sortState.ContainsKey(propertyName))
+            {
+                sortState.Add(propertyName, true);
+            }
+            else
+            {
+                sortState[propertyName] = !sortState[propertyName];
+            }
+
+            return defaultSortedDatas;
         }
     }
 }

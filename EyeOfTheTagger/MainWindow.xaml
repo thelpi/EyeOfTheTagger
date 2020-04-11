@@ -30,16 +30,73 @@
                 <ListView Name="AlbumArtistsView">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True">
-                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" />
-                            <GridViewColumn Header="Albums count" DisplayMemberBinding="{Binding Path=AlbumsCount}" />
-                            <GridViewColumn Header="Tracks count" DisplayMemberBinding="{Binding Path=TracksCount}" />
-                            <GridViewColumn Header="Tracks length" DisplayMemberBinding="{Binding Path=TracksLength}" />
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Name" Click="AlbumArtistsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Name}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Albums count" Click="AlbumArtistsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumsCount" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=AlbumsCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks count" Click="AlbumArtistsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks length" Click="AlbumArtistsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
             </TabItem>
             <TabItem Header="Albums">
-
+                <ListView Name="AlbumsView">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Name" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Name}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks count" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks length" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </TabItem>
             <TabItem Header="Artists">
 

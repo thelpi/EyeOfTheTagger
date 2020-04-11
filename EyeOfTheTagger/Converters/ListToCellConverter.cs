@@ -11,6 +11,8 @@ namespace EyeOfTheTagger.Converters
     /// </summary>
     public class ListToCellConverter : IValueConverter
     {
+        private const string _SEPARATOR = "; ";
+
         /// <summary>
         /// Proceeds to convert.
         /// </summary>
@@ -32,7 +34,7 @@ namespace EyeOfTheTagger.Converters
                                                 .Distinct()
                                                 .ToList();
 
-            return string.Join(Constants.DisplayListSeparator, displayableStrings);
+            return string.Join(_SEPARATOR, displayableStrings);
         }
 
         /// <summary>

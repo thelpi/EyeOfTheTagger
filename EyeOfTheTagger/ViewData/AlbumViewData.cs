@@ -5,19 +5,15 @@ using EyeOfTheTaggerLib;
 namespace EyeOfTheTagger.ViewData
 {
     /// <summary>
-    /// Album artist view data.
+    /// Album view data.
     /// </summary>
     /// <seealso cref="BaseViewData"/>
-    internal class AlbumArtistViewData : BaseViewData
+    internal class AlbumViewData : BaseViewData
     {
         /// <summary>
-        /// <see cref="AlbumArtistData.Name"/>
+        /// <see cref="AlbumData.Name"/>
         /// </summary>
         public string Name { get; private set; }
-        /// <summary>
-        /// Albums count.
-        /// </summary>
-        public int AlbumsCount { get; private set; }
         /// <summary>
         /// Tracks count.
         /// </summary>
@@ -30,11 +26,11 @@ namespace EyeOfTheTagger.ViewData
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="sourceData"><see cref="AlbumArtistData"/></param>
+        /// <param name="sourceData"><see cref="AlbumData"/></param>
         /// <param name="library"><see cref="LibraryData"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public AlbumArtistViewData(AlbumArtistData sourceData, LibraryData library)
+        public AlbumViewData(AlbumData sourceData, LibraryData library)
         {
             if (sourceData == null)
             {
@@ -47,9 +43,8 @@ namespace EyeOfTheTagger.ViewData
             }
 
             Name = sourceData.Name;
-            AlbumsCount = library.Albums.Count(a => a.AlbumArtist == sourceData);
-            TracksCount = library.Tracks.Count(t => t.Album.AlbumArtist == sourceData);
-            TracksLength = new TimeSpan(0, 0, (int)library.Tracks.Where(t => t.Album.AlbumArtist == sourceData).Sum(t => t.Length.TotalSeconds));
+            TracksCount = library.Tracks.Count(t => t.Album == sourceData);
+            TracksLength = new TimeSpan(0, 0, (int)library.Tracks.Where(t => t.Album == sourceData).Sum(t => t.Length.TotalSeconds));
         }
     }
 }
