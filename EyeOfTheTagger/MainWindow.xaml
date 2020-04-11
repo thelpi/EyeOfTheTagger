@@ -11,6 +11,16 @@
         <cvt:LogToBackgroundConverter x:Key="LogToBackgroundConverter" />
         <cvt:LogToForegroundConverter x:Key="LogToForegroundConverter" />
         <cvt:ListToCellConverter x:Key="ListToCellConverter" />
+        <Style TargetType="ListViewItem">
+            <Style.Triggers>
+                <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
+                    <Setter Property="Background" Value="White" />
+                </Trigger>
+                <Trigger Property="ItemsControl.AlternationIndex"  Value="1">
+                    <Setter Property="Background" Value="LightGray" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
     </Window.Resources>
     <DockPanel Margin="5">
         <StackPanel Margin="5" DockPanel.Dock="Bottom" Orientation="Horizontal">
@@ -27,7 +37,7 @@
         </ListBox>
         <TabControl DockPanel.Dock="Top" Name="MainView" >
             <TabItem Header="Album artists">
-                <ListView Name="AlbumArtistsView">
+                <ListView AlternationCount="2" Name="AlbumArtistsView">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True">
                             <GridViewColumn>
@@ -67,7 +77,7 @@
                 </ListView>
             </TabItem>
             <TabItem Header="Albums">
-                <ListView Name="AlbumsView">
+                <ListView AlternationCount="2" Name="AlbumsView">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True">
                             <GridViewColumn>
