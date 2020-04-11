@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 
-namespace EyeOfTheTagger.Data
+namespace EyeOfTheTaggerLib
 {
     /// <summary>
     /// Represents a track.

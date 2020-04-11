@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using EyeOfTheTagger.Data.Event;
+using EyeOfTheTaggerLib.Enum;
+using EyeOfTheTaggerLib.Event;
 using TagFile = TagLib.File;
 
-namespace EyeOfTheTagger.Data
+namespace EyeOfTheTaggerLib
 {
     /// <summary>
     /// Represents a library.
@@ -30,8 +31,9 @@ namespace EyeOfTheTagger.Data
         /// </summary>
         public int TotalFilesCount { get; private set; }
 
-        private readonly List<string> _paths;
-        private readonly List<TrackData> _tracks;
+        private readonly List<string> _extensions = new List<string>();
+        private readonly List<string> _paths = new List<string>();
+        private readonly List<TrackData> _tracks = new List<TrackData>();
 
         /// <summary>
         /// List of every <see cref="TrackData"/>.
@@ -116,12 +118,14 @@ namespace EyeOfTheTagger.Data
         /// <summary>
         /// Constructor.
         /// </summary>
+        /// <param name="paths">List of folder paths to analyze.</param>
+        /// <param name="extensions">List of file extensions to consider.</param>
         /// <param name="instantLoad"><c>True</c> to load the library immediately.</param>
-        public LibraryData(bool instantLoad)
+        /// <exception cref="ArgumentNullException"><paramref name="extensions"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="paths"/> is <c>Null</c>.</exception>
+        public LibraryData(IEnumerable<string> paths, IEnumerable<string> extensions, bool instantLoad)
         {
-            TotalFilesCount = -1;
-            _tracks = new List<TrackData>();
-            _paths = Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories);
+            PrepareLoad(paths, extensions);
             if (instantLoad)
             {
                 Load();
@@ -131,13 +135,37 @@ namespace EyeOfTheTagger.Data
         /// <summary>
         /// Loads or reloads the library.
         /// </summary>
-        public void Reload()
+        /// <param name="paths">List of folder paths to analyze.</param>
+        /// <param name="extensions">List of file extensions to consider.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="extensions"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="paths"/> is <c>Null</c>.</exception>
+        public void Reload(IEnumerable<string> paths, IEnumerable<string> extensions)
         {
-            TotalFilesCount = -1;
-            _tracks.Clear();
+            PrepareLoad(paths, extensions);
             Load();
         }
 
+        private void PrepareLoad(IEnumerable<string> paths, IEnumerable<string> extensions)
+        {
+            if (paths == null)
+            {
+                throw new ArgumentNullException(nameof(paths));
+            }
+
+            if (extensions == null)
+            {
+                throw new ArgumentNullException(nameof(extensions));
+            }
+
+            _paths.Clear();
+            _paths.AddRange(paths);
+
+            _extensions.Clear();
+            _extensions.AddRange(extensions);
+
+            TotalFilesCount = -1;
+            _tracks.Clear();
+        }
 
         private void Load()
         {
@@ -148,7 +176,7 @@ namespace EyeOfTheTagger.Data
                     if (Directory.Exists(path))
                     {
                         List<string> files = new List<string>();
-                        foreach (string extension in Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions))
+                        foreach (string extension in _extensions)
                         {
                             string[] extensionFiles = Directory.GetFiles(path, $"*.{extension}", SearchOption.AllDirectories);
                             if (extensionFiles != null)
@@ -189,7 +217,7 @@ namespace EyeOfTheTagger.Data
                 }
                 catch (Exception exGlobal)
                 {
-                    LoadingLogHandler?.Invoke(this, new LoadingLogEventArgs(new LogData($"An error has occured, the process has been stopped.", Enum.LogLevel.Critical, new KeyValuePair<string, string>("Error message", exGlobal.Message)), -1));
+                    LoadingLogHandler?.Invoke(this, new LoadingLogEventArgs(new LogData($"An error has occured, the process has been stopped.", LogLevel.Critical, new KeyValuePair<string, string>("Error message", exGlobal.Message)), -1));
                 }
             }
         }
@@ -220,7 +248,7 @@ namespace EyeOfTheTagger.Data
                         if (tag.AlbumArtists?.Length > 1)
                         {
                             multipleAlbumArtistsTag = true;
-                            LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Multiple album artists for the file : {file}.", Enum.LogLevel.Warning), i), null, null);
+                            LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Multiple album artists for the file : {file}.", LogLevel.Warning), i), null, null);
                         }
 
                         if (tag.FirstAlbumArtist != null)
@@ -296,11 +324,11 @@ namespace EyeOfTheTagger.Data
                     track = new TrackData(file, TimeSpan.Zero, localAlbumDatas[_NULL]);
                 }
                 _tracks.Add(track);
-                LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", Enum.LogLevel.Information), i), null, null);
+                LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", LogLevel.Information), i), null, null);
             }
             catch (Exception exLocal)
             {
-                LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Error while processing {file}.", Enum.LogLevel.Error, new KeyValuePair<string, string>("Error message", exLocal.Message)), i), null, null);
+                LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Error while processing {file}.", LogLevel.Error, new KeyValuePair<string, string>("Error message", exLocal.Message)), i), null, null);
             }
         }
     }

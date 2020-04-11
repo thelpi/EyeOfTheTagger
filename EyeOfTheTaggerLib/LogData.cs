@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using EyeOfTheTagger.Data.Enum;
 
-namespace EyeOfTheTagger.Data
+namespace EyeOfTheTaggerLib
 {
     /// <summary>
     /// Represents a log.
@@ -23,7 +22,7 @@ namespace EyeOfTheTagger.Data
         /// <summary>
         /// <see cref="LogLevel"/>
         /// </summary>
-        public LogLevel Level { get; private set; }
+        public Enum.LogLevel Level { get; private set; }
         /// <summary>
         /// Additional datas.
         /// Keys cannot be <c>Null</c> or trimmable to empty, and are case-sensitive.
@@ -36,7 +35,7 @@ namespace EyeOfTheTagger.Data
         /// <param name="message"><see cref="Message"/></param>
         /// <param name="level"><see cref="Level"/></param>
         /// <param name="additionalDatas"><see cref="AdditionalDatas"/></param>
-        public LogData(string message, LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
+        public LogData(string message, Enum.LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
         {
             Message = message ?? _DEFAULT;
             Date = DateTime.Now;

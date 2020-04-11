@@ -4,9 +4,9 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Windows;
-using EyeOfTheTagger.Data;
-using EyeOfTheTagger.Data.Event;
 using EyeOfTheTagger.ViewData;
+using EyeOfTheTaggerLib;
+using EyeOfTheTaggerLib.Event;
 
 namespace EyeOfTheTagger
 {
@@ -29,7 +29,8 @@ namespace EyeOfTheTagger
             Title = Tools.GetAppName();
 
             // First thing to do!
-            _library = new LibraryData(false);
+            _library = new LibraryData(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
+                    Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions), false);
             _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
             {
                 if (e?.Log != null && _library.TotalFilesCount > -1)
@@ -46,7 +47,8 @@ namespace EyeOfTheTagger
             };
             _bgw.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
-                _library.Reload();
+                _library.Reload(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
+                    Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions));
             };
             _bgw.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
             {

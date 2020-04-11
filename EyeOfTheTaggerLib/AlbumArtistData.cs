@@ -1,4 +1,4 @@
-﻿namespace EyeOfTheTagger.Data
+﻿namespace EyeOfTheTaggerLib
 {
     /// <summary>
     /// Represents an album artist.

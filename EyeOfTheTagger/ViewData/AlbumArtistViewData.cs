@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using EyeOfTheTagger.Data;
+using EyeOfTheTaggerLib;
 
 namespace EyeOfTheTagger.ViewData
 {

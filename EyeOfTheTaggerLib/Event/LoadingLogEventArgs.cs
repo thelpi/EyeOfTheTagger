@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EyeOfTheTagger.Data.Event
+namespace EyeOfTheTaggerLib.Event
 {
     /// <summary>
     /// Datas for log event while loading the library.

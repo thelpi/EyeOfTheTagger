@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
+using EyeOfTheTaggerLib.Enum;
 
 namespace EyeOfTheTagger.Converters
 {
@@ -20,12 +21,12 @@ namespace EyeOfTheTagger.Converters
         /// <returns>Background brush.</returns>
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value.GetType() != typeof(Data.Enum.LogLevel))
+            if (value.GetType() != typeof(LogLevel))
             {
                 return Brushes.Transparent;
             }
 
-            return (Data.Enum.LogLevel)value == Data.Enum.LogLevel.Critical ? Brushes.Red : Brushes.Transparent;
+            return (LogLevel)value == LogLevel.Critical ? Brushes.Red : Brushes.Transparent;
         }
 
         /// <summary>
