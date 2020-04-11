@@ -1,9 +1,9 @@
 ﻿namespace EyeOfTheTaggerLib
 {
     /// <summary>
-    /// Represents an artist.
+    /// Represents a performer.
     /// </summary>
-    public class ArtistData
+    public class PerformerData
     {
         /// <summary>
         /// Name.
@@ -14,7 +14,7 @@
         /// Constructor.
         /// </summary>
         /// <param name="name"><see cref="Name"/></param>
-        internal ArtistData(string name)
+        internal PerformerData(string name)
         {
             Name = name;
         }

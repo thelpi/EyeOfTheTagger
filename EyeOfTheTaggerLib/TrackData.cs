@@ -9,7 +9,7 @@ namespace EyeOfTheTaggerLib
     /// </summary>
     public class TrackData
     {
-        private readonly List<ArtistData> _artists;
+        private readonly List<PerformerData> _performers;
         private readonly List<GenreData> _genres;
 
         /// <summary>
@@ -25,9 +25,9 @@ namespace EyeOfTheTaggerLib
         /// </summary>
         public AlbumData Album { get; private set; }
         /// <summary>
-        /// List of <see cref="ArtistData"/>.
+        /// List of <see cref="PerformerData"/>.
         /// </summary>
-        public IReadOnlyCollection<ArtistData> Artists { get { return _artists; } }
+        public IReadOnlyCollection<PerformerData> Performers { get { return _performers; } }
         /// <summary>
         /// List of <see cref="GenreData"/>.
         /// </summary>
@@ -55,14 +55,14 @@ namespace EyeOfTheTaggerLib
         /// <param name="trackNumber"><see cref="Number"/></param>
         /// <param name="title"><see cref="Title"/></param>
         /// <param name="album"><see cref="Album"/></param>
-        /// <param name="artists"><see cref="Artists"/></param>
+        /// <param name="performers"><see cref="Performers"/></param>
         /// <param name="genres"><see cref="Genres"/></param>
         /// <param name="year"><see cref="Year"/></param>
         /// <param name="length"><see cref="Length"/></param>
         /// <param name="filePath"><see cref="FilePath"/></param>
         /// <param name="multipleAlbumArtistsTag"><see cref="MultipleAlbumArtistsTag"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
-        internal TrackData(uint trackNumber, string title, AlbumData album, List<ArtistData> artists,
+        internal TrackData(uint trackNumber, string title, AlbumData album, List<PerformerData> performers,
             List<GenreData> genres, uint year, TimeSpan length, string filePath, bool multipleAlbumArtistsTag)
         {
             if (!System.IO.File.Exists(filePath))
@@ -73,7 +73,7 @@ namespace EyeOfTheTaggerLib
             Number = trackNumber;
             Title = title;
             Album = album;
-            _artists = artists;
+            _performers = performers;
             _genres = genres;
             Year = year;
             Length = length;
@@ -98,7 +98,7 @@ namespace EyeOfTheTaggerLib
             Number = 0;
             Title = null;
             Album = album;
-            _artists = new List<ArtistData>();
+            _performers = new List<PerformerData>();
             _genres = new List<GenreData>();
             Year = 0;
             Length = length;

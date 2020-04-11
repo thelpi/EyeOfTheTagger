@@ -90,16 +90,16 @@ namespace EyeOfTheTaggerLib
         }
 
         /// <summary>
-        /// List of every <see cref="ArtistData"/>.
+        /// List of every <see cref="PerformerData"/>.
         /// </summary>
-        public IReadOnlyCollection<ArtistData> Artists
+        public IReadOnlyCollection<PerformerData> Performers
         {
             get
             {
                 return _tracks
-                        .SelectMany(t => t.Artists)
-                        .GroupBy(a => a)
-                        .Select(ag => ag.First())
+                        .SelectMany(t => t.Performers)
+                        .GroupBy(p => p)
+                        .Select(pg => pg.First())
                         .ToList();
             }
         }
@@ -201,16 +201,16 @@ namespace EyeOfTheTaggerLib
                         {
                             { _NULL, new GenreData(_NULL) }
                         };
-                        var localArtistDatas = new Dictionary<string, ArtistData>
+                        var localPerformerDatas = new Dictionary<string, PerformerData>
                         {
-                            { _NULL, new ArtistData(_NULL) }
+                            { _NULL, new PerformerData(_NULL) }
                         };
                         
                         int i = 1;
                         foreach (string file in files)
                         {
                             TreatSingleFile(i, file,
-                                localAlbumArtistDatas, localAlbumDatas, localGenreDatas, localArtistDatas);
+                                localAlbumArtistDatas, localAlbumDatas, localGenreDatas, localPerformerDatas);
                             i++;
                         }
                     }
@@ -226,7 +226,7 @@ namespace EyeOfTheTaggerLib
             Dictionary<string, AlbumArtistData> localAlbumArtistDatas,
             Dictionary<string, AlbumData> localAlbumDatas,
             Dictionary<string, GenreData> localGenreDatas,
-            Dictionary<string, ArtistData> localArtistDatas)
+            Dictionary<string, PerformerData> localPerformerDatas)
         {
             try
             {
@@ -241,7 +241,7 @@ namespace EyeOfTheTaggerLib
 
                         AlbumArtistData albumArtist = localAlbumArtistDatas[_NULL];
                         AlbumData album = localAlbumDatas[_NULL];
-                        List<ArtistData> artists = new List<ArtistData>();
+                        List<PerformerData> performers = new List<PerformerData>();
                         List<GenreData> genres = new List<GenreData>();
                         bool multipleAlbumArtistsTag = false;
 
@@ -274,18 +274,18 @@ namespace EyeOfTheTaggerLib
                         {
                             foreach (string performer in tag.Performers)
                             {
-                                ArtistData artist = localArtistDatas[_NULL];
+                                PerformerData performerd = localPerformerDatas[_NULL];
                                 if (performer != null)
                                 {
-                                    if (!localArtistDatas.TryGetValue(performer, out artist))
+                                    if (!localPerformerDatas.TryGetValue(performer, out performerd))
                                     {
-                                        artist = new ArtistData(performer);
-                                        localArtistDatas.Add(performer, artist);
+                                        performerd = new PerformerData(performer);
+                                        localPerformerDatas.Add(performer, performerd);
                                     }
                                 }
-                                if (!artists.Contains(artist))
+                                if (!performers.Contains(performerd))
                                 {
-                                    artists.Add(artist);
+                                    performers.Add(performerd);
                                 }
                             }
                         }
@@ -310,7 +310,7 @@ namespace EyeOfTheTaggerLib
                             }
                         }
 
-                        track = new TrackData(tag.Track, tag.Title ?? _NULL, album, artists, genres, tag.Year,
+                        track = new TrackData(tag.Track, tag.Title ?? _NULL, album, performers, genres, tag.Year,
                             (tagFile.Properties?.Duration).GetValueOrDefault(TimeSpan.Zero),
                             tagFile.Name, multipleAlbumArtistsTag);
                     }

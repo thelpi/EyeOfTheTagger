@@ -116,7 +116,7 @@
                     </ListView.View>
                 </ListView>
             </TabItem>
-            <TabItem Header="Artists">
+            <TabItem Header="Performers">
 
             </TabItem>
             <TabItem Header="Genres">
@@ -130,7 +130,7 @@
                             <GridViewColumn Header="Title" DisplayMemberBinding="{Binding Path=Title}" />
                             <GridViewColumn Header="Album" DisplayMemberBinding="{Binding Path=Album.Name}" />
                             <GridViewColumn Header="Album artist" DisplayMemberBinding="{Binding Path=Album.AlbumArtist.Name}" />
-                            <GridViewColumn Header="Artists" DisplayMemberBinding="{Binding Path=Artists, Converter={StaticResource ListToCellConverter}}" />
+                            <GridViewColumn Header="Performers" DisplayMemberBinding="{Binding Path=Performers, Converter={StaticResource ListToCellConverter}}" />
                             <GridViewColumn Header="Genres" DisplayMemberBinding="{Binding Path=Genres, Converter={StaticResource ListToCellConverter}}" />
                             <GridViewColumn Header="Year" DisplayMemberBinding="{Binding Path=Year}" />
                             <GridViewColumn Header="File path" DisplayMemberBinding="{Binding Path=FilePath}" />
