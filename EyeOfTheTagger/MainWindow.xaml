@@ -97,6 +97,14 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn>
+                                <GridViewColumnHeader Content="Genre" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Genre" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Genre}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
                                 <GridViewColumnHeader Content="Tracks count" Click="AlbumsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
@@ -117,10 +125,68 @@
                 </ListView>
             </TabItem>
             <TabItem Header="Performers">
-
+                <ListView AlternationCount="2" Name="PerformersView">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Name" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Name}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks count" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks length" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </TabItem>
             <TabItem Header="Genres">
-
+                <ListView AlternationCount="2" Name="GenresView">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Name" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Name}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks count" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks length" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </TabItem>
             <TabItem Header="Tracks">
                 <ListView Name="TracksView">

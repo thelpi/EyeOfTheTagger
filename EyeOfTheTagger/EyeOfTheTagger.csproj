@@ -62,6 +62,8 @@
     <Compile Include="ViewData\AlbumArtistViewData.cs" />
     <Compile Include="ViewData\AlbumViewData.cs" />
     <Compile Include="ViewData\BaseViewData.cs" />
+    <Compile Include="ViewData\GenreViewData.cs" />
+    <Compile Include="ViewData\PerformerViewData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
