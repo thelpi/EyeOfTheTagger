@@ -10,6 +10,7 @@ namespace EyeOfTheTaggerLib.Event
     {
         /// <summary>
         /// Instance of <see cref="LogData"/>.
+        /// Cannot be <c>Null</c>.
         /// </summary>
         public LogData Log { get; private set; }
         /// <summary>
@@ -25,7 +26,7 @@ namespace EyeOfTheTaggerLib.Event
         /// <param name="trackIndex"><see cref="TrackIndex"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="log"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentOutOfRangeException">If <paramref name="log"/> is not <see cref="Enum.LogLevel.Critical"/>, <paramref name="trackIndex"/> must be greater than <c>0</c>.</exception>
-        public LoadingLogEventArgs(LogData log, int trackIndex)
+        internal LoadingLogEventArgs(LogData log, int trackIndex)
         {
             Log = log ?? throw new ArgumentNullException(nameof(log));
             if (log.Level == Enum.LogLevel.Critical)

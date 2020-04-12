@@ -8,8 +8,6 @@ namespace EyeOfTheTaggerLib
     /// </summary>
     public class LogData
     {
-        private const string _DEFAULT = "<unknown>";
-
         /// <summary>
         /// Message.
         /// Cannot be <c>Null</c>.
@@ -26,6 +24,7 @@ namespace EyeOfTheTaggerLib
         /// <summary>
         /// Additional datas.
         /// Keys cannot be <c>Null</c> or trimmable to empty, and are case-sensitive.
+        /// Values cannot be <c>Null</c>.
         /// </summary>
         public IReadOnlyDictionary<string, string> AdditionalDatas { get; private set; }
 
@@ -35,9 +34,11 @@ namespace EyeOfTheTaggerLib
         /// <param name="message"><see cref="Message"/></param>
         /// <param name="level"><see cref="Level"/></param>
         /// <param name="additionalDatas"><see cref="AdditionalDatas"/></param>
-        public LogData(string message, Enum.LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
+        /// <exception cref="ArgumentNullException"><paramref name="message"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="additionalDatas"/> contains some <c>Null</c> or duplicated informations.</exception>
+        internal LogData(string message, Enum.LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
         {
-            Message = message ?? _DEFAULT;
+            Message = message ?? throw new ArgumentNullException(nameof(message));
             Date = DateTime.Now;
             Level = level;
 
@@ -46,10 +47,12 @@ namespace EyeOfTheTaggerLib
             {
                 foreach (KeyValuePair<string, string> kvp in additionalDatas)
                 {
-                    if (!string.IsNullOrWhiteSpace(kvp.Key) && !datas.ContainsKey(kvp.Key.Trim()))
+                    if (string.IsNullOrWhiteSpace(kvp.Key) || kvp.Value == null
+                        || datas.ContainsKey(kvp.Key.Trim()))
                     {
-                        datas.Add(kvp.Key.Trim(), kvp.Value ?? _DEFAULT);
+                        throw new ArgumentException(nameof(additionalDatas));
                     }
+                    datas.Add(kvp.Key.Trim(), kvp.Value);
                 }
             }
 

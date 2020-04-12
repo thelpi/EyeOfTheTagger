@@ -15,6 +15,7 @@ namespace EyeOfTheTaggerLib
     {
         // TODO : not perfect because a real tag might have this value, even it's unlikely.
         private const string _NULL = "<<<null>>>";
+        private const string _EMPTY_MIMETYPE = "<<<unknown>>>";
 
         /// <summary>
         /// Event sent when something noticeable occurs while loading files tags.
@@ -243,12 +244,16 @@ namespace EyeOfTheTaggerLib
                         AlbumData album = localAlbumDatas[_NULL];
                         List<PerformerData> performers = new List<PerformerData>();
                         List<GenreData> genres = new List<GenreData>();
-                        bool multipleAlbumArtistsTag = false;
+                        List<string> sourceAlbumArtists = new List<string>();
 
                         if (tag.AlbumArtists?.Length > 1)
                         {
-                            multipleAlbumArtistsTag = true;
                             LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Multiple album artists for the file : {file}.", LogLevel.Warning), i), null, null);
+                        }
+
+                        if (tag.AlbumArtists != null)
+                        {
+                            sourceAlbumArtists = tag.AlbumArtists.Where(aa => aa != null).ToList();
                         }
 
                         if (tag.FirstAlbumArtist != null)
@@ -310,18 +315,35 @@ namespace EyeOfTheTaggerLib
                             }
                         }
 
-                        track = new TrackData(tag.Track, tag.Title ?? _NULL, album, performers, genres, tag.Year,
+                        string frontCoverMimeType = string.Empty;
+                        List<byte> frontCoverDatas = new List<byte>();
+                        if (tag.Pictures != null && tag.Pictures.Length > 0)
+                        {
+                            TagLib.IPicture pic = tag.Pictures.FirstOrDefault(p => p != null && p.Type == TagLib.PictureType.FrontCover);
+                            if (pic != null)
+                            {
+                                frontCoverMimeType = GetMimeType(pic.MimeType);
+                                if (pic.Data?.Data != null)
+                                {
+                                    frontCoverDatas.AddRange(pic.Data.Data);
+                                }
+                            }
+                        }
+
+                        track = new TrackData(tag.Track, tag.Title ?? _NULL, album,
+                            performers, genres, tag.Year,
                             (tagFile.Properties?.Duration).GetValueOrDefault(TimeSpan.Zero),
-                            tagFile.Name, multipleAlbumArtistsTag);
+                            tagFile.Name, sourceAlbumArtists, GetMimeType(tagFile.MimeType),
+                            frontCoverMimeType, frontCoverDatas);
                     }
                     else
                     {
-                        track = new TrackData(tagFile.Name, (tagFile.Properties?.Duration).GetValueOrDefault(TimeSpan.Zero), localAlbumDatas[_NULL]);
+                        track = new TrackData(tagFile.Name, (tagFile.Properties?.Duration).GetValueOrDefault(TimeSpan.Zero), localAlbumDatas[_NULL], GetMimeType(tagFile.MimeType));
                     }
                 }
                 else
                 {
-                    track = new TrackData(file, TimeSpan.Zero, localAlbumDatas[_NULL]);
+                    track = new TrackData(file, TimeSpan.Zero, localAlbumDatas[_NULL], tagFile.MimeType);
                 }
                 _tracks.Add(track);
                 LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", LogLevel.Information), i), null, null);
@@ -330,6 +352,11 @@ namespace EyeOfTheTaggerLib
             {
                 LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Error while processing {file}.", LogLevel.Error, new KeyValuePair<string, string>("Error message", exLocal.Message)), i), null, null);
             }
+        }
+
+        private static string GetMimeType(string sourceMimeType)
+        {
+            return sourceMimeType?.Replace("taglib/", "audio/") ?? _EMPTY_MIMETYPE;
         }
     }
 }

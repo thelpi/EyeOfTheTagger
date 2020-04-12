@@ -11,6 +11,8 @@ namespace EyeOfTheTaggerLib
     {
         private readonly List<PerformerData> _performers;
         private readonly List<GenreData> _genres;
+        private readonly List<string> _sourceAlbumArtists;
+        private readonly List<byte> _frontCoverDatas;
 
         /// <summary>
         /// Number (on the album).
@@ -18,18 +20,22 @@ namespace EyeOfTheTaggerLib
         public uint Number { get; private set; }
         /// <summary>
         /// Title.
+        /// Cannot be <c>Null</c>.
         /// </summary>
         public string Title { get; private set; }
         /// <summary>
         /// <see cref="AlbumData"/>.
+        /// Cannot be <c>Null</c>.
         /// </summary>
         public AlbumData Album { get; private set; }
         /// <summary>
         /// List of <see cref="PerformerData"/>.
+        /// Cannot be (or containing) <c>Null</c>.
         /// </summary>
         public IReadOnlyCollection<PerformerData> Performers { get { return _performers; } }
         /// <summary>
         /// List of <see cref="GenreData"/>.
+        /// Cannot be (or containing) <c>Null</c>.
         /// </summary>
         public IReadOnlyCollection<GenreData> Genres { get { return _genres; } }
         /// <summary>
@@ -42,12 +48,28 @@ namespace EyeOfTheTaggerLib
         public TimeSpan Length { get; private set; }
         /// <summary>
         /// File path.
+        /// Is necessarily a valid folder path.
         /// </summary>
         public string FilePath { get; private set; }
         /// <summary>
-        /// Indicates if the original tag file has multiple album artists.
+        /// Mime type.
         /// </summary>
-        public bool MultipleAlbumArtistsTag { get; private set; }
+        public string MimeType { get; private set; }
+        /// <summary>
+        /// Front cover mime type.
+        /// Cannot be <c>Null</c>, but is empty if the track has no front cover.
+        /// </summary>
+        public string FrontCoverMimeType { get; private set; }
+        /// <summary>
+        /// Front cover datas.
+        /// Cannot be <c>Null</c>.
+        /// </summary>
+        public IReadOnlyCollection<byte> FrontCoverDatas { get { return _frontCoverDatas; } }
+        /// <summary>
+        /// List of album artists as tagged in source file.
+        /// Cannot be (or containing) <c>Null</c>.
+        /// </summary>
+        public IReadOnlyCollection<string> SourceAlbumArtists { get { return _sourceAlbumArtists; } }
 
         /// <summary>
         /// Constructor.
@@ -60,25 +82,44 @@ namespace EyeOfTheTaggerLib
         /// <param name="year"><see cref="Year"/></param>
         /// <param name="length"><see cref="Length"/></param>
         /// <param name="filePath"><see cref="FilePath"/></param>
-        /// <param name="multipleAlbumArtistsTag"><see cref="MultipleAlbumArtistsTag"/></param>
+        /// <param name="sourceAlbumArtists"><see cref="SourceAlbumArtists"/></param>
+        /// <param name="frontCoverDatas"><see cref="FrontCoverDatas"/></param>
+        /// <param name="frontCoverMimeType"><see cref="FrontCoverMimeType"/></param>
+        /// <param name="mimeType"><see cref="MimeType"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
-        internal TrackData(uint trackNumber, string title, AlbumData album, List<PerformerData> performers,
-            List<GenreData> genres, uint year, TimeSpan length, string filePath, bool multipleAlbumArtistsTag)
+        /// <exception cref="ArgumentNullException"><paramref name="title"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="album"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="performers"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="genres"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="sourceAlbumArtists"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentException"><paramref name="sourceAlbumArtists"/> contains at least one <c>Null</c> value.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="mimeType"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="frontCoverMimeType"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="frontCoverDatas"/> is <c>Null</c>.</exception>
+        internal TrackData(uint trackNumber, string title, AlbumData album,
+            List<PerformerData> performers, List<GenreData> genres, uint year,
+            TimeSpan length, string filePath, List<string> sourceAlbumArtists,
+            string mimeType, string frontCoverMimeType, List<byte> frontCoverDatas)
+            : this(filePath, length, album, mimeType)
         {
-            if (!System.IO.File.Exists(filePath))
+            if (sourceAlbumArtists == null)
             {
-                throw new ArgumentException(nameof(filePath));
+                throw new ArgumentNullException(nameof(sourceAlbumArtists));
+            }
+            else if (sourceAlbumArtists.Contains(null))
+            {
+                throw new ArgumentException(nameof(sourceAlbumArtists));
             }
 
             Number = trackNumber;
-            Title = title;
-            Album = album;
-            _performers = performers;
-            _genres = genres;
+            Title = title ?? throw new ArgumentNullException(nameof(title));
+            _performers = performers ?? throw new ArgumentNullException(nameof(performers));
+            _genres = genres ?? throw new ArgumentNullException(nameof(genres));
             Year = year;
-            Length = length;
             FilePath = filePath;
-            MultipleAlbumArtistsTag = multipleAlbumArtistsTag;
+            _sourceAlbumArtists = sourceAlbumArtists;
+            FrontCoverMimeType = frontCoverMimeType ?? throw new ArgumentNullException(nameof(frontCoverMimeType));
+            _frontCoverDatas = frontCoverDatas ?? throw new ArgumentNullException(nameof(frontCoverDatas));
         }
 
         /// <summary>
@@ -88,7 +129,9 @@ namespace EyeOfTheTaggerLib
         /// <param name="length"><see cref="Length"/></param>
         /// <param name="album"><see cref="Album"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
-        internal TrackData(string filePath, TimeSpan length, AlbumData album)
+        /// <exception cref="ArgumentNullException"><paramref name="album"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="mimeType"/> is <c>Null</c>.</exception>
+        internal TrackData(string filePath, TimeSpan length, AlbumData album, string mimeType)
         {
             if (!System.IO.File.Exists(filePath))
             {
@@ -97,13 +140,16 @@ namespace EyeOfTheTaggerLib
 
             Number = 0;
             Title = null;
-            Album = album;
+            Album = album ?? throw new ArgumentNullException(nameof(album));
             _performers = new List<PerformerData>();
             _genres = new List<GenreData>();
             Year = 0;
             Length = length;
             FilePath = filePath;
-            MultipleAlbumArtistsTag = false;
+            _sourceAlbumArtists = new List<string>();
+            MimeType = mimeType ?? throw new ArgumentNullException(nameof(mimeType));
+            FrontCoverMimeType = string.Empty;
+            _frontCoverDatas = new List<byte>();
         }
 
         /// <inheritdoc />
