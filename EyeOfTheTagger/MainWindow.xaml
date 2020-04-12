@@ -29,14 +29,14 @@
             <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="ShowLogsButton" Click="ShowLogsButton_Click" />
             <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="DumpLogsButton" Click="DumpLogsButton_Click" Content="Dump logs" />
         </StackPanel>
-        <ListView AlternationCount="2" DockPanel.Dock="Top" Name="LogsView">
+        <ListView DockPanel.Dock="Top" Name="LogsView">
             <ListView.View>
                 <GridView AllowsColumnReorder="True">
                     <GridViewColumn>
                         <GridViewColumnHeader Content="Date" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Label Content="{Binding Date}" />
+                                <Label Content="{Binding Date}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -44,7 +44,7 @@
                         <GridViewColumnHeader Content="Level" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Label Content="{Binding Level}" />
+                                <Label Content="{Binding Level}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
@@ -52,17 +52,12 @@
                         <GridViewColumnHeader Content="Message" />
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Label Content="{Binding Message}" />
+                                <Label Content="{Binding Message}" Background="{Binding Path=Level, Converter={StaticResource LogToBackgroundConverter}}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                 </GridView>
             </ListView.View>
-            <!--<ListBox.ItemTemplate>
-                <DataTemplate>
-                    <Label Content="{Binding Path=Message}" Background="{Binding Path=Level, Converter={StaticResource LogToBackgroundConverter}}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>-->
         </ListView>
         <TabControl DockPanel.Dock="Top" Name="MainView" >
             <TabItem Header="Album artists">
