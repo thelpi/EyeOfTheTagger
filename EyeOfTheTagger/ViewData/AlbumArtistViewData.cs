@@ -54,5 +54,14 @@ namespace EyeOfTheTagger.ViewData
             TracksCount = tracks.Count();
             TracksLength = new TimeSpan(0, 0, (int)tracks.Sum(t => t.Length.TotalSeconds));
         }
+
+        /// <summary>
+        /// Checks if the instance has an empty or unknown name.
+        /// </summary>
+        /// <returns><c>True</c> if empty name; <c>False</c> otherwise.</returns>
+        public bool HasEmptyName()
+        {
+            return Name.Trim() == string.Empty || SourceData.IsDefault;
+        }
     }
 }

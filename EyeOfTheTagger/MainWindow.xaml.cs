@@ -381,57 +381,19 @@ namespace EyeOfTheTagger
 
         private void ApplyArtistAlbumsFilters()
         {
-            IEnumerable<AlbumArtistViewData> albumArtistItems = _libraryViewData.GetAlbumArtistsViewData();
-
-            if (DuplicateAlbumArtistsCheckBox.IsChecked == true)
-            {
-                albumArtistItems = albumArtistItems
-                    .GroupBy(aa => aa.Name.Trim().ToLowerInvariant())
-                    .Where(aa => aa.Count() > 1)
-                    .SelectMany(aa => aa);
-            }
-
-            if (EmptyAlbumArtistsCheckBox.IsChecked == true)
-            {
-                albumArtistItems = albumArtistItems.Where(aa => aa.Name.Trim() == string.Empty || aa.SourceData.IsDefault);
-            }
-
-            AlbumArtistsView.ItemsSource = albumArtistItems;
+            AlbumArtistsView.ItemsSource = _libraryViewData.ApplyArtistAlbumsFilters(
+                DuplicateAlbumArtistsCheckBox.IsChecked == true,
+                EmptyAlbumArtistsCheckBox.IsChecked == true);
         }
 
         private void ApplyAlbumsFilters()
         {
-            IEnumerable<AlbumViewData> albumItems = _libraryViewData.GetAlbumsViewData();
-
-            if (DuplicateAlbumsCheckBox.IsChecked == true)
-            {
-                albumItems = albumItems
-                    .GroupBy(a => new KeyValuePair<string, string>(a.Name.Trim().ToLowerInvariant(), a.AlbumArtist))
-                    .Where(a => a.Count() > 1)
-                    .SelectMany(a => a);
-            }
-
-            if (EmptyAlbumsCheckBox.IsChecked == true)
-            {
-                albumItems = albumItems.Where(a => a.HasEmptyName());
-            }
-
-            if (InvalidFrontCoverCheckBox.IsChecked == true)
-            {
-                albumItems = albumItems.Where(a => a.HasInvalidFrontCover());
-            }
-
-            if (MultipleYearsCheckBox.IsChecked == true)
-            {
-                albumItems = albumItems.Where(a => a.HasMultipleYears());
-            }
-
-            if (InvalidTracksOrderCheckBox.IsChecked == true)
-            {
-                albumItems = albumItems.Where(a => a.HasInvalidTrackSequence());
-            }
-
-            AlbumsView.ItemsSource = albumItems;
+            AlbumsView.ItemsSource = _libraryViewData.ApplyAlbumsFilters(
+                DuplicateAlbumsCheckBox.IsChecked == true,
+                EmptyAlbumsCheckBox.IsChecked == true,
+                InvalidFrontCoverCheckBox.IsChecked == true,
+                MultipleYearsCheckBox.IsChecked == true,
+                InvalidTracksOrderCheckBox.IsChecked == true);
         }
 
         #endregion Private helper methods

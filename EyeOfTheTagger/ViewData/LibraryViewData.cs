@@ -135,5 +135,76 @@ namespace EyeOfTheTagger.ViewData
                         .ThenBy(t => t.Album)
                         .ThenBy(t => t.Number);
         }
+
+        /// <summary>
+        /// Applies filters on the base list of <see cref="AlbumArtistViewData"/>.
+        /// </summary>
+        /// <param name="checkDuplicates">Filters duplicates names.</param>
+        /// <param name="checkEmpty">Filters invalid names.</param>
+        /// <returns>List of <see cref="AlbumArtistViewData"/>.</returns>
+        public IEnumerable<AlbumArtistViewData> ApplyArtistAlbumsFilters(bool checkDuplicates, bool checkEmpty)
+        {
+            IEnumerable<AlbumArtistViewData> albumArtistItems = GetAlbumArtistsViewData();
+
+            if (checkDuplicates)
+            {
+                albumArtistItems = albumArtistItems
+                    .GroupBy(aa => aa.Name.Trim().ToLowerInvariant())
+                    .Where(aa => aa.Count() > 1)
+                    .SelectMany(aa => aa);
+            }
+
+            if (checkEmpty)
+            {
+                albumArtistItems = albumArtistItems.Where(aa => aa.HasEmptyName());
+            }
+
+            return albumArtistItems;
+        }
+
+        /// <summary>
+        /// Applies filters on the base list of <see cref="AlbumViewData"/>.
+        /// </summary>
+        /// <param name="checkDuplicates">Filters duplicates names.</param>
+        /// <param name="checkEmpty">Filters invalid names.</param>
+        /// <param name="checkFrontCovers">Filters invalid front covers.</param>
+        /// <param name="checkYears">Filters invalid years.</param>
+        /// <param name="checkTrackNumberSequences">Filters invalid track number sequences.</param>
+        /// <returns>List of <see cref="AlbumViewData"/>.</returns>
+        public IEnumerable<AlbumViewData> ApplyAlbumsFilters(bool checkDuplicates, bool checkEmpty,
+            bool checkFrontCovers, bool checkYears, bool checkTrackNumberSequences)
+        {
+            IEnumerable<AlbumViewData> albumItems = GetAlbumsViewData();
+
+            if (checkDuplicates)
+            {
+                albumItems = albumItems
+                    .GroupBy(a => new KeyValuePair<string, string>(a.Name.Trim().ToLowerInvariant(), a.AlbumArtist))
+                    .Where(a => a.Count() > 1)
+                    .SelectMany(a => a);
+            }
+
+            if (checkEmpty)
+            {
+                albumItems = albumItems.Where(a => a.HasEmptyName());
+            }
+
+            if (checkFrontCovers)
+            {
+                albumItems = albumItems.Where(a => a.HasInvalidFrontCover());
+            }
+
+            if (checkYears)
+            {
+                albumItems = albumItems.Where(a => a.HasMultipleYears());
+            }
+
+            if (checkTrackNumberSequences)
+            {
+                albumItems = albumItems.Where(a => a.HasInvalidTrackSequence());
+            }
+
+            return albumItems;
+        }
     }
 }
