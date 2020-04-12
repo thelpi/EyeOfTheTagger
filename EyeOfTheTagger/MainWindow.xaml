@@ -28,6 +28,7 @@
             <ProgressBar Margin="10, 0, 0, 0" Width="200" IsIndeterminate="False" Height="20" Name="LoadingBar" Minimum="0" Maximum="100" />
             <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="ShowLogsButton" Click="ShowLogsButton_Click" />
             <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="DumpLogsButton" Click="DumpLogsButton_Click" Content="Dump logs" />
+            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="ClearTracksFiltersButton" Click="ClearTracksFiltersButton_Click" Content="Clear filters" />
         </StackPanel>
         <ListView DockPanel.Dock="Top" Name="LogsView">
             <ListView.View>
@@ -315,7 +316,7 @@
                     </ListView.View>
                 </ListView>
             </TabItem>
-            <TabItem Header="Tracks">
+            <TabItem Header="Tracks" Name="TracksTab">
                 <ListView AlternationCount="2" Name="TracksView">
                     <ListView.View>
                         <GridView AllowsColumnReorder="True">

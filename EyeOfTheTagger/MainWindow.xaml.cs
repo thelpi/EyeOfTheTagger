@@ -25,6 +25,11 @@ namespace EyeOfTheTagger
         private Dictionary<string, bool> _performersViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _yearsViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _tracksViewSort = new Dictionary<string, bool>();
+        private AlbumArtistViewData _albumArtistFilter = null;
+        private AlbumViewData _albumFilter = null;
+        private GenreViewData _genreFilter = null;
+        private PerformerViewData _performerFilter = null;
+        private YearViewData _yearFilter = null;
 
         /// <summary>
         /// Constructor.
@@ -75,36 +80,7 @@ namespace EyeOfTheTagger
             LoadingButton_Click(null, null);
         }
 
-        private void DisplayWhileNotLoading()
-        {
-            LoadingBar.Visibility = Visibility.Collapsed;
-            LogsView.Visibility = Visibility.Collapsed;
-            MainView.Visibility = Visibility.Visible;
-            TracksView.ItemsSource = BaseViewData.GetTracksViewData(_library);
-            AlbumArtistsView.ItemsSource = BaseViewData.GetAlbumArtistsViewData(_library);
-            AlbumsView.ItemsSource = BaseViewData.GetAlbumsViewData(_library);
-            GenresView.ItemsSource = BaseViewData.GetGenresViewData(_library);
-            PerformersView.ItemsSource = BaseViewData.GetPerformersViewData(_library);
-            YearsView.ItemsSource = BaseViewData.GetYearsViewData(_library);
-            LoadingButton.IsEnabled = true;
-            LoadingButton.Content = "Reload";
-            ShowLogsButton.Content = "Show logs";
-            DumpLogsButton.IsEnabled = true;
-            ShowLogsButton.IsEnabled = true;
-        }
-
-        private void DisplayWhileLoading()
-        {
-            LoadingBar.Visibility = Visibility.Visible;
-            LoadingBar.Value = 0;
-            LogsView.Visibility = Visibility.Visible;
-            MainView.Visibility = Visibility.Collapsed;
-            LoadingButton.IsEnabled = false;
-            LoadingButton.Content = "Loading...";
-            ShowLogsButton.Content = "Show library";
-            DumpLogsButton.IsEnabled = false;
-            ShowLogsButton.IsEnabled = false;
-        }
+        #region Window events
 
         private void LoadingButton_Click(object sender, RoutedEventArgs e)
         {
@@ -148,7 +124,7 @@ namespace EyeOfTheTagger
                 MessageBox.Show("The current user can't write dump file into the specified folder. Please check your configuration.", $"{Tools.GetAppName()} - error");
                 return;
             }
-            
+
             string filePath = Path.Combine(Properties.Settings.Default.DumpLogPath,
                 $"{Tools.GetAppName()}_{DateTime.Now.ToString("yyyyMMddHHmmss")}_logs.csv");
 
@@ -173,7 +149,7 @@ namespace EyeOfTheTagger
                     }
                 }
             };
-            dumpWorker.RunWorkerCompleted += delegate(object subSender, RunWorkerCompletedEventArgs subE)
+            dumpWorker.RunWorkerCompleted += delegate (object subSender, RunWorkerCompletedEventArgs subE)
             {
                 if (subE.Error != null)
                 {
@@ -228,7 +204,66 @@ namespace EyeOfTheTagger
         {
             TracksView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
                 _tracksViewSort,
-                BaseViewData.GetTracksViewData(_library));
+                GetTracksView());
+        }
+
+        private void FilterTracks_Click(object sender, RoutedEventArgs e)
+        {
+            Button btn = sender as Button;
+            _albumArtistFilter = btn?.DataContext as AlbumArtistViewData;
+            _albumFilter = btn?.DataContext as AlbumViewData;
+            _genreFilter = btn?.DataContext as GenreViewData;
+            _performerFilter = btn?.DataContext as PerformerViewData;
+            _yearFilter = btn?.DataContext as YearViewData;
+            TracksView.ItemsSource = GetTracksView();
+            MainView.SelectedItem = TracksTab;
+        }
+
+        private void ClearTracksFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            _albumArtistFilter = null;
+            _albumFilter = null;
+            _genreFilter = null;
+            _performerFilter = null;
+            _yearFilter = null;
+            TracksView.ItemsSource = GetTracksView();
+        }
+
+        #endregion Window events
+
+        #region Private helper methods
+
+        private void DisplayWhileNotLoading()
+        {
+            LoadingBar.Visibility = Visibility.Collapsed;
+            LogsView.Visibility = Visibility.Collapsed;
+            MainView.Visibility = Visibility.Visible;
+            TracksView.ItemsSource = GetTracksView();
+            AlbumArtistsView.ItemsSource = BaseViewData.GetAlbumArtistsViewData(_library);
+            AlbumsView.ItemsSource = BaseViewData.GetAlbumsViewData(_library);
+            GenresView.ItemsSource = BaseViewData.GetGenresViewData(_library);
+            PerformersView.ItemsSource = BaseViewData.GetPerformersViewData(_library);
+            YearsView.ItemsSource = BaseViewData.GetYearsViewData(_library);
+            LoadingButton.IsEnabled = true;
+            LoadingButton.Content = "Reload";
+            ShowLogsButton.Content = "Show logs";
+            DumpLogsButton.IsEnabled = true;
+            ShowLogsButton.IsEnabled = true;
+            ClearTracksFiltersButton.IsEnabled = true;
+        }
+
+        private void DisplayWhileLoading()
+        {
+            LoadingBar.Visibility = Visibility.Visible;
+            LoadingBar.Value = 0;
+            LogsView.Visibility = Visibility.Visible;
+            MainView.Visibility = Visibility.Collapsed;
+            LoadingButton.IsEnabled = false;
+            LoadingButton.Content = "Loading...";
+            ShowLogsButton.Content = "Show library";
+            DumpLogsButton.IsEnabled = false;
+            ShowLogsButton.IsEnabled = false;
+            ClearTracksFiltersButton.IsEnabled = false;
         }
 
         private IEnumerable<T> ManageSort<T>(GridViewColumnHeader header,
@@ -258,9 +293,15 @@ namespace EyeOfTheTagger
             return dataRetrieved;
         }
 
-        private void FilterTracks_Click(object sender, RoutedEventArgs e)
+        private IEnumerable<TrackViewData> GetTracksView()
         {
-
+            return BaseViewData.GetTracksViewData(_library,
+                _albumArtistFilter?.SourceData,
+                _albumFilter?.SourceData, _performerFilter?.SourceData,
+                _genreFilter?.SourceData,
+                _yearFilter?.Year);
         }
+
+        #endregion Private helper methods
     }
 }

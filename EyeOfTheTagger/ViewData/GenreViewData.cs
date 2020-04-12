@@ -11,12 +11,14 @@ namespace EyeOfTheTagger.ViewData
     /// <seealso cref="BaseViewData"/>
     internal class GenreViewData : BaseViewData
     {
-        private readonly GenreData _sourceData;
-
+        /// <summary>
+        /// <see cref="GenreData"/>
+        /// </summary>
+        public GenreData SourceData { get; private set; }
         /// <summary>
         /// <see cref="GenreData.Name"/>
         /// </summary>
-        public string Name { get { return _sourceData.Name; } }
+        public string Name { get { return SourceData.Name; } }
         /// <summary>
         /// Tracks count.
         /// </summary>
@@ -29,7 +31,7 @@ namespace EyeOfTheTagger.ViewData
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="sourceData"><see cref="GenreData"/></param>
+        /// <param name="sourceData"><see cref="SourceData"/></param>
         /// <param name="library"><see cref="LibraryData"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
@@ -40,7 +42,7 @@ namespace EyeOfTheTagger.ViewData
                 throw new ArgumentNullException(nameof(library));
             }
 
-            _sourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
+            SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
 
             IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Genres.Contains(sourceData));
             

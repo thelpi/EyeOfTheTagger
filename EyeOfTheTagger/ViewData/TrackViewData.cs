@@ -10,24 +10,26 @@ namespace EyeOfTheTagger.ViewData
     /// <seealso cref="BaseViewData"/>
     internal class TrackViewData : BaseViewData
     {
-        private readonly TrackData _sourceData;
-
+        /// <summary>
+        /// <see cref="TrackData"/>
+        /// </summary>
+        public TrackData SourceData { get; private set; }
         /// <summary>
         /// <see cref="TrackData.Number"/>
         /// </summary>
-        public uint Number { get { return _sourceData.Number; } }
+        public uint Number { get { return SourceData.Number; } }
         /// <summary>
         /// <see cref="TrackData.Title"/>
         /// </summary>
-        public string Title { get { return _sourceData.Title; } }
+        public string Title { get { return SourceData.Title; } }
         /// <summary>
         /// <see cref="TrackData.Album"/> name.
         /// </summary>
-        public string Album { get { return _sourceData.Album.Name; } }
+        public string Album { get { return SourceData.Album.Name; } }
         /// <summary>
         /// <see cref="TrackData.Album"/> artist name.
         /// </summary>
-        public string AlbumArtist { get { return _sourceData.Album.AlbumArtist.Name; } }
+        public string AlbumArtist { get { return SourceData.Album.AlbumArtist.Name; } }
         /// <summary>
         /// <see cref="TrackData.Performers"/> names (alphanumeric sort).
         /// </summary>
@@ -39,7 +41,7 @@ namespace EyeOfTheTagger.ViewData
         /// <summary>
         /// <see cref="TrackData.Year"/>
         /// </summary>
-        public uint Year { get { return _sourceData.Year; } }
+        public uint Year { get { return SourceData.Year; } }
         /// <summary>
         /// <see cref="TrackData.Length"/>
         /// </summary>
@@ -47,20 +49,20 @@ namespace EyeOfTheTagger.ViewData
         /// <summary>
         /// <see cref="TrackData.FilePath"/>
         /// </summary>
-        public string FilePath { get { return _sourceData.FilePath; } }
+        public string FilePath { get { return SourceData.FilePath; } }
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="sourceData"><see cref="TrackData"/></param>
+        /// <param name="sourceData"><see cref="SourceData"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
         public TrackViewData(TrackData sourceData)
         {
-            _sourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
+            SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
 
-            Performers = string.Join(", ", _sourceData.Performers.Select(p => p.Name).OrderBy(p => p));
-            Genres = string.Join(", ", _sourceData.Genres.Select(p => p.Name).OrderBy(p => p));
-            Length = new TimeSpan(0, 0, (int)_sourceData.Length.TotalSeconds);
+            Performers = string.Join(", ", SourceData.Performers.Select(p => p.Name).OrderBy(p => p));
+            Genres = string.Join(", ", SourceData.Genres.Select(p => p.Name).OrderBy(p => p));
+            Length = new TimeSpan(0, 0, (int)SourceData.Length.TotalSeconds);
         }
     }
 }
