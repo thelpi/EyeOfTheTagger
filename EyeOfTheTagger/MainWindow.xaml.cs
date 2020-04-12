@@ -62,7 +62,7 @@ namespace EyeOfTheTagger
                 LoadingBar.Value = e.ProgressPercentage;
                 if (e.UserState is LogData)
                 {
-                    Console.Items.Add(e.UserState as LogData);
+                    LogsView.Items.Add(e.UserState as LogData);
                 }
             };
             _bgw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
@@ -78,7 +78,7 @@ namespace EyeOfTheTagger
         private void DisplayWhileNotLoading()
         {
             LoadingBar.Visibility = Visibility.Collapsed;
-            Console.Visibility = Visibility.Collapsed;
+            LogsView.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
             TracksView.ItemsSource = BaseViewData.GetTracksViewData(_library);
             AlbumArtistsView.ItemsSource = BaseViewData.GetAlbumArtistsViewData(_library);
@@ -88,18 +88,22 @@ namespace EyeOfTheTagger
             YearsView.ItemsSource = BaseViewData.GetYearsViewData(_library);
             LoadingButton.IsEnabled = true;
             LoadingButton.Content = "Reload";
-            DumpButton.IsEnabled = true;
+            ShowLogsButton.Content = "Show logs";
+            DumpLogsButton.IsEnabled = true;
+            ShowLogsButton.IsEnabled = true;
         }
 
         private void DisplayWhileLoading()
         {
             LoadingBar.Visibility = Visibility.Visible;
             LoadingBar.Value = 0;
-            Console.Visibility = Visibility.Visible;
+            LogsView.Visibility = Visibility.Visible;
             MainView.Visibility = Visibility.Collapsed;
             LoadingButton.IsEnabled = false;
             LoadingButton.Content = "Loading...";
-            DumpButton.IsEnabled = false;
+            ShowLogsButton.Content = "Show library";
+            DumpLogsButton.IsEnabled = false;
+            ShowLogsButton.IsEnabled = false;
         }
 
         private void LoadingButton_Click(object sender, RoutedEventArgs e)
@@ -111,9 +115,25 @@ namespace EyeOfTheTagger
             }
         }
 
-        private void DumpButton_Click(object sender, RoutedEventArgs e)
+        private void ShowLogsButton_Click(object sender, RoutedEventArgs e)
         {
-            if (Console.Items.Count == 0)
+            if (LogsView.Visibility == Visibility.Visible)
+            {
+                LogsView.Visibility = Visibility.Collapsed;
+                MainView.Visibility = Visibility.Visible;
+                ShowLogsButton.Content = "Show logs";
+            }
+            else
+            {
+                LogsView.Visibility = Visibility.Visible;
+                MainView.Visibility = Visibility.Collapsed;
+                ShowLogsButton.Content = "Show library";
+            }
+        }
+
+        private void DumpLogsButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (LogsView.Items.Count == 0)
             {
                 MessageBox.Show("No logs to dump.", $"{Tools.GetAppName()} - information");
                 return;
@@ -166,7 +186,7 @@ namespace EyeOfTheTagger
                         $"{Tools.GetAppName()} - information");
                 }
             };
-            dumpWorker.RunWorkerAsync(Console.Items.Cast<LogData>());
+            dumpWorker.RunWorkerAsync(LogsView.Items.Cast<LogData>());
         }
 
         private void AlbumArtistsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
@@ -236,6 +256,11 @@ namespace EyeOfTheTagger
             }
 
             return dataRetrieved;
+        }
+
+        private void FilterTracks_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

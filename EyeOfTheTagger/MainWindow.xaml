@@ -8,6 +8,7 @@
         WindowStartupLocation="CenterScreen"
         Height="450" Width="800">
     <Window.Resources>
+        <BitmapImage x:Key="BookcaseImg" UriSource="Resources/bookcase.png" />
         <cvt:LogToBackgroundConverter x:Key="LogToBackgroundConverter" />
         <cvt:LogToForegroundConverter x:Key="LogToForegroundConverter" />
         <Style TargetType="ListViewItem">
@@ -25,15 +26,44 @@
         <StackPanel Margin="5" DockPanel.Dock="Bottom" Orientation="Horizontal">
             <Button Height="22" Width="100" Name="LoadingButton" Click="LoadingButton_Click" />
             <ProgressBar Margin="10, 0, 0, 0" Width="200" IsIndeterminate="False" Height="20" Name="LoadingBar" Minimum="0" Maximum="100" />
-            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="DumpButton" Click="DumpButton_Click" Content="Dump logs" />
+            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="ShowLogsButton" Click="ShowLogsButton_Click" />
+            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="DumpLogsButton" Click="DumpLogsButton_Click" Content="Dump logs" />
         </StackPanel>
-        <ListBox DockPanel.Dock="Top" Name="Console">
-            <ListBox.ItemTemplate>
+        <ListView AlternationCount="2" DockPanel.Dock="Top" Name="LogsView">
+            <ListView.View>
+                <GridView AllowsColumnReorder="True">
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Date" />
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Date}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Level" />
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Level}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn>
+                        <GridViewColumnHeader Content="Message" />
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <Label Content="{Binding Message}" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+            <!--<ListBox.ItemTemplate>
                 <DataTemplate>
                     <Label Content="{Binding Path=Message}" Background="{Binding Path=Level, Converter={StaticResource LogToBackgroundConverter}}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
                 </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+            </ListBox.ItemTemplate>-->
+        </ListView>
         <TabControl DockPanel.Dock="Top" Name="MainView" >
             <TabItem Header="Album artists">
                 <ListView AlternationCount="2" Name="AlbumArtistsView">
@@ -68,6 +98,17 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Label Content="{Binding Path=TracksLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="FilterTracks_Click">
+                                            <Button.Content>
+                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                            </Button.Content>
+                                        </Button>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -127,6 +168,17 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="FilterTracks_Click">
+                                            <Button.Content>
+                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                            </Button.Content>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
@@ -159,6 +211,17 @@
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="FilterTracks_Click">
+                                            <Button.Content>
+                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                            </Button.Content>
+                                        </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
                         </GridView>
                     </ListView.View>
                 </ListView>
@@ -188,6 +251,17 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Label Content="{Binding Path=TracksLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="FilterTracks_Click">
+                                            <Button.Content>
+                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                            </Button.Content>
+                                        </Button>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -228,6 +302,17 @@
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
                                         <Label Content="{Binding Path=AlbumsCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Button Click="FilterTracks_Click">
+                                            <Button.Content>
+                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                            </Button.Content>
+                                        </Button>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
