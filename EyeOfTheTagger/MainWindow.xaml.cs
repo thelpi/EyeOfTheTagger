@@ -18,7 +18,6 @@ namespace EyeOfTheTagger
     /// <seealso cref="Window"/>
     public partial class MainWindow : Window
     {
-        private LibraryData _library;
         private LibraryViewData _libraryViewData;
         private BackgroundWorker _bgw;
         private Dictionary<string, bool> _albumArtistsViewSort = new Dictionary<string, bool>();
@@ -42,20 +41,15 @@ namespace EyeOfTheTagger
 
             Title = Tools.GetAppName();
 
-            // First thing to do!
-            _library = new LibraryData(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
-                    Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions), false);
-
-            _libraryViewData = new LibraryViewData(_library);
-
-            _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
+            // keep this line at the first to do.
+            _libraryViewData = new LibraryViewData(delegate (object sender, LoadingLogEventArgs e)
             {
-                if (e?.Log != null && _library.TotalFilesCount > -1)
+                if (e?.Log != null && _libraryViewData.TotalFilesCount > -1)
                 {
-                    int progressPercentage = e.TrackIndex == -1 ? 100 : Convert.ToInt32(e.TrackIndex / (decimal)_library.TotalFilesCount * 100);
+                    int progressPercentage = e.TrackIndex == -1 ? 100 : Convert.ToInt32(e.TrackIndex / (decimal)_libraryViewData.TotalFilesCount * 100);
                     _bgw.ReportProgress(progressPercentage, e.Log);
                 }
-            };
+            });
 
             _bgw = new BackgroundWorker
             {
@@ -64,8 +58,7 @@ namespace EyeOfTheTagger
             };
             _bgw.DoWork += delegate (object sender, DoWorkEventArgs e)
             {
-                _library.Reload(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
-                    Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions));
+                _libraryViewData.Reload();
             };
             _bgw.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
             {

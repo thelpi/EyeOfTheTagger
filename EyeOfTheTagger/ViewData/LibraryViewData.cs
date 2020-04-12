@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EyeOfTheTaggerLib;
+using EyeOfTheTaggerLib.Event;
 
 namespace EyeOfTheTagger.ViewData
 {
@@ -10,16 +11,34 @@ namespace EyeOfTheTagger.ViewData
     /// </summary>
     internal class LibraryViewData
     {
-        public LibraryData _library { get; private set; }
+        /// <summary>
+        /// <see cref="LibraryData.TotalFilesCount"/>
+        /// </summary>
+        public int TotalFilesCount { get { return _library.TotalFilesCount; } }
+
+        private LibraryData _library;
 
         /// <summary>
         /// Constructor.
+        /// Instanciates the inner <see cref="LibraryData"/> itself.
         /// </summary>
-        /// <param name="library"><see cref="LibraryData"/></param>
-        /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
-        public LibraryViewData(LibraryData library)
+        /// <param name="loadingLogHandler">Callback method at the <see cref="LibraryData.LoadingLogHandler"/> event.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="loadingLogHandler"/> is <c>Null</c>.</exception>
+        public LibraryViewData(EventHandler<LoadingLogEventArgs> loadingLogHandler)
         {
-            _library = library ?? throw new ArgumentNullException(nameof(library));
+            _library = new LibraryData(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
+                Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions), false);
+
+            _library.LoadingLogHandler += loadingLogHandler ?? throw new ArgumentNullException(nameof(loadingLogHandler));
+        }
+
+        /// <summary>
+        /// Proceeds to call <see cref="LibraryData.Reload(IEnumerable{string}, IEnumerable{string})"/>.
+        /// </summary>
+        public void Reload()
+        {
+            _library.Reload(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
+                Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions));
         }
 
         /// <summary>
