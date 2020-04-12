@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace EyeOfTheTaggerLib
 {
@@ -9,6 +10,11 @@ namespace EyeOfTheTaggerLib
     /// </summary>
     public class TrackData
     {
+        [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
+#pragma warning disable IDE1006 // Extern method cannot be renamed.
+        private static extern int memcmp(byte[] b1, byte[] b2, long count);
+#pragma warning restore IDE1006
+
         private readonly List<PerformerData> _performers;
         private readonly List<GenreData> _genres;
         private readonly List<string> _sourceAlbumArtists;
@@ -156,6 +162,27 @@ namespace EyeOfTheTaggerLib
         public override string ToString()
         {
             return $"{Number} - {Title} - {Album.Name} - {Album.AlbumArtist.Name} - {Year} - {_genres.First().Name}";
+        }
+
+        /// <summary>
+        /// Checks if <see cref="FrontCoverDatas"/> is equal (every bytes), to <paramref name="other"/>.
+        /// </summary>
+        /// <param name="other">Second cover datas for comparison.</param>
+        /// <returns><c>True</c> if datas are the same; <c>False</c> otherwise.</returns>
+        public bool CompareFrontCoverDatas(IEnumerable<byte> other)
+        {
+            if (_frontCoverDatas == null)
+            {
+                return other == null;
+            }
+
+            if (other == null)
+            {
+                return false;
+            }
+
+            return _frontCoverDatas.Count() == other.Count()
+                && memcmp(_frontCoverDatas.ToArray(), other.ToArray(), other.Count()) == 0;
         }
     }
 }

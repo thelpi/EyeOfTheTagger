@@ -13,7 +13,7 @@ namespace EyeOfTheTaggerLib
     /// </summary>
     public class LibraryData
     {
-        private const string _NULL = "<<<null>>>";
+        private static readonly string _NULL = string.Empty;
         private const string _EMPTY_MIMETYPE = "<<<unknown>>>";
 
         /// <summary>
@@ -189,21 +189,35 @@ namespace EyeOfTheTaggerLib
 
                         TotalFilesCount = files.Count;
 
+                        var defaultAlbumArtist = new AlbumArtistData(_NULL, true);
+
                         var localAlbumArtistDatas = new Dictionary<KeyValuePair<string, bool>, AlbumArtistData>
                         {
-                            { new KeyValuePair<string, bool>(_NULL, true), new AlbumArtistData(_NULL, true) }
+                            {
+                                new KeyValuePair<string, bool>(_NULL, true),
+                                defaultAlbumArtist
+                            }
                         };
-                        var localAlbumDatas = new Dictionary<KeyValuePair<string, bool>, AlbumData>
+                        var localAlbumDatas = new Dictionary<KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>, AlbumData>
                         {
-                            { new KeyValuePair<string, bool>(_NULL, true), new AlbumData(localAlbumArtistDatas[new KeyValuePair<string, bool>(_NULL, true)], _NULL, true) }
+                            {
+                                new KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>(new KeyValuePair<string, AlbumArtistData>(_NULL, defaultAlbumArtist), true),
+                                new AlbumData(defaultAlbumArtist, _NULL, true)
+                            }
                         };
                         var localGenreDatas = new Dictionary<KeyValuePair<string, bool>, GenreData>
                         {
-                            { new KeyValuePair<string, bool>(_NULL, true), new GenreData(_NULL, true) }
+                            {
+                                new KeyValuePair<string, bool>(_NULL, true),
+                                new GenreData(_NULL, true)
+                            }
                         };
                         var localPerformerDatas = new Dictionary<KeyValuePair<string, bool>, PerformerData>
                         {
-                            { new KeyValuePair<string, bool>(_NULL, true), new PerformerData(_NULL, true) }
+                            {
+                                new KeyValuePair<string, bool>(_NULL, true),
+                                new PerformerData(_NULL, true)
+                            }
                         };
                         
                         int i = 1;
@@ -224,7 +238,7 @@ namespace EyeOfTheTaggerLib
 
         private void TreatSingleFile(int i, string file,
             Dictionary<KeyValuePair<string, bool>, AlbumArtistData> localAlbumArtistDatas,
-            Dictionary<KeyValuePair<string, bool>, AlbumData> localAlbumDatas,
+            Dictionary<KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>, AlbumData> localAlbumDatas,
             Dictionary<KeyValuePair<string, bool>, GenreData> localGenreDatas,
             Dictionary<KeyValuePair<string, bool>, PerformerData> localPerformerDatas)
         {
@@ -240,10 +254,10 @@ namespace EyeOfTheTaggerLib
                         TagLib.Tag tag = tagFile.Tag;
 
                         AlbumArtistData albumArtist = localAlbumArtistDatas[new KeyValuePair<string, bool>(_NULL, true)];
-                        AlbumData album = localAlbumDatas[new KeyValuePair<string, bool>(_NULL, true)];
-                        List<PerformerData> performers = new List<PerformerData>();
-                        List<GenreData> genres = new List<GenreData>();
-                        List<string> sourceAlbumArtists = new List<string>();
+                        AlbumData album = localAlbumDatas[new KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>(new KeyValuePair<string, AlbumArtistData>(_NULL, albumArtist), true)];
+                        var performers = new List<PerformerData>();
+                        var genres = new List<GenreData>();
+                        var sourceAlbumArtists = new List<string>();
 
                         if (tag.AlbumArtists?.Length > 1)
                         {
@@ -266,11 +280,11 @@ namespace EyeOfTheTaggerLib
 
                         if (tag.Album != null)
                         {
-                            string key = string.Concat(tag.Album, " - ", albumArtist.Name);
-                            if (!localAlbumDatas.TryGetValue(new KeyValuePair<string, bool>(key, false), out album))
+                            var key = new KeyValuePair<string, AlbumArtistData>(tag.Album, albumArtist);
+                            if (!localAlbumDatas.TryGetValue(new KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>(key, false), out album))
                             {
                                 album = new AlbumData(albumArtist, tag.Album, false);
-                                localAlbumDatas.Add(new KeyValuePair<string, bool>(key, false), album);
+                                localAlbumDatas.Add(new KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>(key, false), album);
                             }
                         }
 
@@ -337,12 +351,12 @@ namespace EyeOfTheTaggerLib
                     }
                     else
                     {
-                        track = new TrackData(tagFile.Name, (tagFile.Properties?.Duration).GetValueOrDefault(TimeSpan.Zero), localAlbumDatas[new KeyValuePair<string, bool>(_NULL, false)], GetMimeType(tagFile.MimeType));
+                        track = new TrackData(tagFile.Name, (tagFile.Properties?.Duration).GetValueOrDefault(TimeSpan.Zero), localAlbumDatas[new KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>(new KeyValuePair<string, AlbumArtistData>(_NULL, localAlbumArtistDatas[new KeyValuePair<string, bool>(_NULL, true)]), false)], GetMimeType(tagFile.MimeType));
                     }
                 }
                 else
                 {
-                    track = new TrackData(file, TimeSpan.Zero, localAlbumDatas[new KeyValuePair<string, bool>(_NULL, false)], tagFile.MimeType);
+                    track = new TrackData(file, TimeSpan.Zero, localAlbumDatas[new KeyValuePair<KeyValuePair<string, AlbumArtistData>, bool>(new KeyValuePair<string, AlbumArtistData>(_NULL, localAlbumArtistDatas[new KeyValuePair<string, bool>(_NULL, true)]), false)], tagFile.MimeType);
                 }
                 _tracks.Add(track);
                 LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"The file {file} has been processed.", LogLevel.Information), i), null, null);

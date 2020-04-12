@@ -19,6 +19,7 @@ namespace EyeOfTheTagger
     public partial class MainWindow : Window
     {
         private LibraryData _library;
+        private LibraryViewData _libraryViewData;
         private BackgroundWorker _bgw;
         private Dictionary<string, bool> _albumArtistsViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _albumsViewSort = new Dictionary<string, bool>();
@@ -44,6 +45,9 @@ namespace EyeOfTheTagger
             // First thing to do!
             _library = new LibraryData(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
                     Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions), false);
+
+            _libraryViewData = new LibraryViewData(_library);
+
             _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
             {
                 if (e?.Log != null && _library.TotalFilesCount > -1)
@@ -170,35 +174,35 @@ namespace EyeOfTheTagger
         {
             AlbumArtistsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
                 _albumArtistsViewSort,
-                BaseViewData.GetAlbumArtistsViewData(_library));
+                _libraryViewData.GetAlbumArtistsViewData());
         }
 
         private void AlbumsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             AlbumsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
                 _albumsViewSort,
-                BaseViewData.GetAlbumsViewData(_library));
+                _libraryViewData.GetAlbumsViewData());
         }
 
         private void GenresView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             GenresView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
                 _genresViewSort,
-                BaseViewData.GetGenresViewData(_library));
+                _libraryViewData.GetGenresViewData());
         }
 
         private void PerformersView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             PerformersView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
                 _performersViewSort,
-                BaseViewData.GetPerformersViewData(_library));
+                _libraryViewData.GetPerformersViewData());
         }
 
         private void YearsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
             YearsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
                 _yearsViewSort,
-                BaseViewData.GetYearsViewData(_library));
+                _libraryViewData.GetYearsViewData());
         }
 
         private void TracksView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
@@ -292,14 +296,24 @@ namespace EyeOfTheTagger
             ApplyArtistAlbumsFilters();
         }
 
-        private void EmptyAlbumArtistsCheckBox_Click(object sender, RoutedEventArgs e)
+        private void AlbumArtistsCheckBox_Click(object sender, RoutedEventArgs e)
         {
             ApplyArtistAlbumsFilters();
         }
 
-        private void DuplicateAlbumArtistsCheckBox_Click(object sender, RoutedEventArgs e)
+        private void AlbumsCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            ApplyArtistAlbumsFilters();
+            ApplyAlbumsFilters();
+        }
+
+        private void ClearAlbumFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            DuplicateAlbumsCheckBox.IsChecked = false;
+            EmptyAlbumsCheckBox.IsChecked = false;
+            InvalidTracksOrderCheckBox.IsChecked = false;
+            MultipleYearsCheckBox.IsChecked = false;
+            InvalidFrontCoverCheckBox.IsChecked = false;
+            ApplyAlbumsFilters();
         }
 
         #endregion Window events
@@ -312,11 +326,11 @@ namespace EyeOfTheTagger
             LogsView.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
             TracksView.ItemsSource = GetTracksView();
-            AlbumArtistsView.ItemsSource = BaseViewData.GetAlbumArtistsViewData(_library);
-            AlbumsView.ItemsSource = BaseViewData.GetAlbumsViewData(_library);
-            GenresView.ItemsSource = BaseViewData.GetGenresViewData(_library);
-            PerformersView.ItemsSource = BaseViewData.GetPerformersViewData(_library);
-            YearsView.ItemsSource = BaseViewData.GetYearsViewData(_library);
+            AlbumArtistsView.ItemsSource = _libraryViewData.GetAlbumArtistsViewData();
+            AlbumsView.ItemsSource = _libraryViewData.GetAlbumsViewData();
+            GenresView.ItemsSource = _libraryViewData.GetGenresViewData();
+            PerformersView.ItemsSource = _libraryViewData.GetPerformersViewData();
+            YearsView.ItemsSource = _libraryViewData.GetYearsViewData();
             LoadingButton.IsEnabled = true;
             LoadingButton.Content = "Reload";
             ShowLogsButton.Content = "Show logs";
@@ -368,13 +382,13 @@ namespace EyeOfTheTagger
 
         private IEnumerable<TrackViewData> GetTracksView()
         {
-            return BaseViewData.GetTracksViewData(_library, _albumArtistFilter, _albumFilter,
+            return _libraryViewData.GetTracksViewData(_albumArtistFilter, _albumFilter,
                 _performerFilter, _genreFilter, _yearFilter);
         }
 
         private void ApplyArtistAlbumsFilters()
         {
-            IEnumerable<AlbumArtistViewData> albumArtistItems = BaseViewData.GetAlbumArtistsViewData(_library);
+            IEnumerable<AlbumArtistViewData> albumArtistItems = _libraryViewData.GetAlbumArtistsViewData();
 
             if (DuplicateAlbumArtistsCheckBox.IsChecked == true)
             {
@@ -390,6 +404,41 @@ namespace EyeOfTheTagger
             }
 
             AlbumArtistsView.ItemsSource = albumArtistItems;
+        }
+
+        private void ApplyAlbumsFilters()
+        {
+            IEnumerable<AlbumViewData> albumItems = _libraryViewData.GetAlbumsViewData();
+
+            if (DuplicateAlbumsCheckBox.IsChecked == true)
+            {
+                albumItems = albumItems
+                    .GroupBy(a => new KeyValuePair<string, string>(a.Name.Trim().ToLowerInvariant(), a.AlbumArtist))
+                    .Where(a => a.Count() > 1)
+                    .SelectMany(a => a);
+            }
+
+            if (EmptyAlbumsCheckBox.IsChecked == true)
+            {
+                albumItems = albumItems.Where(a => a.HasEmptyName());
+            }
+
+            if (InvalidFrontCoverCheckBox.IsChecked == true)
+            {
+                albumItems = albumItems.Where(a => a.HasInvalidFrontCover());
+            }
+
+            if (MultipleYearsCheckBox.IsChecked == true)
+            {
+                albumItems = albumItems.Where(a => a.HasMultipleYears());
+            }
+
+            if (InvalidTracksOrderCheckBox.IsChecked == true)
+            {
+                albumItems = albumItems.Where(a => a.HasInvalidTrackSequence());
+            }
+
+            AlbumsView.ItemsSource = albumItems;
         }
 
         #endregion Private helper methods

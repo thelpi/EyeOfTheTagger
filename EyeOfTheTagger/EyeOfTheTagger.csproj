@@ -63,6 +63,7 @@
     <Compile Include="ViewData\AlbumViewData.cs" />
     <Compile Include="ViewData\BaseViewData.cs" />
     <Compile Include="ViewData\GenreViewData.cs" />
+    <Compile Include="ViewData\LibraryViewData.cs" />
     <Compile Include="ViewData\PerformerViewData.cs" />
     <Compile Include="ViewData\TrackViewData.cs" />
     <Compile Include="ViewData\YearViewData.cs" />
