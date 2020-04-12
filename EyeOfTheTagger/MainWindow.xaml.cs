@@ -285,6 +285,23 @@ namespace EyeOfTheTagger
             MainView.SelectedItem = TracksTab;
         }
 
+        private void ClearAlbumArtistFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            DuplicateAlbumArtistsCheckBox.IsChecked = false;
+            EmptyAlbumArtistsCheckBox.IsChecked = false;
+            ApplyArtistAlbumsFilters();
+        }
+
+        private void EmptyAlbumArtistsCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyArtistAlbumsFilters();
+        }
+
+        private void DuplicateAlbumArtistsCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            ApplyArtistAlbumsFilters();
+        }
+
         #endregion Window events
 
         #region Private helper methods
@@ -353,6 +370,26 @@ namespace EyeOfTheTagger
         {
             return BaseViewData.GetTracksViewData(_library, _albumArtistFilter, _albumFilter,
                 _performerFilter, _genreFilter, _yearFilter);
+        }
+
+        private void ApplyArtistAlbumsFilters()
+        {
+            IEnumerable<AlbumArtistViewData> albumArtistItems = BaseViewData.GetAlbumArtistsViewData(_library);
+
+            if (DuplicateAlbumArtistsCheckBox.IsChecked == true)
+            {
+                albumArtistItems = albumArtistItems
+                    .GroupBy(aa => aa.Name.Trim().ToLowerInvariant())
+                    .Where(aa => aa.Count() > 1)
+                    .SelectMany(aa => aa);
+            }
+
+            if (EmptyAlbumArtistsCheckBox.IsChecked == true)
+            {
+                albumArtistItems = albumArtistItems.Where(aa => aa.Name.Trim() == string.Empty || aa.SourceData.IsDefault);
+            }
+
+            AlbumArtistsView.ItemsSource = albumArtistItems;
         }
 
         #endregion Private helper methods
