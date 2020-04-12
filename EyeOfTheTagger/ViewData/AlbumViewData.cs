@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Windows.Media;
 using EyeOfTheTaggerLib;
 
 namespace EyeOfTheTagger.ViewData
@@ -24,13 +25,11 @@ namespace EyeOfTheTagger.ViewData
         /// </summary>
         public string AlbumArtist { get { return SourceData.AlbumArtist.Name; } }
         /// <summary>
-        /// Release year.
-        /// If several, takes the more likely.
+        /// Release year (from the first track).
         /// </summary>
         public uint Year { get; private set; }
         /// <summary>
-        /// Main genre name.
-        /// Empty if the album has no genred tracks.
+        /// Genre name (from the first track).
         /// </summary>
         public string Genre { get; private set; }
         /// <summary>
@@ -41,6 +40,10 @@ namespace EyeOfTheTagger.ViewData
         /// Tracks length.
         /// </summary>
         public TimeSpan TracksLength { get; private set; }
+        /// <summary>
+        /// Front cover datas (from the first track).
+        /// </summary>
+        public IReadOnlyCollection<byte> FrontCoverDatas { get; private set; }
 
         /// <summary>
         /// Constructor.
@@ -58,12 +61,15 @@ namespace EyeOfTheTagger.ViewData
 
             SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
 
-            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Album == sourceData);
-            
-            Year = tracks.Select(t => t.Year).GroupBy(y => y).OrderByDescending(y => y.Count()).First().Key;
-            Genre = tracks.SelectMany(t => t.Genres).GroupBy(g => g).OrderByDescending(g => g.Count()).FirstOrDefault()?.Key?.Name ?? string.Empty;
+            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Album == sourceData).OrderBy(t => t.Number);
+
+            TrackData firstTrack = tracks.FirstOrDefault();
+
+            Year = firstTrack?.Year ?? 0;
+            Genre = firstTrack?.Genres?.FirstOrDefault()?.Name ?? string.Empty;
             TracksCount = tracks.Count();
             TracksLength = new TimeSpan(0, 0, (int)tracks.Sum(t => t.Length.TotalSeconds));
+            FrontCoverDatas = firstTrack?.FrontCoverDatas;
         }
     }
 }

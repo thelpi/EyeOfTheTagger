@@ -11,6 +11,7 @@
         <BitmapImage x:Key="BookcaseImg" UriSource="Resources/bookcase.png" />
         <cvt:LogToBackgroundConverter x:Key="LogToBackgroundConverter" />
         <cvt:LogToForegroundConverter x:Key="LogToForegroundConverter" />
+        <cvt:BytesToImageConverter x:Key="BytesToImageConverter" />
         <Style TargetType="ListViewItem">
             <Style.Triggers>
                 <Trigger Property="ItemsControl.AlternationIndex"  Value="0">
@@ -172,6 +173,13 @@
                                                 <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
                                             </Button.Content>
                                         </Button>
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Source="{Binding Path=FrontCoverDatas, Converter={StaticResource BytesToImageConverter}}" Width="50" Height="50" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

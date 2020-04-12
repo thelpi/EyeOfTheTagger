@@ -55,6 +55,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Converters\BytesToImageConverter.cs" />
     <Compile Include="Converters\LogToBackgroundConverter.cs" />
     <Compile Include="Converters\LogToForegroundConverter.cs" />
     <Compile Include="Tools.cs" />
@@ -114,6 +115,9 @@
     <Resource Include="Resources\bookcase.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\cdaudio_unmount.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

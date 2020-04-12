@@ -121,4 +121,7 @@
   <data name="bookcase" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\bookcase.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="cdaudio_unmount" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\cdaudio_unmount.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

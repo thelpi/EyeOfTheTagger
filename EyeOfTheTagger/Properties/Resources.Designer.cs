@@ -69,5 +69,15 @@ namespace EyeOfTheTagger.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap cdaudio_unmount {
+            get {
+                object obj = ResourceManager.GetObject("cdaudio_unmount", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }
