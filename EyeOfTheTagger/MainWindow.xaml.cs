@@ -5,6 +5,7 @@ using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using EyeOfTheTagger.ViewData;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Event;
@@ -25,11 +26,11 @@ namespace EyeOfTheTagger
         private Dictionary<string, bool> _performersViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _yearsViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _tracksViewSort = new Dictionary<string, bool>();
-        private AlbumArtistViewData _albumArtistFilter = null;
-        private AlbumViewData _albumFilter = null;
-        private GenreViewData _genreFilter = null;
-        private PerformerViewData _performerFilter = null;
-        private YearViewData _yearFilter = null;
+        private AlbumArtistData _albumArtistFilter = null;
+        private AlbumData _albumFilter = null;
+        private GenreData _genreFilter = null;
+        private PerformerData _performerFilter = null;
+        private uint? _yearFilter = null;
 
         /// <summary>
         /// Constructor.
@@ -210,11 +211,11 @@ namespace EyeOfTheTagger
         private void FilterTracks_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-            _albumArtistFilter = btn?.DataContext as AlbumArtistViewData;
-            _albumFilter = btn?.DataContext as AlbumViewData;
-            _genreFilter = btn?.DataContext as GenreViewData;
-            _performerFilter = btn?.DataContext as PerformerViewData;
-            _yearFilter = btn?.DataContext as YearViewData;
+            _albumArtistFilter = (btn?.DataContext as AlbumArtistViewData)?.SourceData;
+            _albumFilter = (btn?.DataContext as AlbumViewData)?.SourceData;
+            _genreFilter = (btn?.DataContext as GenreViewData)?.SourceData;
+            _performerFilter = (btn?.DataContext as PerformerViewData)?.SourceData;
+            _yearFilter = (btn?.DataContext as YearViewData)?.Year;
             TracksView.ItemsSource = GetTracksView();
             MainView.SelectedItem = TracksTab;
         }
@@ -227,6 +228,61 @@ namespace EyeOfTheTagger
             _performerFilter = null;
             _yearFilter = null;
             TracksView.ItemsSource = GetTracksView();
+        }
+
+        private void LinkAlbumArtist_Click(object sender, RoutedEventArgs e)
+        {
+            _albumArtistFilter = ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Album?.AlbumArtist;
+            _albumFilter = null;
+            _genreFilter = null;
+            _performerFilter = null;
+            _yearFilter = null;
+            TracksView.ItemsSource = GetTracksView();
+            MainView.SelectedItem = TracksTab;
+        }
+
+        private void LinkAlbum_Click(object sender, RoutedEventArgs e)
+        {
+            _albumArtistFilter = null;
+            _albumFilter = ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Album;
+            _genreFilter = null;
+            _performerFilter = null;
+            _yearFilter = null;
+            TracksView.ItemsSource = GetTracksView();
+            MainView.SelectedItem = TracksTab;
+        }
+
+        private void LinkPerformer_Click(object sender, RoutedEventArgs e)
+        {
+            _albumArtistFilter = null;
+            _albumFilter = null;
+            _genreFilter = null;
+            _performerFilter = ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Performers?.FirstOrDefault();
+            _yearFilter = null;
+            TracksView.ItemsSource = GetTracksView();
+            MainView.SelectedItem = TracksTab;
+        }
+
+        private void LinkGenre_Click(object sender, RoutedEventArgs e)
+        {
+            _albumArtistFilter = null;
+            _albumFilter = null;
+            _genreFilter = ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Genres?.FirstOrDefault();
+            _performerFilter = null;
+            _yearFilter = null;
+            TracksView.ItemsSource = GetTracksView();
+            MainView.SelectedItem = TracksTab;
+        }
+
+        private void LinkYear_Click(object sender, RoutedEventArgs e)
+        {
+            _albumArtistFilter = null;
+            _albumFilter = null;
+            _genreFilter = null;
+            _performerFilter = null;
+            _yearFilter = ((sender as Hyperlink)?.DataContext as TrackViewData)?.Year;
+            TracksView.ItemsSource = GetTracksView();
+            MainView.SelectedItem = TracksTab;
         }
 
         #endregion Window events
@@ -295,11 +351,8 @@ namespace EyeOfTheTagger
 
         private IEnumerable<TrackViewData> GetTracksView()
         {
-            return BaseViewData.GetTracksViewData(_library,
-                _albumArtistFilter?.SourceData,
-                _albumFilter?.SourceData, _performerFilter?.SourceData,
-                _genreFilter?.SourceData,
-                _yearFilter?.Year);
+            return BaseViewData.GetTracksViewData(_library, _albumArtistFilter, _albumFilter,
+                _performerFilter, _genreFilter, _yearFilter);
         }
 
         #endregion Private helper methods

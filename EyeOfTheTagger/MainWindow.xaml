@@ -340,7 +340,11 @@
                                 <GridViewColumnHeader Content="Album" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Album" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Path=Album}" />
+                                        <Label>
+                                            <Hyperlink Click="LinkAlbum_Click">
+                                                <TextBlock Text="{Binding Path=Album}" />
+                                            </Hyperlink>
+                                        </Label>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -348,7 +352,11 @@
                                 <GridViewColumnHeader Content="AlbumArtist" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumArtist" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Path=AlbumArtist}" />
+                                        <Label>
+                                            <Hyperlink Click="LinkAlbumArtist_Click">
+                                                <TextBlock Text="{Binding Path=AlbumArtist}" />
+                                            </Hyperlink>
+                                        </Label>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -356,7 +364,11 @@
                                 <GridViewColumnHeader Content="Performers" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Performers" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Path=Performers}" />
+                                        <Label>
+                                            <Hyperlink Click="LinkPerformer_Click">
+                                                <TextBlock Text="{Binding Path=Performers}" />
+                                            </Hyperlink>
+                                        </Label>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -364,7 +376,11 @@
                                 <GridViewColumnHeader Content="Genres" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Genres" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Path=Genres}" />
+                                        <Label>
+                                            <Hyperlink Click="LinkGenre_Click">
+                                                <TextBlock Text="{Binding Path=Genres}" />
+                                            </Hyperlink>
+                                        </Label>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
@@ -372,7 +388,11 @@
                                 <GridViewColumnHeader Content="Year" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Path=Year}" />
+                                        <Label>
+                                            <Hyperlink Click="LinkYear_Click">
+                                                <TextBlock Text="{Binding Path=Year}" />
+                                            </Hyperlink>
+                                        </Label>
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
