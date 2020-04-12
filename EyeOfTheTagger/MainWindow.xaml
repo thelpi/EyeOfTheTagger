@@ -195,6 +195,46 @@
                     </ListView.View>
                 </ListView>
             </TabItem>
+            <TabItem Header="Years">
+                <ListView AlternationCount="2" Name="YearsView">
+                    <ListView.View>
+                        <GridView AllowsColumnReorder="True">
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Year" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=Year}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks count" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Tracks length" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=TracksLength}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                            <GridViewColumn>
+                                <GridViewColumnHeader Content="Albums count" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumsCount" />
+                                <GridViewColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Label Content="{Binding Path=AlbumsCount}" />
+                                    </DataTemplate>
+                                </GridViewColumn.CellTemplate>
+                            </GridViewColumn>
+                        </GridView>
+                    </ListView.View>
+                </ListView>
+            </TabItem>
             <TabItem Header="Tracks">
                 <ListView AlternationCount="2" Name="TracksView">
                     <ListView.View>

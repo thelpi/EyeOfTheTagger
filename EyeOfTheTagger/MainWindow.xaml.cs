@@ -23,6 +23,7 @@ namespace EyeOfTheTagger
         private Dictionary<string, bool> _albumsViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _genresViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _performersViewSort = new Dictionary<string, bool>();
+        private Dictionary<string, bool> _yearsViewSort = new Dictionary<string, bool>();
         private Dictionary<string, bool> _tracksViewSort = new Dictionary<string, bool>();
 
         /// <summary>
@@ -84,6 +85,7 @@ namespace EyeOfTheTagger
             AlbumsView.ItemsSource = BaseViewData.GetAlbumsViewData(_library);
             GenresView.ItemsSource = BaseViewData.GetGenresViewData(_library);
             PerformersView.ItemsSource = BaseViewData.GetPerformersViewData(_library);
+            YearsView.ItemsSource = BaseViewData.GetYearsViewData(_library);
             LoadingButton.IsEnabled = true;
             LoadingButton.Content = "Reload";
             DumpButton.IsEnabled = true;
@@ -193,6 +195,13 @@ namespace EyeOfTheTagger
             PerformersView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
                 _performersViewSort,
                 BaseViewData.GetPerformersViewData(_library));
+        }
+
+        private void YearsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
+        {
+            YearsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
+                _yearsViewSort,
+                BaseViewData.GetYearsViewData(_library));
         }
 
         private void TracksView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)

@@ -104,6 +104,25 @@ namespace EyeOfTheTagger.ViewData
         }
 
         /// <summary>
+        /// Tranforms a list of years from the specified <see cref="LibraryData"/> into a list of <see cref="YearViewData"/>.
+        /// Results are sorted by <see cref="YearViewData.Year"/>.
+        /// </summary>
+        /// <param name="library"><see cref="LibraryData"/></param>
+        /// <returns>List of <see cref="YearViewData"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
+        public static IEnumerable<YearViewData> GetYearsViewData(LibraryData library)
+        {
+            if (library == null)
+            {
+                throw new ArgumentNullException(nameof(library));
+            }
+
+            return library.Years
+                            .Select(y => new YearViewData(y, library))
+                            .OrderBy(p => p.Year);
+        }
+
+        /// <summary>
         /// Filters and transforms a list of <see cref="TrackData"/> from the specified <see cref="LibraryData"/> into a list of <see cref="TrackViewData"/>.
         /// Results are sorted by <see cref="AlbumArtistData.Name"/>,
         /// then by <see cref="AlbumData.Name"/>,
