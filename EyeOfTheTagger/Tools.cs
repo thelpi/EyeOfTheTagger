@@ -185,15 +185,5 @@ namespace EyeOfTheTagger
                 return null;
             }
         }
-
-        /// <summary>
-        /// Gets every subtypes of the specified type.
-        /// </summary>
-        /// <param name="type">The type.</param>
-        /// <returns>List of <see cref="Type"/>.</returns>
-        public static IEnumerable<Type> GetSubTypes(Type type)
-        {
-            return Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type));
-        }
     }
 }
