@@ -117,7 +117,7 @@ namespace EyeOfTheTagger.ViewDatas
                 albumArtistItems = albumArtistItems.Where(aa => aa.HasEmptyName());
             }
 
-            return albumArtistItems;
+            return ApplySort(albumArtistItems);
         }
 
         /// <summary>
@@ -164,7 +164,7 @@ namespace EyeOfTheTagger.ViewDatas
                 albumItems = albumItems.Where(a => a.HasInvalidTrackSequence());
             }
 
-            return albumItems;
+            return ApplySort(albumItems);
         }
 
         /// <summary>
@@ -192,7 +192,7 @@ namespace EyeOfTheTagger.ViewDatas
                 performerItems = performerItems.Where(p => p.HasEmptyName());
             }
 
-            return performerItems;
+            return ApplySort(performerItems);
         }
 
         /// <summary>
@@ -220,7 +220,7 @@ namespace EyeOfTheTagger.ViewDatas
                 genreItems = genreItems.Where(g => g.HasEmptyName());
             }
 
-            return genreItems;
+            return ApplySort(genreItems);
         }
 
         /// <summary>
@@ -239,7 +239,7 @@ namespace EyeOfTheTagger.ViewDatas
                 yearItems = yearItems.Where(aa => aa.Year == 0);
             }
 
-            return yearItems;
+            return ApplySort(yearItems);
         }
 
         /// <summary>
@@ -326,8 +326,43 @@ namespace EyeOfTheTagger.ViewDatas
             {
                 trackItems = trackItems.Where(t => t.HasNoFrontCover());
             }
-            
-            return trackItems;
+
+            return ApplySort(trackItems);
+        }
+
+        private IEnumerable<TItemData> ApplySort<TItemData>(IEnumerable<TItemData> trackItems) where TItemData : BaseItemData
+        {
+            IOrderedEnumerable<TItemData> ordereredItems = trackItems.OrderBy(_ => 1);
+
+            bool isFirstProperty = true;
+            foreach (string sortProperty in _itemDatasSort[typeof(TItemData)].Keys.Reverse())
+            {
+                if (isFirstProperty)
+                {
+                    if (_itemDatasSort[typeof(TItemData)][sortProperty])
+                    {
+                        ordereredItems = ordereredItems.OrderByDescending(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
+                    }
+                    else
+                    {
+                        ordereredItems = ordereredItems.OrderBy(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
+                    }
+                }
+                else
+                {
+                    if (_itemDatasSort[typeof(TItemData)][sortProperty])
+                    {
+                        ordereredItems = ordereredItems.ThenByDescending(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
+                    }
+                    else
+                    {
+                        ordereredItems = ordereredItems.ThenBy(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
+                    }
+                }
+                isFirstProperty = false;
+            }
+
+            return ordereredItems;
         }
 
         /// <summary>
