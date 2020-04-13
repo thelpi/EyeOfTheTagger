@@ -59,13 +59,13 @@
     <Compile Include="Converters\LogToBackgroundConverter.cs" />
     <Compile Include="Converters\LogToForegroundConverter.cs" />
     <Compile Include="Tools.cs" />
-    <Compile Include="ViewData\AlbumArtistViewData.cs" />
-    <Compile Include="ViewData\AlbumViewData.cs" />
-    <Compile Include="ViewData\GenreViewData.cs" />
-    <Compile Include="ViewData\LibraryViewData.cs" />
-    <Compile Include="ViewData\PerformerViewData.cs" />
-    <Compile Include="ViewData\TrackViewData.cs" />
-    <Compile Include="ViewData\YearViewData.cs" />
+    <Compile Include="ItemDatas\AlbumArtistItemData.cs" />
+    <Compile Include="ItemDatas\AlbumItemData.cs" />
+    <Compile Include="ItemDatas\GenreItemData.cs" />
+    <Compile Include="ViewDatas\LibraryViewData.cs" />
+    <Compile Include="ItemDatas\PerformerItemData.cs" />
+    <Compile Include="ItemDatas\TrackItemData.cs" />
+    <Compile Include="ItemDatas\YearItemData.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -118,6 +118,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\cdaudio_unmount.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ItemDatas\Abstractions\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

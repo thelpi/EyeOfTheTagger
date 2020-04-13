@@ -4,21 +4,21 @@ using System.Linq;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 
-namespace EyeOfTheTagger.ViewData
+namespace EyeOfTheTagger.ItemDatas
 {
     /// <summary>
-    /// Year view data.
+    /// Genre item data.
     /// </summary>
-    internal class YearViewData
+    internal class GenreItemData
     {
         /// <summary>
-        /// Release year.
+        /// <see cref="GenreData"/>
         /// </summary>
-        public uint Year { get; private set; }
+        public GenreData SourceData { get; private set; }
         /// <summary>
-        /// Albums count.
+        /// <see cref="EyeOfTheTaggerLib.Datas.Abstractions.BaseData.Name"/>
         /// </summary>
-        public int AlbumsCount { get; private set; }
+        public string Name { get { return SourceData.Name; } }
         /// <summary>
         /// Tracks count.
         /// </summary>
@@ -31,20 +31,21 @@ namespace EyeOfTheTagger.ViewData
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="year"><see cref="Year"/></param>
+        /// <param name="sourceData"><see cref="SourceData"/></param>
         /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
-        public YearViewData(uint year, LibraryEngine library)
+        /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
+        public GenreItemData(GenreData sourceData, LibraryEngine library)
         {
             if (library == null)
             {
                 throw new ArgumentNullException(nameof(library));
             }
 
-            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Year == year);
+            SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
 
-            Year = year;
-            AlbumsCount = tracks.GroupBy(t => t.Album).Count();
+            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Genres.Contains(sourceData));
+            
             TracksCount = tracks.Count();
             TracksLength = new TimeSpan(0, 0, (int)tracks.Sum(t => t.Length.TotalSeconds));
         }

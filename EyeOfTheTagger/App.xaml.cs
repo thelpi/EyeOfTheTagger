@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
+﻿using System.Windows;
 
 namespace EyeOfTheTagger
 {
     /// <summary>
-    /// Logique d'interaction pour App.xaml
+    /// Interaction logic for <c>App.xaml</c>
     /// </summary>
+    /// <seealso cref="Application"/>
     public partial class App : Application
     {
     }

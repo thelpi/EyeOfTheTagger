@@ -4,21 +4,21 @@ using System.Linq;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 
-namespace EyeOfTheTagger.ViewData
+namespace EyeOfTheTagger.ItemDatas
 {
     /// <summary>
-    /// Genre view data.
+    /// Year item data.
     /// </summary>
-    internal class GenreViewData
+    internal class YearItemData
     {
         /// <summary>
-        /// <see cref="GenreData"/>
+        /// Release year.
         /// </summary>
-        public GenreData SourceData { get; private set; }
+        public uint Year { get; private set; }
         /// <summary>
-        /// <see cref="EyeOfTheTaggerLib.Datas.Abstractions.BaseData.Name"/>
+        /// Albums count.
         /// </summary>
-        public string Name { get { return SourceData.Name; } }
+        public int AlbumsCount { get; private set; }
         /// <summary>
         /// Tracks count.
         /// </summary>
@@ -31,21 +31,20 @@ namespace EyeOfTheTagger.ViewData
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="sourceData"><see cref="SourceData"/></param>
+        /// <param name="year"><see cref="Year"/></param>
         /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public GenreViewData(GenreData sourceData, LibraryEngine library)
+        public YearItemData(uint year, LibraryEngine library)
         {
             if (library == null)
             {
                 throw new ArgumentNullException(nameof(library));
             }
 
-            SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
+            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Year == year);
 
-            IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Genres.Contains(sourceData));
-            
+            Year = year;
+            AlbumsCount = tracks.GroupBy(t => t.Album).Count();
             TracksCount = tracks.Count();
             TracksLength = new TimeSpan(0, 0, (int)tracks.Sum(t => t.Length.TotalSeconds));
         }

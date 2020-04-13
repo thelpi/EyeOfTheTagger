@@ -2,12 +2,12 @@
 using System.Linq;
 using EyeOfTheTaggerLib.Datas;
 
-namespace EyeOfTheTagger.ViewData
+namespace EyeOfTheTagger.ItemDatas
 {
     /// <summary>
-    /// Track view data.
+    /// Track item data.
     /// </summary>
-    internal class TrackViewData
+    internal class TrackItemData
     {
         /// <summary>
         /// <see cref="TrackData"/>
@@ -55,7 +55,7 @@ namespace EyeOfTheTagger.ViewData
         /// </summary>
         /// <param name="sourceData"><see cref="SourceData"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public TrackViewData(TrackData sourceData)
+        public TrackItemData(TrackData sourceData)
         {
             SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
 

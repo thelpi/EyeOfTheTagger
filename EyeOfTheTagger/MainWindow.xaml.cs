@@ -5,7 +5,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Documents;
-using EyeOfTheTagger.ViewData;
+using EyeOfTheTagger.ItemDatas;
+using EyeOfTheTagger.ViewDatas;
 
 namespace EyeOfTheTagger
 {
@@ -112,90 +113,90 @@ namespace EyeOfTheTagger
 
         private void AlbumArtistsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            AlbumArtistsView.ItemsSource = _libraryViewData.GetSortedData<AlbumArtistViewData>(GetPropertyNameFromColumnHeader(sender));
+            AlbumArtistsView.ItemsSource = _libraryViewData.GetSortedData<AlbumArtistItemData>(GetPropertyNameFromColumnHeader(sender));
         }
 
         private void AlbumsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            AlbumsView.ItemsSource = _libraryViewData.GetSortedData<AlbumViewData>(GetPropertyNameFromColumnHeader(sender));
+            AlbumsView.ItemsSource = _libraryViewData.GetSortedData<AlbumItemData>(GetPropertyNameFromColumnHeader(sender));
         }
 
         private void GenresView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            GenresView.ItemsSource = _libraryViewData.GetSortedData<GenreViewData>(GetPropertyNameFromColumnHeader(sender));
+            GenresView.ItemsSource = _libraryViewData.GetSortedData<GenreItemData>(GetPropertyNameFromColumnHeader(sender));
         }
 
         private void PerformersView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            PerformersView.ItemsSource = _libraryViewData.GetSortedData<PerformerViewData>(GetPropertyNameFromColumnHeader(sender));
+            PerformersView.ItemsSource = _libraryViewData.GetSortedData<PerformerItemData>(GetPropertyNameFromColumnHeader(sender));
         }
 
         private void YearsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            YearsView.ItemsSource = _libraryViewData.GetSortedData<YearViewData>(GetPropertyNameFromColumnHeader(sender));
+            YearsView.ItemsSource = _libraryViewData.GetSortedData<YearItemData>(GetPropertyNameFromColumnHeader(sender));
         }
 
         private void TracksView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>(GetPropertyNameFromColumnHeader(sender));
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>(GetPropertyNameFromColumnHeader(sender));
         }
 
         private void FilterTracks_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
             _libraryViewData.SetTracksFilters(
-                (btn?.DataContext as AlbumArtistViewData)?.SourceData,
-                (btn?.DataContext as AlbumViewData)?.SourceData,
-                (btn?.DataContext as GenreViewData)?.SourceData,
-                (btn?.DataContext as PerformerViewData)?.SourceData,
-                (btn?.DataContext as YearViewData)?.Year);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
+                (btn?.DataContext as AlbumArtistItemData)?.SourceData,
+                (btn?.DataContext as AlbumItemData)?.SourceData,
+                (btn?.DataContext as GenreItemData)?.SourceData,
+                (btn?.DataContext as PerformerItemData)?.SourceData,
+                (btn?.DataContext as YearItemData)?.Year);
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
             MainView.SelectedItem = TracksTab;
         }
 
         private void ClearTracksFiltersButton_Click(object sender, RoutedEventArgs e)
         {
             _libraryViewData.SetTracksFilters();
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
         }
 
         private void LinkAlbumArtist_Click(object sender, RoutedEventArgs e)
         {
             _libraryViewData.SetTracksFilters(albumArtistFilter:
-                ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Album?.AlbumArtist);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
+                ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Album?.AlbumArtist);
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkAlbum_Click(object sender, RoutedEventArgs e)
         {
             _libraryViewData.SetTracksFilters(albumFilter:
-                ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Album);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
+                ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Album);
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkPerformer_Click(object sender, RoutedEventArgs e)
         {
             _libraryViewData.SetTracksFilters(performerFilter:
-                ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Performers?.FirstOrDefault());
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
+                ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Performers?.FirstOrDefault());
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkGenre_Click(object sender, RoutedEventArgs e)
         {
             _libraryViewData.SetTracksFilters(genreFilter:
-                ((sender as Hyperlink)?.DataContext as TrackViewData)?.SourceData?.Genres?.FirstOrDefault());
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
+                ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Genres?.FirstOrDefault());
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkYear_Click(object sender, RoutedEventArgs e)
         {
             _libraryViewData.SetTracksFilters(yearFilter:
-                ((sender as Hyperlink)?.DataContext as TrackViewData)?.Year);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
+                ((sender as Hyperlink)?.DataContext as TrackItemData)?.Year);
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
             MainView.SelectedItem = TracksTab;
         }
 
@@ -249,12 +250,12 @@ namespace EyeOfTheTagger
             LoadingBar.Visibility = Visibility.Collapsed;
             LogsView.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackViewData>();
-            AlbumArtistsView.ItemsSource = _libraryViewData.GetSortedData<AlbumArtistViewData>();
-            AlbumsView.ItemsSource = _libraryViewData.GetSortedData<AlbumViewData>();
-            GenresView.ItemsSource = _libraryViewData.GetSortedData<GenreViewData>();
-            PerformersView.ItemsSource = _libraryViewData.GetSortedData<PerformerViewData>();
-            YearsView.ItemsSource = _libraryViewData.GetSortedData<YearViewData>();
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            AlbumArtistsView.ItemsSource = _libraryViewData.GetSortedData<AlbumArtistItemData>();
+            AlbumsView.ItemsSource = _libraryViewData.GetSortedData<AlbumItemData>();
+            GenresView.ItemsSource = _libraryViewData.GetSortedData<GenreItemData>();
+            PerformersView.ItemsSource = _libraryViewData.GetSortedData<PerformerItemData>();
+            YearsView.ItemsSource = _libraryViewData.GetSortedData<YearItemData>();
             LoadingButton.IsEnabled = true;
             LoadingButton.Content = "Reload";
             ShowLogsButton.Content = "Show logs";

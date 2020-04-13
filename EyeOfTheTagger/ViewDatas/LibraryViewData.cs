@@ -2,11 +2,12 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using EyeOfTheTagger.ItemDatas;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 using EyeOfTheTaggerLib.Events;
 
-namespace EyeOfTheTagger.ViewData
+namespace EyeOfTheTagger.ViewDatas
 {
     /// <summary>
     /// Library view data.
@@ -23,12 +24,12 @@ namespace EyeOfTheTagger.ViewData
         private readonly Dictionary<Type, Dictionary<string, bool>> _sortState =
             new Dictionary<Type, Dictionary<string, bool>>
             {
-                { typeof(AlbumArtistViewData), new Dictionary<string, bool>() },
-                { typeof(AlbumViewData), new Dictionary<string, bool>() },
-                { typeof(GenreViewData), new Dictionary<string, bool>() },
-                { typeof(PerformerViewData), new Dictionary<string, bool>() },
-                { typeof(YearViewData), new Dictionary<string, bool>() },
-                { typeof(TrackViewData), new Dictionary<string, bool>() }
+                { typeof(AlbumArtistItemData), new Dictionary<string, bool>() },
+                { typeof(AlbumItemData), new Dictionary<string, bool>() },
+                { typeof(GenreItemData), new Dictionary<string, bool>() },
+                { typeof(PerformerItemData), new Dictionary<string, bool>() },
+                { typeof(YearItemData), new Dictionary<string, bool>() },
+                { typeof(TrackItemData), new Dictionary<string, bool>() }
             };
         private AlbumArtistData _albumArtistFilter = null;
         private AlbumData _albumFilter = null;
@@ -71,47 +72,47 @@ namespace EyeOfTheTagger.ViewData
                 Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions));
         }
         
-        private IEnumerable<AlbumArtistViewData> GetAlbumArtistsViewData()
+        private IEnumerable<AlbumArtistItemData> GetAlbumArtistItemDatas()
         {
             return _library
                         .AlbumArtists
-                        .Select(aa => new AlbumArtistViewData(aa, _library))
+                        .Select(aa => new AlbumArtistItemData(aa, _library))
                         .OrderBy(aa => aa.Name);
         }
 
-        private IEnumerable<AlbumViewData> GetAlbumsViewData()
+        private IEnumerable<AlbumItemData> GetAlbumItemDatas()
         {
             return _library
                         .Albums
-                        .Select(a => new AlbumViewData(a, _library))
+                        .Select(a => new AlbumItemData(a, _library))
                         .OrderBy(a => a.Name);
         }
 
-        private IEnumerable<GenreViewData> GetGenresViewData()
+        private IEnumerable<GenreItemData> GetGenreItemDatas()
         {
             return _library
                         .Genres
-                        .Select(g => new GenreViewData(g, _library))
+                        .Select(g => new GenreItemData(g, _library))
                         .OrderBy(g => g.Name);
         }
 
-        private IEnumerable<PerformerViewData> GetPerformersViewData()
+        private IEnumerable<PerformerItemData> GetPerformerItemDatas()
         {
             return _library
                         .Performers
-                        .Select(p => new PerformerViewData(p, _library))
+                        .Select(p => new PerformerItemData(p, _library))
                         .OrderBy(p => p.Name);
         }
 
-        private IEnumerable<YearViewData> GetYearsViewData()
+        private IEnumerable<YearItemData> GetYearItemDatas()
         {
             return _library
                         .Years
-                        .Select(y => new YearViewData(y, _library))
+                        .Select(y => new YearItemData(y, _library))
                         .OrderBy(p => p.Year);
         }
 
-        private IEnumerable<TrackViewData> GetTracksViewData()
+        private IEnumerable<TrackItemData> GetTrackItemDatas()
         {
             return _library
                         .Tracks
@@ -121,21 +122,21 @@ namespace EyeOfTheTagger.ViewData
                             && (_performerFilter == null || t.Performers.Contains(_performerFilter))
                             && (_genreFilter == null || t.Genres.Contains(_genreFilter))
                             && (!_yearFilter.HasValue || t.Year == _yearFilter.Value))
-                        .Select(t => new TrackViewData(t))
+                        .Select(t => new TrackItemData(t))
                         .OrderBy(t => t.AlbumArtist)
                         .ThenBy(t => t.Album)
                         .ThenBy(t => t.Number);
         }
 
         /// <summary>
-        /// Applies filters on the base list of <see cref="AlbumArtistViewData"/>.
+        /// Applies filters on the base list of <see cref="AlbumArtistItemData"/>.
         /// </summary>
         /// <param name="checkDuplicates">Filters duplicates names.</param>
         /// <param name="checkEmpty">Filters invalid names.</param>
-        /// <returns>List of <see cref="AlbumArtistViewData"/>.</returns>
-        public IEnumerable<AlbumArtistViewData> ApplyArtistAlbumsFilters(bool checkDuplicates, bool checkEmpty)
+        /// <returns>List of <see cref="AlbumArtistItemData"/>.</returns>
+        public IEnumerable<AlbumArtistItemData> ApplyArtistAlbumsFilters(bool checkDuplicates, bool checkEmpty)
         {
-            IEnumerable<AlbumArtistViewData> albumArtistItems = GetAlbumArtistsViewData();
+            IEnumerable<AlbumArtistItemData> albumArtistItems = GetAlbumArtistItemDatas();
 
             if (checkDuplicates)
             {
@@ -154,18 +155,18 @@ namespace EyeOfTheTagger.ViewData
         }
 
         /// <summary>
-        /// Applies filters on the base list of <see cref="AlbumViewData"/>.
+        /// Applies filters on the base list of <see cref="AlbumItemData"/>.
         /// </summary>
         /// <param name="checkDuplicates">Filters duplicates names.</param>
         /// <param name="checkEmpty">Filters invalid names.</param>
         /// <param name="checkFrontCovers">Filters invalid front covers.</param>
         /// <param name="checkYears">Filters invalid years.</param>
         /// <param name="checkTrackNumberSequences">Filters invalid track number sequences.</param>
-        /// <returns>List of <see cref="AlbumViewData"/>.</returns>
-        public IEnumerable<AlbumViewData> ApplyAlbumsFilters(bool checkDuplicates, bool checkEmpty,
+        /// <returns>List of <see cref="AlbumItemData"/>.</returns>
+        public IEnumerable<AlbumItemData> ApplyAlbumsFilters(bool checkDuplicates, bool checkEmpty,
             bool checkFrontCovers, bool checkYears, bool checkTrackNumberSequences)
         {
-            IEnumerable<AlbumViewData> albumItems = GetAlbumsViewData();
+            IEnumerable<AlbumItemData> albumItems = GetAlbumItemDatas();
 
             if (checkDuplicates)
             {
@@ -199,28 +200,28 @@ namespace EyeOfTheTagger.ViewData
         }
 
         /// <summary>
-        /// Gets every instances of the specified <typeparamref name="TViewData"/>, sorted by the specified property name if any.
-        /// For the <see cref="TrackViewData"/> type, filters will apply.
+        /// Gets every instances of the specified <typeparamref name="TItemData"/>, sorted by the specified property name if any.
+        /// For the <see cref="TrackItemData"/> type, filters will apply.
         /// </summary>
-        /// <typeparam name="TViewData">The view data type.</typeparam>
+        /// <typeparam name="TItemData">The item data type.</typeparam>
         /// <param name="propertyName">Optionnal; name of property on which the sort applies.</param>
         /// <returns>Sorted list of datas.</returns>
-        public IEnumerable<TViewData> GetSortedData<TViewData>(string propertyName = null)
+        public IEnumerable<TItemData> GetSortedData<TItemData>(string propertyName = null)
         {
-            IEnumerable<TViewData> dataRetrieved = GetDatas<TViewData>();
+            IEnumerable<TItemData> dataRetrieved = GetDatas<TItemData>();
 
-            if (string.IsNullOrWhiteSpace(propertyName) || !_sortState.ContainsKey(typeof(TViewData)))
+            if (string.IsNullOrWhiteSpace(propertyName) || !_sortState.ContainsKey(typeof(TItemData)))
             {
                 return dataRetrieved;
             }
 
-            var propertyInfo = Tools.GetProperty<TViewData>(propertyName);
+            var propertyInfo = Tools.GetProperty<TItemData>(propertyName);
             if (propertyInfo == null)
             {
                 return dataRetrieved;
             }
 
-            if (!_sortState[typeof(TViewData)].ContainsKey(propertyName) || !_sortState[typeof(TViewData)][propertyName])
+            if (!_sortState[typeof(TItemData)].ContainsKey(propertyName) || !_sortState[typeof(TItemData)][propertyName])
             {
                 dataRetrieved = dataRetrieved.OrderByDescending(d => propertyInfo.GetValue(d));
             }
@@ -229,13 +230,13 @@ namespace EyeOfTheTagger.ViewData
                 dataRetrieved = dataRetrieved.OrderBy(d => propertyInfo.GetValue(d));
             }
 
-            if (!_sortState[typeof(TViewData)].ContainsKey(propertyName))
+            if (!_sortState[typeof(TItemData)].ContainsKey(propertyName))
             {
-                _sortState[typeof(TViewData)].Add(propertyName, true);
+                _sortState[typeof(TItemData)].Add(propertyName, true);
             }
             else
             {
-                _sortState[typeof(TViewData)][propertyName] = !_sortState[typeof(TViewData)][propertyName];
+                _sortState[typeof(TItemData)][propertyName] = !_sortState[typeof(TItemData)][propertyName];
             }
 
             return dataRetrieved;
@@ -262,29 +263,29 @@ namespace EyeOfTheTagger.ViewData
         private IEnumerable<TViewData> GetDatas<TViewData>()
         {
             // TODO : awfull design.
-            if (typeof(TViewData) == typeof(AlbumArtistViewData))
+            if (typeof(TViewData) == typeof(AlbumArtistItemData))
             {
-                return GetAlbumArtistsViewData().Cast<TViewData>();
+                return GetAlbumArtistItemDatas().Cast<TViewData>();
             }
-            else if (typeof(TViewData) == typeof(AlbumViewData))
+            else if (typeof(TViewData) == typeof(AlbumItemData))
             {
-                return GetAlbumsViewData().Cast<TViewData>();
+                return GetAlbumItemDatas().Cast<TViewData>();
             }
-            else if (typeof(TViewData) == typeof(GenreViewData))
+            else if (typeof(TViewData) == typeof(GenreItemData))
             {
-                return GetGenresViewData().Cast<TViewData>();
+                return GetGenreItemDatas().Cast<TViewData>();
             }
-            else if (typeof(TViewData) == typeof(PerformerViewData))
+            else if (typeof(TViewData) == typeof(PerformerItemData))
             {
-                return GetPerformersViewData().Cast<TViewData>();
+                return GetPerformerItemDatas().Cast<TViewData>();
             }
-            else if (typeof(TViewData) == typeof(YearViewData))
+            else if (typeof(TViewData) == typeof(YearItemData))
             {
-                return GetYearsViewData().Cast<TViewData>();
+                return GetYearItemDatas().Cast<TViewData>();
             }
-            else if (typeof(TViewData) == typeof(TrackViewData))
+            else if (typeof(TViewData) == typeof(TrackItemData))
             {
-                return GetTracksViewData().Cast<TViewData>();
+                return GetTrackItemDatas().Cast<TViewData>();
             }
 
             return new List<TViewData>();

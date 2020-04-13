@@ -4,12 +4,12 @@ using System.Linq;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 
-namespace EyeOfTheTagger.ViewData
+namespace EyeOfTheTagger.ItemDatas
 {
     /// <summary>
-    /// Album view data.
+    /// Album item data.
     /// </summary>
-    internal class AlbumViewData
+    internal class AlbumItemData
     {
         private readonly List<TrackData> _tracks;
 
@@ -53,7 +53,7 @@ namespace EyeOfTheTagger.ViewData
         /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public AlbumViewData(AlbumData sourceData, LibraryEngine library)
+        public AlbumItemData(AlbumData sourceData, LibraryEngine library)
         {
             if (library == null)
             {

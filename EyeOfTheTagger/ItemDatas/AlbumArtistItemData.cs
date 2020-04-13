@@ -4,12 +4,12 @@ using System.Linq;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 
-namespace EyeOfTheTagger.ViewData
+namespace EyeOfTheTagger.ItemDatas
 {
     /// <summary>
-    /// Album artist view data.
+    /// Album artist item data.
     /// </summary>
-    internal class AlbumArtistViewData
+    internal class AlbumArtistItemData
     {
         /// <summary>
         /// <see cref="AlbumArtistData"/>
@@ -39,7 +39,7 @@ namespace EyeOfTheTagger.ViewData
         /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public AlbumArtistViewData(AlbumArtistData sourceData, LibraryEngine library)
+        public AlbumArtistItemData(AlbumArtistData sourceData, LibraryEngine library)
         {
             if (library == null)
             {
