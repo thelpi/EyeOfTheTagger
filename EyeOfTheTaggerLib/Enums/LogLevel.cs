@@ -1,4 +1,4 @@
-﻿namespace EyeOfTheTaggerLib.Enum
+﻿namespace EyeOfTheTaggerLib.Enums
 {
     /// <summary>
     /// Represents the criticity level of a log.

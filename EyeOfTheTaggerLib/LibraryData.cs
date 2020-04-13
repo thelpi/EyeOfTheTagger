@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using EyeOfTheTaggerLib.Enum;
-using EyeOfTheTaggerLib.Event;
+using EyeOfTheTaggerLib.Enums;
+using EyeOfTheTaggerLib.Events;
 using TagFile = TagLib.File;
 
 namespace EyeOfTheTaggerLib

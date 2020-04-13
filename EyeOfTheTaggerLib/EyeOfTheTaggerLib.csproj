@@ -45,9 +45,10 @@
   <ItemGroup>
     <Compile Include="AlbumArtistData.cs" />
     <Compile Include="AlbumData.cs" />
+    <Compile Include="Abstractions\BaseData.cs" />
     <Compile Include="PerformerData.cs" />
-    <Compile Include="Enum\LogLevel.cs" />
-    <Compile Include="Event\LoadingLogEventArgs.cs" />
+    <Compile Include="Enums\LogLevel.cs" />
+    <Compile Include="Events\LoadingLogEventArgs.cs" />
     <Compile Include="GenreData.cs" />
     <Compile Include="LibraryData.cs" />
     <Compile Include="LogData.cs" />

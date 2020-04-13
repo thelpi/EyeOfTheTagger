@@ -358,10 +358,11 @@
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>
                             <GridViewColumn>
-                                <GridViewColumnHeader Content="Title" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Title" />
+                                <!-- The only header with a content not equals to the binding name -->
+                                <GridViewColumnHeader Content="Title" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Label Content="{Binding Path=Title}" />
+                                        <Label Content="{Binding Path=Name}" />
                                     </DataTemplate>
                                 </GridViewColumn.CellTemplate>
                             </GridViewColumn>

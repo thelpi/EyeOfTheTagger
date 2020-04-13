@@ -18,9 +18,9 @@ namespace EyeOfTheTagger.ViewData
         /// </summary>
         public uint Number { get { return SourceData.Number; } }
         /// <summary>
-        /// <see cref="TrackData.Title"/>
+        /// <see cref="EyeOfTheTaggerLib.Abstractions.BaseData.Name"/>
         /// </summary>
-        public string Title { get { return SourceData.Title; } }
+        public string Name { get { return SourceData.Name; } }
         /// <summary>
         /// <see cref="TrackData.Album"/> name.
         /// </summary>

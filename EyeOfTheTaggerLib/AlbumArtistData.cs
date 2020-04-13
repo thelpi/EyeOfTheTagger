@@ -1,22 +1,14 @@
 ﻿using System;
+using EyeOfTheTaggerLib.Abstractions;
 
 namespace EyeOfTheTaggerLib
 {
     /// <summary>
     /// Represents an album artist.
     /// </summary>
-    public class AlbumArtistData
+    /// <seealso cref="BaseData"/>
+    public class AlbumArtistData : BaseData
     {
-        /// <summary>
-        /// Name.
-        /// Cannot be <c>Null</c>.
-        /// </summary>
-        public string Name { get; private set; }
-        /// <summary>
-        /// Indicates it's the default instance.
-        /// </summary>
-        public bool IsDefault { get; private set; }
-
         /// <summary>
         /// Constructor.
         /// </summary>
@@ -24,15 +16,6 @@ namespace EyeOfTheTaggerLib
         /// <param name="isDefault"><see cref="IsEmpty"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>Null</c>.</exception>
         internal AlbumArtistData(string name, bool isDefault)
-        {
-            Name = name ?? throw new ArgumentNullException(nameof(name));
-            IsDefault = isDefault;
-        }
-
-        /// <inheritdoc />
-        public override string ToString()
-        {
-            return Name;
-        }
+            : base(name, isDefault) { }
     }
 }

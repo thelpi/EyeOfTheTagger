@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EyeOfTheTaggerLib.Event
+namespace EyeOfTheTaggerLib.Events
 {
     /// <summary>
     /// Datas for log event while loading the library.
@@ -29,7 +29,7 @@ namespace EyeOfTheTaggerLib.Event
         internal LoadingLogEventArgs(LogData log, int trackIndex)
         {
             Log = log ?? throw new ArgumentNullException(nameof(log));
-            if (log.Level == Enum.LogLevel.Critical)
+            if (log.Level == Enums.LogLevel.Critical)
             {
                 TrackIndex = -1;
             }

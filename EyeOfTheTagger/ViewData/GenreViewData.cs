@@ -15,7 +15,7 @@ namespace EyeOfTheTagger.ViewData
         /// </summary>
         public GenreData SourceData { get; private set; }
         /// <summary>
-        /// <see cref="GenreData.Name"/>
+        /// <see cref="EyeOfTheTaggerLib.Abstractions.BaseData.Name"/>
         /// </summary>
         public string Name { get { return SourceData.Name; } }
         /// <summary>

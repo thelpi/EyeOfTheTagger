@@ -178,7 +178,7 @@ namespace EyeOfTheTagger
         {
             try
             {
-                return typeof(T).GetType().GetProperty(propertyName);
+                return typeof(T).GetProperty(propertyName);
             }
             catch
             {

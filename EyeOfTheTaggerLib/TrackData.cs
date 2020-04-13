@@ -2,13 +2,15 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using EyeOfTheTaggerLib.Abstractions;
 
 namespace EyeOfTheTaggerLib
 {
     /// <summary>
     /// Represents a track.
     /// </summary>
-    public class TrackData
+    /// <seealso cref="BaseData"/>
+    public class TrackData : BaseData
     {
         [DllImport("msvcrt.dll", CallingConvention = CallingConvention.Cdecl)]
 #pragma warning disable IDE1006 // Extern method cannot be renamed.
@@ -24,11 +26,6 @@ namespace EyeOfTheTaggerLib
         /// Number (on the album).
         /// </summary>
         public uint Number { get; private set; }
-        /// <summary>
-        /// Title.
-        /// Cannot be <c>Null</c>.
-        /// </summary>
-        public string Title { get; private set; }
         /// <summary>
         /// <see cref="AlbumData"/>.
         /// Cannot be <c>Null</c>.
@@ -81,7 +78,7 @@ namespace EyeOfTheTaggerLib
         /// Constructor.
         /// </summary>
         /// <param name="trackNumber"><see cref="Number"/></param>
-        /// <param name="title"><see cref="Title"/></param>
+        /// <param name="name"><see cref="Name"/></param>
         /// <param name="album"><see cref="Album"/></param>
         /// <param name="performers"><see cref="Performers"/></param>
         /// <param name="genres"><see cref="Genres"/></param>
@@ -93,7 +90,7 @@ namespace EyeOfTheTaggerLib
         /// <param name="frontCoverMimeType"><see cref="FrontCoverMimeType"/></param>
         /// <param name="mimeType"><see cref="MimeType"/></param>
         /// <exception cref="ArgumentException"><paramref name="filePath"/> is not a valid path.</exception>
-        /// <exception cref="ArgumentNullException"><paramref name="title"/> is <c>Null</c>.</exception>
+        /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="album"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="performers"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="genres"/> is <c>Null</c>.</exception>
@@ -102,11 +99,11 @@ namespace EyeOfTheTaggerLib
         /// <exception cref="ArgumentNullException"><paramref name="mimeType"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="frontCoverMimeType"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="frontCoverDatas"/> is <c>Null</c>.</exception>
-        internal TrackData(uint trackNumber, string title, AlbumData album,
+        internal TrackData(uint trackNumber, string name, AlbumData album,
             List<PerformerData> performers, List<GenreData> genres, uint year,
             TimeSpan length, string filePath, List<string> sourceAlbumArtists,
             string mimeType, string frontCoverMimeType, List<byte> frontCoverDatas)
-            : this(filePath, length, album, mimeType)
+            : this(name, filePath, length, album, mimeType)
         {
             if (sourceAlbumArtists == null)
             {
@@ -118,7 +115,6 @@ namespace EyeOfTheTaggerLib
             }
 
             Number = trackNumber;
-            Title = title ?? throw new ArgumentNullException(nameof(title));
             _performers = performers ?? throw new ArgumentNullException(nameof(performers));
             _genres = genres ?? throw new ArgumentNullException(nameof(genres));
             Year = year;
@@ -129,7 +125,7 @@ namespace EyeOfTheTaggerLib
         }
 
         /// <summary>
-        /// Constructor for track without <see cref="TagLib.File.Tag"/>.
+        /// Constructor for tracks without <see cref="TagLib.File.Tag"/>.
         /// </summary>
         /// <param name="filePath"><see cref="FilePath"/></param>
         /// <param name="length"><see cref="Length"/></param>
@@ -138,6 +134,10 @@ namespace EyeOfTheTaggerLib
         /// <exception cref="ArgumentNullException"><paramref name="album"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="mimeType"/> is <c>Null</c>.</exception>
         internal TrackData(string filePath, TimeSpan length, AlbumData album, string mimeType)
+            : this(string.Empty, filePath, length, album, mimeType) { }
+
+        private TrackData(string name, string filePath, TimeSpan length, AlbumData album, string mimeType)
+            : base(name, false)
         {
             if (!System.IO.File.Exists(filePath))
             {
@@ -145,7 +145,6 @@ namespace EyeOfTheTaggerLib
             }
 
             Number = 0;
-            Title = null;
             Album = album ?? throw new ArgumentNullException(nameof(album));
             _performers = new List<PerformerData>();
             _genres = new List<GenreData>();
@@ -161,7 +160,7 @@ namespace EyeOfTheTaggerLib
         /// <inheritdoc />
         public override string ToString()
         {
-            return $"{Number} - {Title} - {Album.Name} - {Album.AlbumArtist.Name} - {Year} - {_genres.First().Name}";
+            return $"{Number} - {Name} - {Album.Name} - {Album.AlbumArtist.Name} - {Year} - {_genres.First().Name}";
         }
 
         /// <summary>

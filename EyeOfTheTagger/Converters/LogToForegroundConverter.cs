@@ -2,19 +2,19 @@
 using System.Globalization;
 using System.Windows.Data;
 using System.Windows.Media;
-using EyeOfTheTaggerLib.Enum;
+using EyeOfTheTaggerLib.Enums;
 
 namespace EyeOfTheTagger.Converters
 {
     /// <summary>
-    /// Transforms a <see cref="EyeOfTheTaggerLib.Enum.LogLevel"/> to a foreground brush.
+    /// Transforms a <see cref="EyeOfTheTaggerLib.Enums.LogLevel"/> to a foreground brush.
     /// </summary>
     public class LogToForegroundConverter : IValueConverter
     {
         /// <summary>
         /// Proceeds to convert.
         /// </summary>
-        /// <param name="value">The <see cref="EyeOfTheTaggerLib.Enum.LogLevel"/> value.</param>
+        /// <param name="value">The <see cref="EyeOfTheTaggerLib.Enums.LogLevel"/> value.</param>
         /// <param name="targetType">Not used.</param>
         /// <param name="parameter">Not used.</param>
         /// <param name="culture">Not used.</param>

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using EyeOfTheTaggerLib;
-using EyeOfTheTaggerLib.Event;
+using EyeOfTheTaggerLib.Events;
 
 namespace EyeOfTheTagger.ViewData
 {

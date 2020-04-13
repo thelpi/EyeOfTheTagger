@@ -20,7 +20,7 @@ namespace EyeOfTheTaggerLib
         /// <summary>
         /// <see cref="LogLevel"/>
         /// </summary>
-        public Enum.LogLevel Level { get; private set; }
+        public Enums.LogLevel Level { get; private set; }
         /// <summary>
         /// Additional datas.
         /// Keys cannot be <c>Null</c> or trimmable to empty, and are case-sensitive.
@@ -36,7 +36,7 @@ namespace EyeOfTheTaggerLib
         /// <param name="additionalDatas"><see cref="AdditionalDatas"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="message"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentException"><paramref name="additionalDatas"/> contains some <c>Null</c> or duplicated informations.</exception>
-        internal LogData(string message, Enum.LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
+        internal LogData(string message, Enums.LogLevel level, params KeyValuePair<string, string>[] additionalDatas)
         {
             Message = message ?? throw new ArgumentNullException(nameof(message));
             Date = DateTime.Now;
