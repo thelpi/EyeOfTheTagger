@@ -137,7 +137,7 @@ namespace EyeOfTheTagger
                 WorkerReportsProgress = false,
                 WorkerSupportsCancellation = false
             };
-            // TODO : GUID should be disabled while processing.
+            // TODO: GUID should be disabled while processing.
             dumpWorker.DoWork += delegate (object subSender, DoWorkEventArgs subE)
             {
                 using (var sw = new StreamWriter(filePath, false))
@@ -184,6 +184,16 @@ namespace EyeOfTheTagger
             {
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Gets every subtypes of the specified type.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns>List of <see cref="Type"/>.</returns>
+        public static IEnumerable<Type> GetSubTypes(Type type)
+        {
+            return Assembly.GetAssembly(type).GetTypes().Where(t => t.IsSubclassOf(type));
         }
     }
 }

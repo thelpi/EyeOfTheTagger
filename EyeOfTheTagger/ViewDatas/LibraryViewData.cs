@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using EyeOfTheTagger.ItemDatas;
+using EyeOfTheTagger.ItemDatas.Abstractions;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 using EyeOfTheTaggerLib.Events;
@@ -22,15 +23,7 @@ namespace EyeOfTheTagger.ViewDatas
         private LibraryEngine _library;
 
         private readonly Dictionary<Type, Dictionary<string, bool>> _sortState =
-            new Dictionary<Type, Dictionary<string, bool>>
-            {
-                { typeof(AlbumArtistItemData), new Dictionary<string, bool>() },
-                { typeof(AlbumItemData), new Dictionary<string, bool>() },
-                { typeof(GenreItemData), new Dictionary<string, bool>() },
-                { typeof(PerformerItemData), new Dictionary<string, bool>() },
-                { typeof(YearItemData), new Dictionary<string, bool>() },
-                { typeof(TrackItemData), new Dictionary<string, bool>() }
-            };
+            Tools.GetSubTypes(typeof(BaseItemData)).ToDictionary(t => t, t => new Dictionary<string, bool>());
         private AlbumArtistData _albumArtistFilter = null;
         private AlbumData _albumFilter = null;
         private PerformerData _performerFilter = null;
@@ -206,11 +199,13 @@ namespace EyeOfTheTagger.ViewDatas
         /// <typeparam name="TItemData">The item data type.</typeparam>
         /// <param name="propertyName">Optionnal; name of property on which the sort applies.</param>
         /// <returns>Sorted list of datas.</returns>
-        public IEnumerable<TItemData> GetSortedData<TItemData>(string propertyName = null)
+        public IEnumerable<TItemData> GetSortedData<TItemData>(string propertyName = null) where TItemData : BaseItemData
         {
+            // TODO: multiple columns sort
+
             IEnumerable<TItemData> dataRetrieved = GetDatas<TItemData>();
 
-            if (string.IsNullOrWhiteSpace(propertyName) || !_sortState.ContainsKey(typeof(TItemData)))
+            if (string.IsNullOrWhiteSpace(propertyName))
             {
                 return dataRetrieved;
             }
@@ -260,9 +255,9 @@ namespace EyeOfTheTagger.ViewDatas
             _yearFilter = yearFilter;
         }
         
-        private IEnumerable<TViewData> GetDatas<TViewData>()
+        private IEnumerable<TViewData> GetDatas<TViewData>() where TViewData : BaseItemData
         {
-            // TODO : awfull design.
+            // TODO: awfull design.
             if (typeof(TViewData) == typeof(AlbumArtistItemData))
             {
                 return GetAlbumArtistItemDatas().Cast<TViewData>();
