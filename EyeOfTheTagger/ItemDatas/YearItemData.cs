@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EyeOfTheTagger.ItemDatas.Abstractions;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 
@@ -9,7 +10,8 @@ namespace EyeOfTheTagger.ItemDatas
     /// <summary>
     /// Year item data.
     /// </summary>
-    internal class YearItemData
+    /// <seealso cref="BaseItemData"/>
+    internal class YearItemData : BaseItemData
     {
         /// <summary>
         /// Release year.
@@ -34,7 +36,7 @@ namespace EyeOfTheTagger.ItemDatas
         /// <param name="year"><see cref="Year"/></param>
         /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
-        public YearItemData(uint year, LibraryEngine library)
+        public YearItemData(uint year, LibraryEngine library) : base(null)
         {
             if (library == null)
             {

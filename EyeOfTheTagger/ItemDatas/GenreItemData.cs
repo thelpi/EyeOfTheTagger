@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EyeOfTheTagger.ItemDatas.Abstractions;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 
@@ -9,16 +10,13 @@ namespace EyeOfTheTagger.ItemDatas
     /// <summary>
     /// Genre item data.
     /// </summary>
-    internal class GenreItemData
+    /// <seealso cref="BaseItemData"/>
+    internal class GenreItemData : BaseItemData
     {
         /// <summary>
         /// <see cref="GenreData"/>
         /// </summary>
-        public GenreData SourceData { get; private set; }
-        /// <summary>
-        /// <see cref="EyeOfTheTaggerLib.Datas.Abstractions.BaseData.Name"/>
-        /// </summary>
-        public string Name { get { return SourceData.Name; } }
+        public new GenreData SourceData { get { return (GenreData)base.SourceData; } }
         /// <summary>
         /// Tracks count.
         /// </summary>
@@ -31,18 +29,21 @@ namespace EyeOfTheTagger.ItemDatas
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="sourceData"><see cref="SourceData"/></param>
+        /// <param name="sourceData"><see cref="BaseItemData.SourceData"/></param>
         /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public GenreItemData(GenreData sourceData, LibraryEngine library)
+        public GenreItemData(GenreData sourceData, LibraryEngine library) : base(sourceData)
         {
             if (library == null)
             {
                 throw new ArgumentNullException(nameof(library));
             }
 
-            SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
+            if (sourceData == null)
+            {
+                throw new ArgumentNullException(nameof(sourceData));
+            }
 
             IEnumerable<TrackData> tracks = library.Tracks.Where(t => t.Genres.Contains(sourceData));
             

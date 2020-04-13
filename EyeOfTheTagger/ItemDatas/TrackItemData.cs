@@ -1,34 +1,32 @@
 ﻿using System;
 using System.Linq;
 using EyeOfTheTaggerLib.Datas;
+using EyeOfTheTagger.ItemDatas.Abstractions;
 
 namespace EyeOfTheTagger.ItemDatas
 {
     /// <summary>
     /// Track item data.
     /// </summary>
-    internal class TrackItemData
+    /// <seealso cref="BaseItemData"/>
+    internal class TrackItemData : BaseItemData
     {
         /// <summary>
         /// <see cref="TrackData"/>
         /// </summary>
-        public TrackData SourceData { get; private set; }
+        public new TrackData SourceData { get { return (TrackData)base.SourceData; } }
         /// <summary>
         /// <see cref="TrackData.Number"/>
         /// </summary>
-        public uint Number { get { return SourceData.Number; } }
-        /// <summary>
-        /// <see cref="EyeOfTheTaggerLib.Datas.Abstractions.BaseData.Name"/>
-        /// </summary>
-        public string Name { get { return SourceData.Name; } }
+        public uint Number { get; private set; }
         /// <summary>
         /// <see cref="TrackData.Album"/> name.
         /// </summary>
-        public string Album { get { return SourceData.Album.Name; } }
+        public string Album { get; private set; }
         /// <summary>
         /// <see cref="TrackData.Album"/> artist name.
         /// </summary>
-        public string AlbumArtist { get { return SourceData.Album.AlbumArtist.Name; } }
+        public string AlbumArtist { get; private set; }
         /// <summary>
         /// <see cref="TrackData.Performers"/> names (alphanumeric sort).
         /// </summary>
@@ -40,7 +38,7 @@ namespace EyeOfTheTagger.ItemDatas
         /// <summary>
         /// <see cref="TrackData.Year"/>
         /// </summary>
-        public uint Year { get { return SourceData.Year; } }
+        public uint Year { get; private set; }
         /// <summary>
         /// <see cref="TrackData.Length"/>
         /// </summary>
@@ -48,20 +46,28 @@ namespace EyeOfTheTagger.ItemDatas
         /// <summary>
         /// <see cref="TrackData.FilePath"/>
         /// </summary>
-        public string FilePath { get { return SourceData.FilePath; } }
+        public string FilePath { get; private set; }
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="sourceData"><see cref="SourceData"/></param>
+        /// <param name="sourceData"><see cref="BaseItemData.SourceData"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public TrackItemData(TrackData sourceData)
+        public TrackItemData(TrackData sourceData) : base(sourceData)
         {
-            SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
+            if (sourceData == null)
+            {
+                throw new ArgumentNullException(nameof(sourceData));
+            }
 
-            Performers = string.Join(", ", SourceData.Performers.Select(p => p.Name).OrderBy(p => p));
-            Genres = string.Join(", ", SourceData.Genres.Select(p => p.Name).OrderBy(p => p));
-            Length = new TimeSpan(0, 0, (int)SourceData.Length.TotalSeconds);
+            Number = sourceData.Number;
+            AlbumArtist = sourceData.Album.AlbumArtist.Name;
+            Album = sourceData.Album.Name;
+            Year = sourceData.Year;
+            FilePath = sourceData.FilePath;
+            Performers = string.Join(", ", sourceData.Performers.Select(p => p.Name).OrderBy(p => p));
+            Genres = string.Join(", ", sourceData.Genres.Select(p => p.Name).OrderBy(p => p));
+            Length = new TimeSpan(0, 0, (int)sourceData.Length.TotalSeconds);
         }
     }
 }

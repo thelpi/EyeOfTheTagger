@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using EyeOfTheTagger.ItemDatas.Abstractions;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Datas;
 
@@ -9,22 +10,19 @@ namespace EyeOfTheTagger.ItemDatas
     /// <summary>
     /// Album item data.
     /// </summary>
-    internal class AlbumItemData
+    /// <seealso cref="BaseItemData"/>
+    internal class AlbumItemData : BaseItemData
     {
         private readonly List<TrackData> _tracks;
 
         /// <summary>
         /// <see cref="AlbumData"/>
         /// </summary>
-        public AlbumData SourceData { get; private set; }
-        /// <summary>
-        /// <see cref="EyeOfTheTaggerLib.Datas.Abstractions.BaseData.Name"/>
-        /// </summary>
-        public string Name { get { return SourceData.Name; } }
+        public new AlbumData SourceData { get { return (AlbumData)base.SourceData; } }
         /// <summary>
         /// <see cref="AlbumData.AlbumArtist"/> name.
         /// </summary>
-        public string AlbumArtist { get { return SourceData.AlbumArtist.Name; } }
+        public string AlbumArtist { get; private set; }
         /// <summary>
         /// Release year (from the first track).
         /// </summary>
@@ -49,19 +47,23 @@ namespace EyeOfTheTagger.ItemDatas
         /// <summary>
         /// Constructor.
         /// </summary>
-        /// <param name="sourceData"><see cref="SourceData"/></param>
+        /// <param name="sourceData"><see cref="BaseItemData.SourceData"/></param>
         /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public AlbumItemData(AlbumData sourceData, LibraryEngine library)
+        public AlbumItemData(AlbumData sourceData, LibraryEngine library) : base(sourceData)
         {
             if (library == null)
             {
                 throw new ArgumentNullException(nameof(library));
             }
 
-            SourceData = sourceData ?? throw new ArgumentNullException(nameof(sourceData));
+            if (sourceData == null)
+            {
+                throw new ArgumentNullException(nameof(sourceData));
+            }
 
+            AlbumArtist = sourceData.AlbumArtist.Name;
             _tracks = library.Tracks.Where(t => t.Album == sourceData).OrderBy(t => t.Number).ToList();
             Genre = _tracks.First().Genres.FirstOrDefault()?.Name ?? string.Empty;
             TracksLength = new TimeSpan(0, 0, (int)_tracks.Sum(t => t.Length.TotalSeconds));
@@ -93,15 +95,6 @@ namespace EyeOfTheTagger.ItemDatas
         public bool HasMultipleYears()
         {
             return _tracks.GroupBy(t =>  t.Year).Count() > 1;
-        }
-
-        /// <summary>
-        /// Checks if the instance has an empty or unknown name.
-        /// </summary>
-        /// <returns><c>True</c> if empty name; <c>False</c> otherwise.</returns>
-        public bool HasEmptyName()
-        {
-            return Name.Trim() == string.Empty || SourceData.IsDefault;
         }
 
         /// <summary>

@@ -58,6 +58,7 @@
     <Compile Include="Converters\BytesToImageConverter.cs" />
     <Compile Include="Converters\LogToBackgroundConverter.cs" />
     <Compile Include="Converters\LogToForegroundConverter.cs" />
+    <Compile Include="ItemDatas\Abstractions\BaseItemData.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="ItemDatas\AlbumArtistItemData.cs" />
     <Compile Include="ItemDatas\AlbumItemData.cs" />
@@ -119,8 +120,6 @@
   <ItemGroup>
     <None Include="Resources\cdaudio_unmount.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ItemDatas\Abstractions\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
