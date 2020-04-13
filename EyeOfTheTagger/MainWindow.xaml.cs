@@ -154,12 +154,6 @@ namespace EyeOfTheTagger
             MainView.SelectedItem = TracksTab;
         }
 
-        private void ClearTracksFiltersButton_Click(object sender, RoutedEventArgs e)
-        {
-            _libraryViewData.SetTracksFilters();
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
-        }
-
         private void LinkAlbumArtist_Click(object sender, RoutedEventArgs e)
         {
             _libraryViewData.SetTracksFilters(albumArtistFilter:
@@ -200,17 +194,17 @@ namespace EyeOfTheTagger
             MainView.SelectedItem = TracksTab;
         }
 
-        private void ClearAlbumArtistFiltersButton_Click(object sender, RoutedEventArgs e)
+        private void AlbumArtistsCheckBox_Click(object sender, RoutedEventArgs e)
         {
-            DuplicateAlbumArtistsCheckBox.IsChecked = false;
-            EmptyAlbumArtistsCheckBox.IsChecked = false;
             AlbumArtistsView.ItemsSource = _libraryViewData.ApplyArtistAlbumsFilters(
                 DuplicateAlbumArtistsCheckBox.IsChecked == true,
                 EmptyAlbumArtistsCheckBox.IsChecked == true);
         }
 
-        private void AlbumArtistsCheckBox_Click(object sender, RoutedEventArgs e)
+        private void ClearAlbumArtistFiltersButton_Click(object sender, RoutedEventArgs e)
         {
+            DuplicateAlbumArtistsCheckBox.IsChecked = false;
+            EmptyAlbumArtistsCheckBox.IsChecked = false;
             AlbumArtistsView.ItemsSource = _libraryViewData.ApplyArtistAlbumsFilters(
                 DuplicateAlbumArtistsCheckBox.IsChecked == true,
                 EmptyAlbumArtistsCheckBox.IsChecked == true);
@@ -239,6 +233,57 @@ namespace EyeOfTheTagger
                 InvalidFrontCoverCheckBox.IsChecked == true,
                 MultipleYearsCheckBox.IsChecked == true,
                 InvalidTracksOrderCheckBox.IsChecked == true);
+        }
+
+        private void PerformersCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            PerformersView.ItemsSource = _libraryViewData.ApplyPerformerssFilters(
+                DuplicatePerformersCheckBox.IsChecked == true,
+                EmptyPerformersCheckBox.IsChecked == true);
+        }
+
+        private void ClearPerformerFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            DuplicatePerformersCheckBox.IsChecked = false;
+            EmptyPerformersCheckBox.IsChecked = false;
+            PerformersView.ItemsSource = _libraryViewData.ApplyPerformerssFilters(
+                DuplicatePerformersCheckBox.IsChecked == true,
+                EmptyPerformersCheckBox.IsChecked == true);
+        }
+
+        private void GenresCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            GenresView.ItemsSource = _libraryViewData.ApplyGenresFilters(
+                DuplicateGenresCheckBox.IsChecked == true,
+                EmptyGenresCheckBox.IsChecked == true);
+        }
+
+        private void ClearGenreFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            DuplicateGenresCheckBox.IsChecked = false;
+            EmptyGenresCheckBox.IsChecked = false;
+            GenresView.ItemsSource = _libraryViewData.ApplyGenresFilters(
+                DuplicateGenresCheckBox.IsChecked == true,
+                EmptyGenresCheckBox.IsChecked == true);
+        }
+
+        private void YearsCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            YearsView.ItemsSource = _libraryViewData.ApplyYearsFilters(
+                EmptyYearsCheckBox.IsChecked == true);
+        }
+
+        private void ClearYearFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            EmptyYearsCheckBox.IsChecked = false;
+            YearsView.ItemsSource = _libraryViewData.ApplyYearsFilters(
+                EmptyYearsCheckBox.IsChecked == true);
+        }
+
+        private void ClearTracksFiltersButton_Click(object sender, RoutedEventArgs e)
+        {
+            _libraryViewData.SetTracksFilters();
+            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
         }
 
         #endregion Window events

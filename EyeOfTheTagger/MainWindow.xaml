@@ -29,7 +29,6 @@
             <ProgressBar Margin="10, 0, 0, 0" Width="200" IsIndeterminate="False" Height="20" Name="LoadingBar" Minimum="0" Maximum="100" />
             <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="ShowLogsButton" Click="ShowLogsButton_Click" />
             <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="DumpLogsButton" Click="DumpLogsButton_Click" Content="Dump logs" />
-            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="ClearTracksFiltersButton" Click="ClearTracksFiltersButton_Click" Content="Clear filters" />
         </StackPanel>
         <ListView DockPanel.Dock="Top" Name="LogsView">
             <ListView.View>
@@ -209,242 +208,275 @@
                 </DockPanel>
             </TabItem>
             <TabItem Header="Performers">
-                <ListView AlternationCount="2" Name="PerformersView">
-                    <ListView.View>
-                        <GridView AllowsColumnReorder="True">
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Name" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=Name}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Tracks count" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=TracksCount}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Tracks length" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=TracksLength}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="FilterTracks_Click">
-                                            <Button.Content>
-                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
-                                            </Button.Content>
-                                        </Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <DockPanel>
+                    <Expander DockPanel.Dock="Top" IsExpanded="False" ExpandDirection="Down">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty / invalid values" Name="EmptyPerformersCheckBox" Click="PerformersCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Duplicates values" Name="DuplicatePerformersCheckBox" Click="PerformersCheckBox_Click" />
+                            <Button Margin="10, 10, 0, 0" Content="Clear filters" Height="22" Width="100" Name="ClearPerformerFiltersButton" Click="ClearPerformerFiltersButton_Click" />
+                        </StackPanel>
+                    </Expander>
+                    <ListView Margin="0, 5, 0, 0" DockPanel.Dock="Bottom" AlternationCount="2" Name="PerformersView">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="True">
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Name" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Name}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Tracks count" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=TracksCount}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Tracks length" Click="PerformersView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=TracksLength}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="FilterTracks_Click">
+                                                <Button.Content>
+                                                    <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                                </Button.Content>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
             </TabItem>
             <TabItem Header="Genres">
-                <ListView AlternationCount="2" Name="GenresView">
-                    <ListView.View>
-                        <GridView AllowsColumnReorder="True">
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Name" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=Name}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Tracks count" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=TracksCount}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Tracks length" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=TracksLength}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="FilterTracks_Click">
-                                            <Button.Content>
-                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
-                                            </Button.Content>
-                                        </Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <DockPanel>
+                    <Expander DockPanel.Dock="Top" IsExpanded="False" ExpandDirection="Down">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty / invalid values" Name="EmptyGenresCheckBox" Click="GenresCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Duplicates values" Name="DuplicateGenresCheckBox" Click="GenresCheckBox_Click" />
+                            <Button Margin="10, 10, 0, 0" Content="Clear filters" Height="22" Width="100" Name="ClearGenreFiltersButton" Click="ClearGenreFiltersButton_Click" />
+                        </StackPanel>
+                    </Expander>
+                    <ListView Margin="0, 5, 0, 0" DockPanel.Dock="Bottom" AlternationCount="2" Name="GenresView">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="True">
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Name" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Name}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Tracks count" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=TracksCount}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Tracks length" Click="GenresView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=TracksLength}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="FilterTracks_Click">
+                                                <Button.Content>
+                                                    <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                                </Button.Content>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
             </TabItem>
             <TabItem Header="Years">
-                <ListView AlternationCount="2" Name="YearsView">
-                    <ListView.View>
-                        <GridView AllowsColumnReorder="True">
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Year" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=Year}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Tracks count" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=TracksCount}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Tracks length" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=TracksLength}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Albums count" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumsCount" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=AlbumsCount}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Button Click="FilterTracks_Click">
-                                            <Button.Content>
-                                                <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
-                                            </Button.Content>
-                                        </Button>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <DockPanel>
+                    <Expander DockPanel.Dock="Top" IsExpanded="False" ExpandDirection="Down">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty / invalid values" Name="EmptyYearsCheckBox" Click="YearsCheckBox_Click" />
+                            <Button Margin="10, 10, 0, 0" Content="Clear filters" Height="22" Width="100" Name="ClearYearFiltersButton" Click="ClearYearFiltersButton_Click" />
+                        </StackPanel>
+                    </Expander>
+                    <ListView Margin="0, 5, 0, 0" DockPanel.Dock="Bottom" AlternationCount="2" Name="YearsView">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="True">
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Year" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Year}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Tracks count" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksCount" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=TracksCount}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Tracks length" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="TracksLength" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=TracksLength}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Albums count" Click="YearsView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumsCount" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=AlbumsCount}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Button Click="FilterTracks_Click">
+                                                <Button.Content>
+                                                    <Image Source="{StaticResource BookcaseImg}" ToolTip="Show tracks" Width="20" Height="20" />
+                                                </Button.Content>
+                                            </Button>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
             </TabItem>
             <TabItem Header="Tracks" Name="TracksTab">
-                <ListView AlternationCount="2" Name="TracksView">
-                    <ListView.View>
-                        <GridView AllowsColumnReorder="True">
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Number" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Number" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=Number}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <!-- The only header with a content not equals to the binding name -->
-                                <GridViewColumnHeader Content="Title" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=Name}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Album" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Album" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label>
-                                            <Hyperlink Click="LinkAlbum_Click">
-                                                <TextBlock Text="{Binding Path=Album}" />
-                                            </Hyperlink>
-                                        </Label>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="AlbumArtist" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumArtist" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label>
-                                            <Hyperlink Click="LinkAlbumArtist_Click">
-                                                <TextBlock Text="{Binding Path=AlbumArtist}" />
-                                            </Hyperlink>
-                                        </Label>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Performers" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Performers" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label>
-                                            <Hyperlink Click="LinkPerformer_Click">
-                                                <TextBlock Text="{Binding Path=Performers}" />
-                                            </Hyperlink>
-                                        </Label>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Genres" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Genres" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label>
-                                            <Hyperlink Click="LinkGenre_Click">
-                                                <TextBlock Text="{Binding Path=Genres}" />
-                                            </Hyperlink>
-                                        </Label>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Year" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label>
-                                            <Hyperlink Click="LinkYear_Click">
-                                                <TextBlock Text="{Binding Path=Year}" />
-                                            </Hyperlink>
-                                        </Label>
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="Length" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Length" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=Length}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                            <GridViewColumn>
-                                <GridViewColumnHeader Content="FilePath" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="FilePath" />
-                                <GridViewColumn.CellTemplate>
-                                    <DataTemplate>
-                                        <Label Content="{Binding Path=FilePath}" />
-                                    </DataTemplate>
-                                </GridViewColumn.CellTemplate>
-                            </GridViewColumn>
-                        </GridView>
-                    </ListView.View>
-                </ListView>
+                <DockPanel>
+                    <Expander DockPanel.Dock="Top" IsExpanded="False" ExpandDirection="Down">
+                        <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <Button Margin="10, 10, 0, 0" Content="Clear filters" Height="22" Width="100" Name="ClearTracksFiltersButton" Click="ClearTracksFiltersButton_Click" />
+                        </StackPanel>
+                    </Expander>
+                    <ListView Margin="0, 5, 0, 0" DockPanel.Dock="Bottom" AlternationCount="2" Name="TracksView">
+                        <ListView.View>
+                            <GridView AllowsColumnReorder="True">
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Number" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Number" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Number}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <!-- The only header with a content not equals to the binding name -->
+                                    <GridViewColumnHeader Content="Title" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Name" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Name}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Album" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Album" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label>
+                                                <Hyperlink Click="LinkAlbum_Click">
+                                                    <TextBlock Text="{Binding Path=Album}" />
+                                                </Hyperlink>
+                                            </Label>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="AlbumArtist" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="AlbumArtist" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label>
+                                                <Hyperlink Click="LinkAlbumArtist_Click">
+                                                    <TextBlock Text="{Binding Path=AlbumArtist}" />
+                                                </Hyperlink>
+                                            </Label>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Performers" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Performers" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label>
+                                                <Hyperlink Click="LinkPerformer_Click">
+                                                    <TextBlock Text="{Binding Path=Performers}" />
+                                                </Hyperlink>
+                                            </Label>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Genres" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Genres" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label>
+                                                <Hyperlink Click="LinkGenre_Click">
+                                                    <TextBlock Text="{Binding Path=Genres}" />
+                                                </Hyperlink>
+                                            </Label>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Year" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Year" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label>
+                                                <Hyperlink Click="LinkYear_Click">
+                                                    <TextBlock Text="{Binding Path=Year}" />
+                                                </Hyperlink>
+                                            </Label>
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="Length" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="Length" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=Length}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                                <GridViewColumn>
+                                    <GridViewColumnHeader Content="FilePath" Click="TracksView_GridViewColumnHeader_Click" ClickMode="Release" Tag="FilePath" />
+                                    <GridViewColumn.CellTemplate>
+                                        <DataTemplate>
+                                            <Label Content="{Binding Path=FilePath}" />
+                                        </DataTemplate>
+                                    </GridViewColumn.CellTemplate>
+                                </GridViewColumn>
+                            </GridView>
+                        </ListView.View>
+                    </ListView>
+                </DockPanel>
             </TabItem>
         </TabControl>
     </DockPanel>

@@ -193,6 +193,75 @@ namespace EyeOfTheTagger.ViewDatas
         }
 
         /// <summary>
+        /// Applies filters on the base list of <see cref="PerformerItemData"/>.
+        /// </summary>
+        /// <param name="checkDuplicates">Filters duplicates names.</param>
+        /// <param name="checkEmpty">Filters invalid names.</param>
+        /// <returns>List of <see cref="PerformerItemData"/>.</returns>
+        public IEnumerable<PerformerItemData> ApplyPerformerssFilters(bool checkDuplicates, bool checkEmpty)
+        {
+            IEnumerable<PerformerItemData> performerItems = GetPerformerItemDatas();
+
+            if (checkDuplicates)
+            {
+                performerItems = performerItems
+                    .GroupBy(p => p.Name.Trim().ToLowerInvariant())
+                    .Where(p => p.Count() > 1)
+                    .SelectMany(p => p);
+            }
+
+            if (checkEmpty)
+            {
+                performerItems = performerItems.Where(p => p.HasEmptyName());
+            }
+
+            return performerItems;
+        }
+
+        /// <summary>
+        /// Applies filters on the base list of <see cref="GenreItemData"/>.
+        /// </summary>
+        /// <param name="checkDuplicates">Filters duplicates names.</param>
+        /// <param name="checkEmpty">Filters invalid names.</param>
+        /// <returns>List of <see cref="GenreItemData"/>.</returns>
+        public IEnumerable<GenreItemData> ApplyGenresFilters(bool checkDuplicates, bool checkEmpty)
+        {
+            IEnumerable<GenreItemData> genreItems = GetGenreItemDatas();
+
+            if (checkDuplicates)
+            {
+                genreItems = genreItems
+                    .GroupBy(g => g.Name.Trim().ToLowerInvariant())
+                    .Where(g => g.Count() > 1)
+                    .SelectMany(g => g);
+            }
+
+            if (checkEmpty)
+            {
+                genreItems = genreItems.Where(g => g.HasEmptyName());
+            }
+
+            return genreItems;
+        }
+
+        /// <summary>
+        /// Applies filters on the base list of <see cref="YearItemData"/>.
+        /// </summary>
+        /// <param name="checkEmpty">Filters invalid names.</param>
+        /// <returns>List of <see cref="YearItemData"/>.</returns>
+        public IEnumerable<YearItemData> ApplyYearsFilters(bool checkEmpty)
+        {
+            IEnumerable<YearItemData> yearItems = GetYearItemDatas();
+
+            if (checkEmpty)
+            {
+                yearItems = yearItems.Where(aa => aa.Year == 0);
+            }
+
+            return yearItems;
+        }
+
+        /// <summary>
         /// Gets every instances of the specified <typeparamref name="TItemData"/>, sorted by the specified property name if any.
         /// For the <see cref="TrackItemData"/> type, filters will apply.
         /// </summary>
