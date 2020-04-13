@@ -27,7 +27,7 @@ namespace EyeOfTheTagger.ViewData
                 { typeof(GenreViewData), new Dictionary<string, bool>() },
                 { typeof(PerformerViewData), new Dictionary<string, bool>() },
                 { typeof(YearViewData), new Dictionary<string, bool>() },
-                { typeof(TrackViewData), new Dictionary<string, bool>() },
+                { typeof(TrackViewData), new Dictionary<string, bool>() }
             };
         private AlbumArtistData _albumArtistFilter = null;
         private AlbumData _albumFilter = null;
@@ -69,13 +69,8 @@ namespace EyeOfTheTagger.ViewData
             _library.Reload(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
                 Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions));
         }
-
-        /// <summary>
-        /// Tranforms <see cref="LibraryData.AlbumArtists"/> into a list of <see cref="AlbumArtistViewData"/>.
-        /// Results are sorted by <see cref="AlbumArtistData.Name"/>.
-        /// </summary>
-        /// <returns>List of <see cref="AlbumArtistViewData"/>.</returns>
-        public IEnumerable<AlbumArtistViewData> GetAlbumArtistsViewData()
+        
+        private IEnumerable<AlbumArtistViewData> GetAlbumArtistsViewData()
         {
             return _library
                         .AlbumArtists
@@ -83,12 +78,7 @@ namespace EyeOfTheTagger.ViewData
                         .OrderBy(aa => aa.Name);
         }
 
-        /// <summary>
-        /// Tranforms <see cref="LibraryData.Albums"/> into a list of <see cref="AlbumViewData"/>.
-        /// Results are sorted by <see cref="AlbumData.Name"/>.
-        /// </summary>
-        /// <returns>List of <see cref="AlbumViewData"/>.</returns>
-        public IEnumerable<AlbumViewData> GetAlbumsViewData()
+        private IEnumerable<AlbumViewData> GetAlbumsViewData()
         {
             return _library
                         .Albums
@@ -96,12 +86,7 @@ namespace EyeOfTheTagger.ViewData
                         .OrderBy(a => a.Name);
         }
 
-        /// <summary>
-        /// Tranforms <see cref="LibraryData.Genres"/> into a list of <see cref="GenreViewData"/>.
-        /// Results are sorted by <see cref="GenreData.Name"/>.
-        /// </summary>
-        /// <returns>List of <see cref="GenreViewData"/>.</returns>
-        public IEnumerable<GenreViewData> GetGenresViewData()
+        private IEnumerable<GenreViewData> GetGenresViewData()
         {
             return _library
                         .Genres
@@ -109,12 +94,7 @@ namespace EyeOfTheTagger.ViewData
                         .OrderBy(g => g.Name);
         }
 
-        /// <summary>
-        /// Tranforms <see cref="LibraryData.Performers"/> into a list of <see cref="PerformerViewData"/>.
-        /// Results are sorted by <see cref="PerformerData.Name"/>.
-        /// </summary>
-        /// <returns>List of <see cref="PerformerViewData"/>.</returns>
-        public IEnumerable<PerformerViewData> GetPerformersViewData()
+        private IEnumerable<PerformerViewData> GetPerformersViewData()
         {
             return _library
                         .Performers
@@ -122,12 +102,7 @@ namespace EyeOfTheTagger.ViewData
                         .OrderBy(p => p.Name);
         }
 
-        /// <summary>
-        /// Tranforms <see cref="LibraryData.Years"/> into a list of <see cref="YearViewData"/>.
-        /// Results are sorted by <see cref="YearViewData.Year"/>.
-        /// </summary>
-        /// <returns>List of <see cref="YearViewData"/>.</returns>
-        public IEnumerable<YearViewData> GetYearsViewData()
+        private IEnumerable<YearViewData> GetYearsViewData()
         {
             return _library
                         .Years
@@ -135,14 +110,7 @@ namespace EyeOfTheTagger.ViewData
                         .OrderBy(p => p.Year);
         }
 
-        /// <summary>
-        /// Filters and transforms <see cref="LibraryData.Tracks"/> into a list of <see cref="TrackViewData"/>.
-        /// Results are sorted by <see cref="AlbumArtistData.Name"/>,
-        /// then by <see cref="AlbumData.Name"/>,
-        /// and finally by <see cref="TrackData.Number"/>.
-        /// </summary>
-        /// <returns>List of <see cref="TrackViewData"/>.</returns>
-        public IEnumerable<TrackViewData> GetTracksViewData()
+        private IEnumerable<TrackViewData> GetTracksViewData()
         {
             return _library
                         .Tracks
@@ -230,35 +198,43 @@ namespace EyeOfTheTagger.ViewData
         }
 
         /// <summary>
-        /// Applies sort on a list of datas.
+        /// Gets every instances of the specified <typeparamref name="TViewData"/>, sorted by the specified property name if any.
+        /// For the <see cref="TrackViewData"/> type, filters will apply.
         /// </summary>
-        /// <typeparam name="T">Type of datas.</typeparam>
-        /// <param name="propertyName">Name of property on which the sort applies.</param>
-        /// <param name="dataRetrieved">Initial list of datas.</param>
+        /// <typeparam name="TViewData">The view data type.</typeparam>
+        /// <param name="propertyName">Optionnal; name of property on which the sort applies.</param>
         /// <returns>Sorted list of datas.</returns>
-        public IEnumerable<T> SortDatas<T>(string propertyName, IEnumerable<T> dataRetrieved)
+        public IEnumerable<TViewData> GetSortedData<TViewData>(string propertyName = null)
         {
-            if (!_sortState.ContainsKey(typeof(T)))
+            IEnumerable<TViewData> dataRetrieved = GetDatas<TViewData>();
+
+            if (string.IsNullOrWhiteSpace(propertyName) || !_sortState.ContainsKey(typeof(TViewData)))
             {
                 return dataRetrieved;
             }
 
-            if (!_sortState[typeof(T)].ContainsKey(propertyName) || !_sortState[typeof(T)][propertyName])
+            var propertyInfo = Tools.GetProperty<TViewData>(propertyName);
+            if (propertyInfo == null)
             {
-                dataRetrieved = dataRetrieved.OrderByDescending(d => d.GetType().GetProperty(propertyName).GetValue(d));
-            }
-            else
-            {
-                dataRetrieved = dataRetrieved.OrderBy(d => d.GetType().GetProperty(propertyName).GetValue(d));
+                return dataRetrieved;
             }
 
-            if (!_sortState[typeof(T)].ContainsKey(propertyName))
+            if (!_sortState[typeof(TViewData)].ContainsKey(propertyName) || !_sortState[typeof(TViewData)][propertyName])
             {
-                _sortState[typeof(T)].Add(propertyName, true);
+                dataRetrieved = dataRetrieved.OrderByDescending(d => propertyInfo.GetValue(d));
             }
             else
             {
-                _sortState[typeof(T)][propertyName] = !_sortState[typeof(T)][propertyName];
+                dataRetrieved = dataRetrieved.OrderBy(d => propertyInfo.GetValue(d));
+            }
+
+            if (!_sortState[typeof(TViewData)].ContainsKey(propertyName))
+            {
+                _sortState[typeof(TViewData)].Add(propertyName, true);
+            }
+            else
+            {
+                _sortState[typeof(TViewData)][propertyName] = !_sortState[typeof(TViewData)][propertyName];
             }
 
             return dataRetrieved;
@@ -280,6 +256,37 @@ namespace EyeOfTheTagger.ViewData
             _genreFilter = genreFilter;
             _performerFilter = performerFilter;
             _yearFilter = yearFilter;
+        }
+        
+        private IEnumerable<TViewData> GetDatas<TViewData>()
+        {
+            // TODO : awfull design.
+            if (typeof(TViewData) == typeof(AlbumArtistViewData))
+            {
+                return GetAlbumArtistsViewData().Cast<TViewData>();
+            }
+            else if (typeof(TViewData) == typeof(AlbumViewData))
+            {
+                return GetAlbumsViewData().Cast<TViewData>();
+            }
+            else if (typeof(TViewData) == typeof(GenreViewData))
+            {
+                return GetGenresViewData().Cast<TViewData>();
+            }
+            else if (typeof(TViewData) == typeof(PerformerViewData))
+            {
+                return GetPerformersViewData().Cast<TViewData>();
+            }
+            else if (typeof(TViewData) == typeof(YearViewData))
+            {
+                return GetYearsViewData().Cast<TViewData>();
+            }
+            else if (typeof(TViewData) == typeof(TrackViewData))
+            {
+                return GetTracksViewData().Cast<TViewData>();
+            }
+
+            return new List<TViewData>();
         }
     }
 }

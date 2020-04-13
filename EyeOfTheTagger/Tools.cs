@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using EyeOfTheTaggerLib;
@@ -164,6 +165,25 @@ namespace EyeOfTheTagger
                 }
             };
             dumpWorker.RunWorkerAsync(logs);
+        }
+
+        /// <summary>
+        /// Gets the <see cref="PropertyInfo"/> associated to <paramref name="propertyName"/> for the specified type.
+        /// Cannot fail.
+        /// </summary>
+        /// <typeparam name="T">The targeted type.</typeparam>
+        /// <param name="propertyName">The property name.</param>
+        /// <returns>The <see cref="PropertyInfo"/> or <c>Null</c>.</returns>
+        public static PropertyInfo GetProperty<T>(string propertyName)
+        {
+            try
+            {
+                return typeof(T).GetType().GetProperty(propertyName);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
