@@ -29,6 +29,11 @@ namespace EyeOfTheTagger.ViewData
                 { typeof(YearViewData), new Dictionary<string, bool>() },
                 { typeof(TrackViewData), new Dictionary<string, bool>() },
             };
+        private AlbumArtistData _albumArtistFilter = null;
+        private AlbumData _albumFilter = null;
+        private PerformerData _performerFilter = null;
+        private GenreData _genreFilter = null;
+        private uint? _yearFilter = null;
 
         /// <summary>
         /// Constructor.
@@ -136,24 +141,17 @@ namespace EyeOfTheTagger.ViewData
         /// then by <see cref="AlbumData.Name"/>,
         /// and finally by <see cref="TrackData.Number"/>.
         /// </summary>
-        /// <param name="albumArtistFilter">Optionnal; <see cref="AlbumArtistData"/> filter.</param>
-        /// <param name="albumFilter">Optionnal; <see cref="AlbumData"/> filter.</param>
-        /// <param name="performerFilter">Optionnal; <see cref="PerformerData"/> filter.</param>
-        /// <param name="genreFilter">Optionnal; <see cref="GenreData"/> filter.</param>
-        /// <param name="yearFilter">Optionnal; year filter.</param>
         /// <returns>List of <see cref="TrackViewData"/>.</returns>
-        public IEnumerable<TrackViewData> GetTracksViewData(AlbumArtistData albumArtistFilter = null,
-            AlbumData albumFilter = null, PerformerData performerFilter = null,
-            GenreData genreFilter = null, uint? yearFilter = null)
+        public IEnumerable<TrackViewData> GetTracksViewData()
         {
             return _library
                         .Tracks
                         .Where(t =>
-                            (albumArtistFilter == null || t.Album.AlbumArtist == albumArtistFilter)
-                            && (albumFilter == null || t.Album == albumFilter)
-                            && (performerFilter == null || t.Performers.Contains(performerFilter))
-                            && (genreFilter == null || t.Genres.Contains(genreFilter))
-                            && (!yearFilter.HasValue || t.Year == yearFilter.Value))
+                            (_albumArtistFilter == null || t.Album.AlbumArtist == _albumArtistFilter)
+                            && (_albumFilter == null || t.Album == _albumFilter)
+                            && (_performerFilter == null || t.Performers.Contains(_performerFilter))
+                            && (_genreFilter == null || t.Genres.Contains(_genreFilter))
+                            && (!_yearFilter.HasValue || t.Year == _yearFilter.Value))
                         .Select(t => new TrackViewData(t))
                         .OrderBy(t => t.AlbumArtist)
                         .ThenBy(t => t.Album)
@@ -232,12 +230,12 @@ namespace EyeOfTheTagger.ViewData
         }
 
         /// <summary>
-        /// 
+        /// Applies sort on a list of datas.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="propertyName"></param>
-        /// <param name="dataRetrieved"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Type of datas.</typeparam>
+        /// <param name="propertyName">Name of property on which the sort applies.</param>
+        /// <param name="dataRetrieved">Initial list of datas.</param>
+        /// <returns>Sorted list of datas.</returns>
         public IEnumerable<T> SortDatas<T>(string propertyName, IEnumerable<T> dataRetrieved)
         {
             if (!_sortState.ContainsKey(typeof(T)))
@@ -264,6 +262,24 @@ namespace EyeOfTheTagger.ViewData
             }
 
             return dataRetrieved;
+        }
+
+        /// <summary>
+        /// Sets tracks filters.
+        /// </summary>
+        /// <param name="albumArtistFilter">Optionnal; <see cref="AlbumData.AlbumArtist"/> filter.</param>
+        /// <param name="albumFilter">Optionnal; <see cref="TrackData.Album"/> filter.</param>
+        /// <param name="genreFilter">Optionnal; <see cref="TrackData.Genres"/> filter.</param>
+        /// <param name="performerFilter">Optionnal; <see cref="TrackData.Performers"/> filter.</param>
+        /// <param name="yearFilter">Optionnal; <see cref="TrackData.Year"/> filter.</param>
+        public void SetTracksFilters(AlbumArtistData albumArtistFilter = null, AlbumData albumFilter = null,
+            GenreData genreFilter = null, PerformerData performerFilter = null, uint? yearFilter = null)
+        {
+            _albumArtistFilter = albumArtistFilter;
+            _albumFilter = albumFilter;
+            _genreFilter = genreFilter;
+            _performerFilter = performerFilter;
+            _yearFilter = yearFilter;
         }
     }
 }
