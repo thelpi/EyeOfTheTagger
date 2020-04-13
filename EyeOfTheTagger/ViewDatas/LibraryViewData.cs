@@ -24,11 +24,11 @@ namespace EyeOfTheTagger.ViewDatas
 
         private readonly Dictionary<Type, Dictionary<string, bool>> _sortState =
             Tools.GetSubTypes(typeof(BaseItemData)).ToDictionary(t => t, t => new Dictionary<string, bool>());
-        private AlbumArtistData _albumArtistFilter = null;
-        private AlbumData _albumFilter = null;
-        private PerformerData _performerFilter = null;
-        private GenreData _genreFilter = null;
-        private uint? _yearFilter = null;
+        private AlbumArtistData _albumArtistGlobalFilter = null;
+        private AlbumData _albumGlobalFilter = null;
+        private PerformerData _performerGlobalFilter = null;
+        private GenreData _genreGlobalFilter = null;
+        private uint? _yearGlobalFilter = null;
 
         /// <summary>
         /// Constructor.
@@ -110,11 +110,11 @@ namespace EyeOfTheTagger.ViewDatas
             return _library
                         .Tracks
                         .Where(t =>
-                            (_albumArtistFilter == null || t.Album.AlbumArtist == _albumArtistFilter)
-                            && (_albumFilter == null || t.Album == _albumFilter)
-                            && (_performerFilter == null || t.Performers.Contains(_performerFilter))
-                            && (_genreFilter == null || t.Genres.Contains(_genreFilter))
-                            && (!_yearFilter.HasValue || t.Year == _yearFilter.Value))
+                            (_albumArtistGlobalFilter == null || t.Album.AlbumArtist == _albumArtistGlobalFilter)
+                            && (_albumGlobalFilter == null || t.Album == _albumGlobalFilter)
+                            && (_performerGlobalFilter == null || t.Performers.Contains(_performerGlobalFilter))
+                            && (_genreGlobalFilter == null || t.Genres.Contains(_genreGlobalFilter))
+                            && (!_yearGlobalFilter.HasValue || t.Year == _yearGlobalFilter.Value))
                         .Select(t => new TrackItemData(t))
                         .OrderBy(t => t.AlbumArtist)
                         .ThenBy(t => t.Album)
@@ -262,6 +262,86 @@ namespace EyeOfTheTagger.ViewDatas
         }
 
         /// <summary>
+        /// Applies filters on the base list of <see cref="TrackItemData"/>.
+        /// </summary>
+        /// <param name="checkInvalidNumber">Checks invalid track number.</param>
+        /// <param name="checkEmpty">Checks empty track title.</param>
+        /// <param name="checkEmptyAlbumArtist">Checks empty album artist.</param>
+        /// <param name="checkSeveralAlbumArtist">Checks multiple alum artists.</param>
+        /// <param name="checkEmptyAlbum">Checks empty album.</param>
+        /// <param name="checkEmptyPerformer">Checks empty performer.</param>
+        /// <param name="checkDuplicatePerformers">Checks duplicate performers.</param>
+        /// <param name="checkEmptyGenre">Checks empty genre.</param>
+        /// <param name="checkDuplicateGenres">Checks duplicate genres.</param>
+        /// <param name="checkInvalidYear">Checks invalid year.</param>
+        /// <param name="checkInvalidFrontCover">Checks tracks without front cover.</param>
+        /// <returns>List of <see cref="TrackItemData"/>.</returns>
+        public IEnumerable<TrackItemData> ApplyTracksFilters(bool checkInvalidNumber, bool checkEmpty,
+             bool checkEmptyAlbumArtist, bool checkSeveralAlbumArtist, bool checkEmptyAlbum, bool checkEmptyPerformer,
+             bool checkDuplicatePerformers, bool checkEmptyGenre, bool checkDuplicateGenres, bool checkInvalidYear,
+             bool checkInvalidFrontCover)
+        {
+            IEnumerable<TrackItemData> trackItems = GetTrackItemDatas();
+
+            if (checkInvalidNumber)
+            {
+                trackItems = trackItems.Where(t => t.Number == 0);
+            }
+
+            if (checkEmpty)
+            {
+                trackItems = trackItems.Where(t => t.HasEmptyName());
+            }
+
+            if (checkEmptyAlbumArtist)
+            {
+                trackItems = trackItems.Where(t => string.IsNullOrWhiteSpace(t.AlbumArtist));
+            }
+
+            if (checkSeveralAlbumArtist)
+            {
+                trackItems = trackItems.Where(t => t.HasSeveralAlbumArtists());
+            }
+
+            if (checkEmptyAlbum)
+            {
+                trackItems = trackItems.Where(t => string.IsNullOrWhiteSpace(t.Album));
+            }
+
+            if (checkEmptyPerformer)
+            {
+                trackItems = trackItems.Where(t => t.HasEmptyPerformer());
+            }
+
+            if (checkDuplicatePerformers)
+            {
+                trackItems = trackItems.Where(t => t.HasDuplicatePerformers());
+            }
+
+            if (checkEmptyGenre)
+            {
+                trackItems = trackItems.Where(t => t.HasEmptyGenre());
+            }
+
+            if (checkDuplicateGenres)
+            {
+                trackItems = trackItems.Where(t => t.HasDuplicateGenres());
+            }
+
+            if (checkInvalidYear)
+            {
+                trackItems = trackItems.Where(t => t.Year == 0);
+            }
+
+            if (checkInvalidFrontCover)
+            {
+                trackItems = trackItems.Where(t => t.HasNoFrontCover());
+            }
+            
+            return trackItems;
+        }
+
+        /// <summary>
         /// Gets every instances of the specified <typeparamref name="TItemData"/>, sorted by the specified property name if any.
         /// For the <see cref="TrackItemData"/> type, filters will apply.
         /// </summary>
@@ -307,21 +387,21 @@ namespace EyeOfTheTagger.ViewDatas
         }
 
         /// <summary>
-        /// Sets tracks filters.
+        /// Sets global tracks filters.
         /// </summary>
         /// <param name="albumArtistFilter">Optionnal; <see cref="AlbumData.AlbumArtist"/> filter.</param>
         /// <param name="albumFilter">Optionnal; <see cref="TrackData.Album"/> filter.</param>
         /// <param name="genreFilter">Optionnal; <see cref="TrackData.Genres"/> filter.</param>
         /// <param name="performerFilter">Optionnal; <see cref="TrackData.Performers"/> filter.</param>
         /// <param name="yearFilter">Optionnal; <see cref="TrackData.Year"/> filter.</param>
-        public void SetTracksFilters(AlbumArtistData albumArtistFilter = null, AlbumData albumFilter = null,
+        public void SetGlobalTracksFilters(AlbumArtistData albumArtistFilter = null, AlbumData albumFilter = null,
             GenreData genreFilter = null, PerformerData performerFilter = null, uint? yearFilter = null)
         {
-            _albumArtistFilter = albumArtistFilter;
-            _albumFilter = albumFilter;
-            _genreFilter = genreFilter;
-            _performerFilter = performerFilter;
-            _yearFilter = yearFilter;
+            _albumArtistGlobalFilter = albumArtistFilter;
+            _albumGlobalFilter = albumFilter;
+            _genreGlobalFilter = genreFilter;
+            _performerGlobalFilter = performerFilter;
+            _yearGlobalFilter = yearFilter;
         }
         
         private IEnumerable<TViewData> GetDatas<TViewData>() where TViewData : BaseItemData

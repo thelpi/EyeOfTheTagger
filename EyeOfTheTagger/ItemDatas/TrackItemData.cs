@@ -69,5 +69,65 @@ namespace EyeOfTheTagger.ItemDatas
             Genres = string.Join(", ", sourceData.Genres.Select(p => p.Name).OrderBy(p => p));
             Length = new TimeSpan(0, 0, (int)sourceData.Length.TotalSeconds);
         }
+
+        /// <summary>
+        /// Gets if the instance has several album artists.
+        /// </summary>
+        /// <returns><c>True</c> if several; <c>False</c> otherwise.</returns>
+        public bool HasSeveralAlbumArtists()
+        {
+            return SourceData.SourceAlbumArtists.Count > 1;
+        }
+
+        /// <summary>
+        /// Gets if the instance has no or empty performers.
+        /// </summary>
+        /// <returns><c>True</c> if no performers; <c>False</c> otherwise.</returns>
+        public bool HasEmptyPerformer()
+        {
+            return SourceData.Performers.Count == 0
+                || SourceData.Performers.All(p => string.IsNullOrWhiteSpace(p.Name));
+        }
+
+        /// <summary>
+        /// Gets if the instance has several times the same performer.
+        /// </summary>
+        /// <returns><c>True</c> if duplicate performers; <c>False</c> otherwise.</returns>
+        public bool HasDuplicatePerformers()
+        {
+            return SourceData.Performers
+                                .GroupBy(p => p.Name.Trim().ToLower())
+                                .Any(p => p.Count() > 1);
+        }
+
+        /// <summary>
+        /// Gets if the instance has no or empty genres.
+        /// </summary>
+        /// <returns><c>True</c> if no genres; <c>False</c> otherwise.</returns>
+        public bool HasEmptyGenre()
+        {
+            return SourceData.Genres.Count == 0
+                || SourceData.Genres.All(g => string.IsNullOrWhiteSpace(g.Name));
+        }
+
+        /// <summary>
+        /// Gets if the instance has several times the same genre.
+        /// </summary>
+        /// <returns><c>True</c> if duplicate genres; <c>False</c> otherwise.</returns>
+        public bool HasDuplicateGenres()
+        {
+            return SourceData.Genres
+                                .GroupBy(g => g.Name.Trim().ToLower())
+                                .Any(g => g.Count() > 1);
+        }
+
+        /// <summary>
+        /// Gets if the instance has no front cover.
+        /// </summary>
+        /// <returns><c>True</c> if no front cover; <c>False</c> otherwise.</returns>
+        public bool HasNoFrontCover()
+        {
+            return SourceData.FrontCoverDatas.Count == 0;
+        }
     }
 }

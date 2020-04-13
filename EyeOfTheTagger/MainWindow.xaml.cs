@@ -144,53 +144,53 @@ namespace EyeOfTheTagger
         private void FilterTracks_Click(object sender, RoutedEventArgs e)
         {
             Button btn = sender as Button;
-            _libraryViewData.SetTracksFilters(
+            _libraryViewData.SetGlobalTracksFilters(
                 (btn?.DataContext as AlbumArtistItemData)?.SourceData,
                 (btn?.DataContext as AlbumItemData)?.SourceData,
                 (btn?.DataContext as GenreItemData)?.SourceData,
                 (btn?.DataContext as PerformerItemData)?.SourceData,
                 (btn?.DataContext as YearItemData)?.Year);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            SetTracksViewSourceWithFilters();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkAlbumArtist_Click(object sender, RoutedEventArgs e)
         {
-            _libraryViewData.SetTracksFilters(albumArtistFilter:
+            _libraryViewData.SetGlobalTracksFilters(albumArtistFilter:
                 ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Album?.AlbumArtist);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            SetTracksViewSourceWithFilters();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkAlbum_Click(object sender, RoutedEventArgs e)
         {
-            _libraryViewData.SetTracksFilters(albumFilter:
+            _libraryViewData.SetGlobalTracksFilters(albumFilter:
                 ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Album);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            SetTracksViewSourceWithFilters();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkPerformer_Click(object sender, RoutedEventArgs e)
         {
-            _libraryViewData.SetTracksFilters(performerFilter:
+            _libraryViewData.SetGlobalTracksFilters(performerFilter:
                 ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Performers?.FirstOrDefault());
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            SetTracksViewSourceWithFilters();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkGenre_Click(object sender, RoutedEventArgs e)
         {
-            _libraryViewData.SetTracksFilters(genreFilter:
+            _libraryViewData.SetGlobalTracksFilters(genreFilter:
                 ((sender as Hyperlink)?.DataContext as TrackItemData)?.SourceData?.Genres?.FirstOrDefault());
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            SetTracksViewSourceWithFilters();
             MainView.SelectedItem = TracksTab;
         }
 
         private void LinkYear_Click(object sender, RoutedEventArgs e)
         {
-            _libraryViewData.SetTracksFilters(yearFilter:
+            _libraryViewData.SetGlobalTracksFilters(yearFilter:
                 ((sender as Hyperlink)?.DataContext as TrackItemData)?.Year);
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            SetTracksViewSourceWithFilters();
             MainView.SelectedItem = TracksTab;
         }
 
@@ -280,10 +280,26 @@ namespace EyeOfTheTagger
                 EmptyYearsCheckBox.IsChecked == true);
         }
 
+        private void TracksCheckBox_Click(object sender, RoutedEventArgs e)
+        {
+            SetTracksViewSourceWithFilters();
+        }
+
         private void ClearTracksFiltersButton_Click(object sender, RoutedEventArgs e)
         {
-            _libraryViewData.SetTracksFilters();
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
+            InvalidNumberTracksCheckBox.IsChecked = false;
+            EmptyTracksCheckBox.IsChecked = false;
+            EmptyAlbumArtistTracksCheckBox.IsChecked = false;
+            SeveralAlbumArtistTracksCheckBox.IsChecked = false;
+            EmptyAlbumTracksCheckBox.IsChecked = false;
+            EmptyPerformerTracksCheckBox.IsChecked = false;
+            DuplicatePerformersTracksCheckBox.IsChecked = false;
+            EmptyGenreTracksCheckBox.IsChecked = false;
+            DuplicateGenresTracksCheckBox.IsChecked = false;
+            InvalidYearTracksCheckBox.IsChecked = false;
+            InvalidFrontCoverTracksCheckBox.IsChecked = false;
+            _libraryViewData.SetGlobalTracksFilters();
+            SetTracksViewSourceWithFilters();
         }
 
         #endregion Window events
@@ -295,12 +311,12 @@ namespace EyeOfTheTagger
             LoadingBar.Visibility = Visibility.Collapsed;
             LogsView.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
-            TracksView.ItemsSource = _libraryViewData.GetSortedData<TrackItemData>();
-            AlbumArtistsView.ItemsSource = _libraryViewData.GetSortedData<AlbumArtistItemData>();
-            AlbumsView.ItemsSource = _libraryViewData.GetSortedData<AlbumItemData>();
-            GenresView.ItemsSource = _libraryViewData.GetSortedData<GenreItemData>();
-            PerformersView.ItemsSource = _libraryViewData.GetSortedData<PerformerItemData>();
-            YearsView.ItemsSource = _libraryViewData.GetSortedData<YearItemData>();
+            SetTracksViewSourceWithFilters();
+            AlbumArtistsView.ItemsSource = _libraryViewData.ApplyArtistAlbumsFilters(false, false);
+            AlbumsView.ItemsSource = _libraryViewData.ApplyAlbumsFilters(false, false, false, false, false);
+            GenresView.ItemsSource = _libraryViewData.ApplyGenresFilters(false, false);
+            PerformersView.ItemsSource = _libraryViewData.ApplyPerformerssFilters(false, false);
+            YearsView.ItemsSource = _libraryViewData.ApplyYearsFilters(false);
             LoadingButton.IsEnabled = true;
             LoadingButton.Content = "Reload";
             ShowLogsButton.Content = "Show logs";
@@ -326,6 +342,22 @@ namespace EyeOfTheTagger
         private static string GetPropertyNameFromColumnHeader(object sender)
         {
             return (sender as GridViewColumnHeader).Tag.ToString();
+        }
+
+        private void SetTracksViewSourceWithFilters()
+        {
+            TracksView.ItemsSource = _libraryViewData.ApplyTracksFilters(
+                InvalidNumberTracksCheckBox.IsChecked == true,
+                EmptyTracksCheckBox.IsChecked == true,
+                EmptyAlbumArtistTracksCheckBox.IsChecked == true,
+                SeveralAlbumArtistTracksCheckBox.IsChecked == true,
+                EmptyAlbumTracksCheckBox.IsChecked == true,
+                EmptyPerformerTracksCheckBox.IsChecked == true,
+                DuplicatePerformersTracksCheckBox.IsChecked == true,
+                EmptyGenreTracksCheckBox.IsChecked == true,
+                DuplicateGenresTracksCheckBox.IsChecked == true,
+                InvalidYearTracksCheckBox.IsChecked == true,
+                InvalidFrontCoverTracksCheckBox.IsChecked == true);
         }
 
         #endregion Private helper methods

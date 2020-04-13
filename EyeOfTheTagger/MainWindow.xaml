@@ -374,6 +374,17 @@
                 <DockPanel>
                     <Expander DockPanel.Dock="Top" IsExpanded="False" ExpandDirection="Down">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
+                            <CheckBox Margin="10, 10, 0, 0" Content="Invalid track number" Name="InvalidNumberTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty / invalid title" Name="EmptyTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty album artist" Name="EmptyAlbumArtistTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Several album artist" Name="SeveralAlbumArtistTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty album" Name="EmptyAlbumTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty performer" Name="EmptyPerformerTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Duplicate performers" Name="DuplicatePerformersTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Empty genre" Name="EmptyGenreTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Duplicate genres" Name="DuplicateGenresTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="Invalid year" Name="InvalidYearTracksCheckBox" Click="TracksCheckBox_Click" />
+                            <CheckBox Margin="10, 10, 0, 0" Content="No front cover" Name="InvalidFrontCoverTracksCheckBox" Click="TracksCheckBox_Click" />
                             <Button Margin="10, 10, 0, 0" Content="Clear filters" Height="22" Width="100" Name="ClearTracksFiltersButton" Click="ClearTracksFiltersButton_Click" />
                         </StackPanel>
                     </Expander>
