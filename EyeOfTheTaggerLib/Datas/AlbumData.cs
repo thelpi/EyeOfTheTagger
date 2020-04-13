@@ -1,7 +1,7 @@
 ﻿using System;
-using EyeOfTheTaggerLib.Abstractions;
+using EyeOfTheTaggerLib.Datas.Abstractions;
 
-namespace EyeOfTheTaggerLib
+namespace EyeOfTheTaggerLib.Datas
 {
     /// <summary>
     /// Represents an album.

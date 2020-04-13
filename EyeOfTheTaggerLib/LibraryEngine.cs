@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using EyeOfTheTaggerLib.Datas;
 using EyeOfTheTaggerLib.Enums;
 using EyeOfTheTaggerLib.Events;
 using TagFile = TagLib.File;
@@ -11,7 +12,7 @@ namespace EyeOfTheTaggerLib
     /// <summary>
     /// Represents a library.
     /// </summary>
-    public class LibraryData
+    public class LibraryEngine
     {
         private static readonly string _NULL = string.Empty;
         private const string _EMPTY_MIMETYPE = "<<<unknown>>>";
@@ -123,7 +124,7 @@ namespace EyeOfTheTaggerLib
         /// <param name="instantLoad"><c>True</c> to load the library immediately.</param>
         /// <exception cref="ArgumentNullException"><paramref name="extensions"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="paths"/> is <c>Null</c>.</exception>
-        public LibraryData(IEnumerable<string> paths, IEnumerable<string> extensions, bool instantLoad)
+        public LibraryEngine(IEnumerable<string> paths, IEnumerable<string> extensions, bool instantLoad)
         {
             PrepareLoad(paths, extensions);
             if (instantLoad)

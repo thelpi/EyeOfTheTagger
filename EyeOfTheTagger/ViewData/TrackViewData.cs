@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using EyeOfTheTaggerLib;
+using EyeOfTheTaggerLib.Datas;
 
 namespace EyeOfTheTagger.ViewData
 {
@@ -18,7 +18,7 @@ namespace EyeOfTheTagger.ViewData
         /// </summary>
         public uint Number { get { return SourceData.Number; } }
         /// <summary>
-        /// <see cref="EyeOfTheTaggerLib.Abstractions.BaseData.Name"/>
+        /// <see cref="EyeOfTheTaggerLib.Datas.Abstractions.BaseData.Name"/>
         /// </summary>
         public string Name { get { return SourceData.Name; } }
         /// <summary>

@@ -1,21 +1,20 @@
-﻿using System;
-using EyeOfTheTaggerLib.Abstractions;
+﻿using EyeOfTheTaggerLib.Datas.Abstractions;
 
-namespace EyeOfTheTaggerLib
+namespace EyeOfTheTaggerLib.Datas
 {
     /// <summary>
-    /// Represents an album artist.
+    /// Represents a performer.
     /// </summary>
     /// <seealso cref="BaseData"/>
-    public class AlbumArtistData : BaseData
+    public class PerformerData : BaseData
     {
         /// <summary>
         /// Constructor.
         /// </summary>
         /// <param name="name"><see cref="Name"/></param>
-        /// <param name="isDefault"><see cref="IsEmpty"/></param>
+        /// <param name="isDefault"><see cref="IsDefault"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="name"/> is <c>Null</c>.</exception>
-        internal AlbumArtistData(string name, bool isDefault)
+        internal PerformerData(string name, bool isDefault)
             : base(name, isDefault) { }
     }
 }

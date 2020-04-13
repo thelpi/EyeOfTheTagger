@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using EyeOfTheTaggerLib.Abstractions;
+using EyeOfTheTaggerLib.Datas.Abstractions;
 
-namespace EyeOfTheTaggerLib
+namespace EyeOfTheTaggerLib.Datas
 {
     /// <summary>
     /// Represents a track.

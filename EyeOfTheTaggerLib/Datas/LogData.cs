@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace EyeOfTheTaggerLib
+namespace EyeOfTheTaggerLib.Datas
 {
     /// <summary>
     /// Represents a log.
     /// </summary>
+    /// <remarks>No inheritance from <see cref="Abstractions.BaseData"/>.</remarks>
     public class LogData
     {
         /// <summary>

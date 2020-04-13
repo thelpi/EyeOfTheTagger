@@ -43,17 +43,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AlbumArtistData.cs" />
-    <Compile Include="AlbumData.cs" />
-    <Compile Include="Abstractions\BaseData.cs" />
-    <Compile Include="PerformerData.cs" />
+    <Compile Include="Datas\AlbumArtistData.cs" />
+    <Compile Include="Datas\AlbumData.cs" />
+    <Compile Include="Datas\Abstractions\BaseData.cs" />
+    <Compile Include="Datas\PerformerData.cs" />
     <Compile Include="Enums\LogLevel.cs" />
     <Compile Include="Events\LoadingLogEventArgs.cs" />
-    <Compile Include="GenreData.cs" />
-    <Compile Include="LibraryData.cs" />
-    <Compile Include="LogData.cs" />
+    <Compile Include="Datas\GenreData.cs" />
+    <Compile Include="LibraryEngine.cs" />
+    <Compile Include="Datas\LogData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TrackData.cs" />
+    <Compile Include="Datas\TrackData.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

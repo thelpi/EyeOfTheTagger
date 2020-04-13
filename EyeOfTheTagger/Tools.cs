@@ -7,7 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using EyeOfTheTaggerLib;
+using EyeOfTheTaggerLib.Datas;
 
 namespace EyeOfTheTagger
 {

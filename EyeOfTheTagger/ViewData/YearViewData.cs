@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EyeOfTheTaggerLib;
+using EyeOfTheTaggerLib.Datas;
 
 namespace EyeOfTheTagger.ViewData
 {
@@ -31,9 +32,9 @@ namespace EyeOfTheTagger.ViewData
         /// Constructor.
         /// </summary>
         /// <param name="year"><see cref="Year"/></param>
-        /// <param name="library"><see cref="LibraryData"/></param>
+        /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
-        public YearViewData(uint year, LibraryData library)
+        public YearViewData(uint year, LibraryEngine library)
         {
             if (library == null)
             {

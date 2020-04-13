@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using EyeOfTheTaggerLib;
+using EyeOfTheTaggerLib.Datas;
 using EyeOfTheTaggerLib.Events;
 
 namespace EyeOfTheTagger.ViewData
@@ -13,11 +14,11 @@ namespace EyeOfTheTagger.ViewData
     internal class LibraryViewData
     {
         /// <summary>
-        /// <see cref="LibraryData.TotalFilesCount"/>
+        /// <see cref="LibraryEngine.TotalFilesCount"/>
         /// </summary>
         public int TotalFilesCount { get { return _library.TotalFilesCount; } }
 
-        private LibraryData _library;
+        private LibraryEngine _library;
 
         private readonly Dictionary<Type, Dictionary<string, bool>> _sortState =
             new Dictionary<Type, Dictionary<string, bool>>
@@ -37,7 +38,7 @@ namespace EyeOfTheTagger.ViewData
 
         /// <summary>
         /// Constructor.
-        /// Instanciates the inner <see cref="LibraryData"/> itself.
+        /// Instanciates the inner <see cref="LibraryEngine"/> itself.
         /// </summary>
         /// <param name="bgwCallback">Delegate to get at runtime the <see cref="BackgroundWorker"/> which report progress.</param>
         /// <exception cref="ArgumentNullException"><paramref name="bgwCallback"/> is <c>Null</c>.</exception>
@@ -48,7 +49,7 @@ namespace EyeOfTheTagger.ViewData
                 throw new ArgumentNullException(nameof(bgwCallback));
             }
 
-            _library = new LibraryData(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
+            _library = new LibraryEngine(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
                 Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions), false);
 
             _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
@@ -62,7 +63,7 @@ namespace EyeOfTheTagger.ViewData
         }
 
         /// <summary>
-        /// Proceeds to call <see cref="LibraryData.Reload(IEnumerable{string}, IEnumerable{string})"/>.
+        /// Proceeds to call <see cref="LibraryEngine.Reload(IEnumerable{string}, IEnumerable{string})"/>.
         /// </summary>
         public void Reload()
         {

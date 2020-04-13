@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace EyeOfTheTaggerLib.Abstractions
+namespace EyeOfTheTaggerLib.Datas.Abstractions
 {
     /// <summary>
     /// Represents the base class for every kind of data.

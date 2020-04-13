@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using EyeOfTheTaggerLib;
+using EyeOfTheTaggerLib.Datas;
 
 namespace EyeOfTheTagger.ViewData
 {
@@ -15,7 +16,7 @@ namespace EyeOfTheTagger.ViewData
         /// </summary>
         public AlbumArtistData SourceData { get; private set; }
         /// <summary>
-        /// <see cref="EyeOfTheTaggerLib.Abstractions.BaseData.Name"/>
+        /// <see cref="EyeOfTheTaggerLib.Datas.Abstractions.BaseData.Name"/>
         /// </summary>
         public string Name { get { return SourceData.Name; } }
         /// <summary>
@@ -35,10 +36,10 @@ namespace EyeOfTheTagger.ViewData
         /// Constructor.
         /// </summary>
         /// <param name="sourceData"><see cref="SourceData"/></param>
-        /// <param name="library"><see cref="LibraryData"/></param>
+        /// <param name="library"><see cref="LibraryEngine"/></param>
         /// <exception cref="ArgumentNullException"><paramref name="library"/> is <c>Null</c>.</exception>
         /// <exception cref="ArgumentNullException"><paramref name="sourceData"/> is <c>Null</c>.</exception>
-        public AlbumArtistViewData(AlbumArtistData sourceData, LibraryData library)
+        public AlbumArtistViewData(AlbumArtistData sourceData, LibraryEngine library)
         {
             if (library == null)
             {
