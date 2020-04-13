@@ -8,8 +8,7 @@ namespace EyeOfTheTagger.ViewData
     /// <summary>
     /// Year view data.
     /// </summary>
-    /// <seealso cref="BaseViewData"/>
-    internal class YearViewData : BaseViewData
+    internal class YearViewData
     {
         /// <summary>
         /// Release year.

@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using EyeOfTheTaggerLib;
 
 namespace EyeOfTheTagger
 {
@@ -117,6 +119,51 @@ namespace EyeOfTheTagger
             }
 
             return _defaultImageSource;
+        }
+
+        /// <summary>
+        /// Proceeds to dump logs into a file asynchronously.
+        /// </summary>
+        /// <param name="filePath">Logs file path.</param>
+        /// <param name="logs">List of <see cref="LogData"/>.</param>
+        /// <param name="onSuccessCallback">Method to call on success.</param>
+        /// <param name="onFailureCallback">Method to call on failure; the argument is the exception message.</param>
+        public static void DumpLogsIntoFile(string filePath, IEnumerable<LogData> logs,
+            Action onSuccessCallback, Action<string> onFailureCallback)
+        {
+            var dumpWorker = new BackgroundWorker
+            {
+                WorkerReportsProgress = false,
+                WorkerSupportsCancellation = false
+            };
+            // TODO : GUID should be disabled while processing.
+            dumpWorker.DoWork += delegate (object subSender, DoWorkEventArgs subE)
+            {
+                using (var sw = new StreamWriter(filePath, false))
+                {
+                    sw.WriteLine($"Date\tType\tMessage");
+                    foreach (LogData log in subE.Argument as IEnumerable<LogData>)
+                    {
+                        sw.WriteLine($"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")}\t{log.Level}\t{log.Message}");
+                        foreach (string adKey in log.AdditionalDatas.Keys)
+                        {
+                            sw.WriteLine($"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")}\t{adKey}\t{log.AdditionalDatas[adKey]}");
+                        }
+                    }
+                }
+            };
+            dumpWorker.RunWorkerCompleted += delegate (object subSender, RunWorkerCompletedEventArgs subE)
+            {
+                if (subE.Error != null)
+                {
+                    onFailureCallback.Invoke(subE.Error.Message);
+                }
+                else
+                {
+                    onSuccessCallback.Invoke();
+                }
+            };
+            dumpWorker.RunWorkerAsync(logs);
         }
     }
 }

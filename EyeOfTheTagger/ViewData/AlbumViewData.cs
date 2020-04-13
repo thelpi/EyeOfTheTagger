@@ -8,8 +8,7 @@ namespace EyeOfTheTagger.ViewData
     /// <summary>
     /// Album view data.
     /// </summary>
-    /// <seealso cref="BaseViewData"/>
-    internal class AlbumViewData : BaseViewData
+    internal class AlbumViewData
     {
         private readonly List<TrackData> _tracks;
 

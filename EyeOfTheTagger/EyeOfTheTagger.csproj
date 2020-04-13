@@ -61,7 +61,6 @@
     <Compile Include="Tools.cs" />
     <Compile Include="ViewData\AlbumArtistViewData.cs" />
     <Compile Include="ViewData\AlbumViewData.cs" />
-    <Compile Include="ViewData\BaseViewData.cs" />
     <Compile Include="ViewData\GenreViewData.cs" />
     <Compile Include="ViewData\LibraryViewData.cs" />
     <Compile Include="ViewData\PerformerViewData.cs" />

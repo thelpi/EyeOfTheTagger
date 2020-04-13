@@ -8,8 +8,7 @@ namespace EyeOfTheTagger.ViewData
     /// <summary>
     /// Performer view data.
     /// </summary>
-    /// <seealso cref="BaseViewData"/>
-    internal class PerformerViewData : BaseViewData
+    internal class PerformerViewData
     {
         /// <summary>
         /// <see cref="PerformerData"/>

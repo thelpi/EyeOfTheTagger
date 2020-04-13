@@ -8,8 +8,7 @@ namespace EyeOfTheTagger.ViewData
     /// <summary>
     /// Album artist view data.
     /// </summary>
-    /// <seealso cref="BaseViewData"/>
-    internal class AlbumArtistViewData : BaseViewData
+    internal class AlbumArtistViewData
     {
         /// <summary>
         /// <see cref="AlbumArtistData"/>

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using EyeOfTheTaggerLib;
 using EyeOfTheTaggerLib.Event;
@@ -18,18 +19,41 @@ namespace EyeOfTheTagger.ViewData
 
         private LibraryData _library;
 
+        private readonly Dictionary<Type, Dictionary<string, bool>> _sortState =
+            new Dictionary<Type, Dictionary<string, bool>>
+            {
+                { typeof(AlbumArtistViewData), new Dictionary<string, bool>() },
+                { typeof(AlbumViewData), new Dictionary<string, bool>() },
+                { typeof(GenreViewData), new Dictionary<string, bool>() },
+                { typeof(PerformerViewData), new Dictionary<string, bool>() },
+                { typeof(YearViewData), new Dictionary<string, bool>() },
+                { typeof(TrackViewData), new Dictionary<string, bool>() },
+            };
+
         /// <summary>
         /// Constructor.
         /// Instanciates the inner <see cref="LibraryData"/> itself.
         /// </summary>
-        /// <param name="loadingLogHandler">Callback method at the <see cref="LibraryData.LoadingLogHandler"/> event.</param>
-        /// <exception cref="ArgumentNullException"><paramref name="loadingLogHandler"/> is <c>Null</c>.</exception>
-        public LibraryViewData(EventHandler<LoadingLogEventArgs> loadingLogHandler)
+        /// <param name="bgwCallback">Delegate to get at runtime the <see cref="BackgroundWorker"/> which report progress.</param>
+        /// <exception cref="ArgumentNullException"><paramref name="bgwCallback"/> is <c>Null</c>.</exception>
+        public LibraryViewData(Func<BackgroundWorker> bgwCallback)
         {
+            if (bgwCallback == null)
+            {
+                throw new ArgumentNullException(nameof(bgwCallback));
+            }
+
             _library = new LibraryData(Tools.ParseConfigurationList(Properties.Settings.Default.LibraryDirectories),
                 Tools.ParseConfigurationList(Properties.Settings.Default.LibraryExtensions), false);
 
-            _library.LoadingLogHandler += loadingLogHandler ?? throw new ArgumentNullException(nameof(loadingLogHandler));
+            _library.LoadingLogHandler += delegate (object sender, LoadingLogEventArgs e)
+            {
+                if (e?.Log != null && TotalFilesCount > -1)
+                {
+                    int progressPercentage = e.TrackIndex == -1 ? 100 : Convert.ToInt32(e.TrackIndex / (decimal)TotalFilesCount * 100);
+                    bgwCallback.Invoke().ReportProgress(progressPercentage, e.Log);
+                }
+            };
         }
 
         /// <summary>
@@ -205,6 +229,41 @@ namespace EyeOfTheTagger.ViewData
             }
 
             return albumItems;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="propertyName"></param>
+        /// <param name="dataRetrieved"></param>
+        /// <returns></returns>
+        public IEnumerable<T> SortDatas<T>(string propertyName, IEnumerable<T> dataRetrieved)
+        {
+            if (!_sortState.ContainsKey(typeof(T)))
+            {
+                return dataRetrieved;
+            }
+
+            if (!_sortState[typeof(T)].ContainsKey(propertyName) || !_sortState[typeof(T)][propertyName])
+            {
+                dataRetrieved = dataRetrieved.OrderByDescending(d => d.GetType().GetProperty(propertyName).GetValue(d));
+            }
+            else
+            {
+                dataRetrieved = dataRetrieved.OrderBy(d => d.GetType().GetProperty(propertyName).GetValue(d));
+            }
+
+            if (!_sortState[typeof(T)].ContainsKey(propertyName))
+            {
+                _sortState[typeof(T)].Add(propertyName, true);
+            }
+            else
+            {
+                _sortState[typeof(T)][propertyName] = !_sortState[typeof(T)][propertyName];
+            }
+
+            return dataRetrieved;
         }
     }
 }

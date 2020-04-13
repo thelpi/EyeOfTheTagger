@@ -8,7 +8,6 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using EyeOfTheTagger.ViewData;
 using EyeOfTheTaggerLib;
-using EyeOfTheTaggerLib.Event;
 
 namespace EyeOfTheTagger
 {
@@ -20,12 +19,6 @@ namespace EyeOfTheTagger
     {
         private LibraryViewData _libraryViewData;
         private BackgroundWorker _bgw;
-        private Dictionary<string, bool> _albumArtistsViewSort = new Dictionary<string, bool>();
-        private Dictionary<string, bool> _albumsViewSort = new Dictionary<string, bool>();
-        private Dictionary<string, bool> _genresViewSort = new Dictionary<string, bool>();
-        private Dictionary<string, bool> _performersViewSort = new Dictionary<string, bool>();
-        private Dictionary<string, bool> _yearsViewSort = new Dictionary<string, bool>();
-        private Dictionary<string, bool> _tracksViewSort = new Dictionary<string, bool>();
         private AlbumArtistData _albumArtistFilter = null;
         private AlbumData _albumFilter = null;
         private GenreData _genreFilter = null;
@@ -42,14 +35,7 @@ namespace EyeOfTheTagger
             Title = Tools.GetAppName();
 
             // keep this line at the first to do.
-            _libraryViewData = new LibraryViewData(delegate (object sender, LoadingLogEventArgs e)
-            {
-                if (e?.Log != null && _libraryViewData.TotalFilesCount > -1)
-                {
-                    int progressPercentage = e.TrackIndex == -1 ? 100 : Convert.ToInt32(e.TrackIndex / (decimal)_libraryViewData.TotalFilesCount * 100);
-                    _bgw.ReportProgress(progressPercentage, e.Log);
-                }
-            });
+            _libraryViewData = new LibraryViewData(() => _bgw);
 
             _bgw = new BackgroundWorker
             {
@@ -126,82 +112,44 @@ namespace EyeOfTheTagger
             string filePath = Path.Combine(Properties.Settings.Default.DumpLogPath,
                 $"{Tools.GetAppName()}_{DateTime.Now.ToString("yyyyMMddHHmmss")}_logs.csv");
 
-            var dumpWorker = new BackgroundWorker
-            {
-                WorkerReportsProgress = false,
-                WorkerSupportsCancellation = false
-            };
-            // TODO : GUID should be disabled while processing.
-            dumpWorker.DoWork += delegate (object subSender, DoWorkEventArgs subE)
-            {
-                using (var sw = new StreamWriter(filePath, false))
-                {
-                    sw.WriteLine($"Date\tType\tMessage");
-                    foreach (LogData log in subE.Argument as IEnumerable<LogData>)
-                    {
-                        sw.WriteLine($"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")}\t{log.Level}\t{log.Message}");
-                        foreach (string adKey in log.AdditionalDatas.Keys)
-                        {
-                            sw.WriteLine($"{log.Date.ToString("dd/MM/yyyy HH:mm:ss")}\t{adKey}\t{log.AdditionalDatas[adKey]}");
-                        }
-                    }
-                }
-            };
-            dumpWorker.RunWorkerCompleted += delegate (object subSender, RunWorkerCompletedEventArgs subE)
-            {
-                if (subE.Error != null)
-                {
-                    MessageBox.Show($"The following error occured while dumping:\r\n\r\n{subE.Error.Message}",
-                        $"{Tools.GetAppName()} - error");
-                }
-                else
-                {
-                    MessageBox.Show($"Log file created:\r\n\r\n{filePath}",
-                        $"{Tools.GetAppName()} - information");
-                }
-            };
-            dumpWorker.RunWorkerAsync(LogsView.Items.Cast<LogData>());
+            Tools.DumpLogsIntoFile(filePath, LogsView.Items.Cast<LogData>(),
+                () => MessageBox.Show($"Log file created:\r\n\r\n{filePath}", $"{Tools.GetAppName()} - information"),
+                (string msg) => MessageBox.Show($"The following error occured while dumping:\r\n\r\n{msg}", $"{Tools.GetAppName()} - error"));
         }
 
         private void AlbumArtistsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            AlbumArtistsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                _albumArtistsViewSort,
+            AlbumArtistsView.ItemsSource = _libraryViewData.SortDatas(GetPropertyNameFromColumnHeader(sender),
                 _libraryViewData.GetAlbumArtistsViewData());
         }
 
         private void AlbumsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            AlbumsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                _albumsViewSort,
+            AlbumsView.ItemsSource = _libraryViewData.SortDatas(GetPropertyNameFromColumnHeader(sender),
                 _libraryViewData.GetAlbumsViewData());
         }
 
         private void GenresView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            GenresView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                _genresViewSort,
+            GenresView.ItemsSource = _libraryViewData.SortDatas(GetPropertyNameFromColumnHeader(sender),
                 _libraryViewData.GetGenresViewData());
         }
 
         private void PerformersView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            PerformersView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                _performersViewSort,
+            PerformersView.ItemsSource = _libraryViewData.SortDatas(GetPropertyNameFromColumnHeader(sender),
                 _libraryViewData.GetPerformersViewData());
         }
 
         private void YearsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            YearsView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                _yearsViewSort,
+            YearsView.ItemsSource = _libraryViewData.SortDatas(GetPropertyNameFromColumnHeader(sender),
                 _libraryViewData.GetYearsViewData());
         }
 
         private void TracksView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
-            TracksView.ItemsSource = ManageSort(sender as GridViewColumnHeader,
-                _tracksViewSort,
+            TracksView.ItemsSource = _libraryViewData.SortDatas(GetPropertyNameFromColumnHeader(sender),
                 GetTracksView());
         }
 
@@ -346,33 +294,6 @@ namespace EyeOfTheTagger
             ClearTracksFiltersButton.IsEnabled = false;
         }
 
-        private IEnumerable<T> ManageSort<T>(GridViewColumnHeader header,
-            Dictionary<string, bool> sortState,
-            IEnumerable<T> dataRetrieved) where T : BaseViewData
-        {
-            string propertyName = header.Tag.ToString();
-            
-            if (!sortState.ContainsKey(propertyName) || !sortState[propertyName])
-            {
-                dataRetrieved = dataRetrieved.OrderByDescending(d => d.GetValue(propertyName));
-            }
-            else
-            {
-                dataRetrieved = dataRetrieved.OrderBy(d => d.GetValue(propertyName));
-            }
-
-            if (!sortState.ContainsKey(propertyName))
-            {
-                sortState.Add(propertyName, true);
-            }
-            else
-            {
-                sortState[propertyName] = !sortState[propertyName];
-            }
-
-            return dataRetrieved;
-        }
-
         private IEnumerable<TrackViewData> GetTracksView()
         {
             return _libraryViewData.GetTracksViewData(_albumArtistFilter, _albumFilter,
@@ -394,6 +315,11 @@ namespace EyeOfTheTagger
                 InvalidFrontCoverCheckBox.IsChecked == true,
                 MultipleYearsCheckBox.IsChecked == true,
                 InvalidTracksOrderCheckBox.IsChecked == true);
+        }
+
+        private static string GetPropertyNameFromColumnHeader(object sender)
+        {
+            return (sender as GridViewColumnHeader).Tag.ToString();
         }
 
         #endregion Private helper methods

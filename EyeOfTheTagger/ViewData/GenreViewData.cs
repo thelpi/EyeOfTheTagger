@@ -8,8 +8,7 @@ namespace EyeOfTheTagger.ViewData
     /// <summary>
     /// Genre view data.
     /// </summary>
-    /// <seealso cref="BaseViewData"/>
-    internal class GenreViewData : BaseViewData
+    internal class GenreViewData
     {
         /// <summary>
         /// <see cref="GenreData"/>

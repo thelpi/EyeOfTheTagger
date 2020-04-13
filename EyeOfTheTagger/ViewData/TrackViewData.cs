@@ -7,8 +7,7 @@ namespace EyeOfTheTagger.ViewData
     /// <summary>
     /// Track view data.
     /// </summary>
-    /// <seealso cref="BaseViewData"/>
-    internal class TrackViewData : BaseViewData
+    internal class TrackViewData
     {
         /// <summary>
         /// <see cref="TrackData"/>
