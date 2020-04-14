@@ -22,31 +22,31 @@ namespace EyeOfTheTagger.ViewDatas
 
         private LibraryEngine _library;
 
-        private readonly Dictionary<Type, Dictionary<string, bool>> _itemDatasSort =
-            new Dictionary<Type, Dictionary<string, bool>>
+        private readonly Dictionary<Type, List<KeyValuePair<string, bool>>> _itemDatasSort =
+            new Dictionary<Type, List<KeyValuePair<string, bool>>>
             {
                 {
-                    typeof(AlbumArtistItemData), new Dictionary<string, bool> { { nameof(AlbumArtistItemData.Name), false } }
+                    typeof(AlbumArtistItemData), new List<KeyValuePair<string, bool>> { new KeyValuePair<string, bool> (nameof(AlbumArtistItemData.Name), false) }
                 },
                 {
-                    typeof(AlbumItemData), new Dictionary<string, bool> { { nameof(AlbumItemData.Name), false } }
+                    typeof(AlbumItemData), new List<KeyValuePair<string, bool>> { new KeyValuePair<string, bool> (nameof(AlbumItemData.Name), false) }
                 },
                 {
-                    typeof(PerformerItemData), new Dictionary<string, bool> { { nameof(PerformerItemData.Name), false } }
+                    typeof(PerformerItemData), new List<KeyValuePair<string, bool>> { new KeyValuePair<string, bool> (nameof(PerformerItemData.Name), false) }
                 },
                 {
-                    typeof(GenreItemData), new Dictionary<string, bool> { { nameof(GenreItemData.Name), false } }
+                    typeof(GenreItemData), new List<KeyValuePair<string, bool>> { new KeyValuePair<string, bool> (nameof(GenreItemData.Name), false) }
                 },
                 {
-                    typeof(YearItemData), new Dictionary<string, bool> { { nameof(YearItemData.Year), false } }
+                    typeof(YearItemData), new List<KeyValuePair<string, bool>> { new KeyValuePair<string, bool> (nameof(YearItemData.Year), false) }
                 },
                 {
-                    typeof(TrackItemData), new Dictionary<string, bool>
+                    typeof(TrackItemData), new List<KeyValuePair<string, bool>>
                     {
-                        { nameof(TrackItemData.AlbumArtist), false },
-                        { nameof(TrackItemData.Album), false },
-                        { nameof(TrackItemData.Number), false },
-                        { nameof(TrackItemData.Name), false }
+                        new KeyValuePair<string, bool>(nameof(TrackItemData.Name), false),
+                        new KeyValuePair<string, bool>(nameof(TrackItemData.Number), false),
+                        new KeyValuePair<string, bool>(nameof(TrackItemData.Album), false),
+                        new KeyValuePair<string, bool>(nameof(TrackItemData.AlbumArtist), false)
                     }
                 }
             };
@@ -335,29 +335,18 @@ namespace EyeOfTheTagger.ViewDatas
             IOrderedEnumerable<TItemData> ordereredItems = trackItems.OrderBy(_ => 1);
 
             bool isFirstProperty = true;
-            foreach (string sortProperty in _itemDatasSort[typeof(TItemData)].Keys.Reverse())
+            foreach (KeyValuePair<string, bool> kvp in _itemDatasSort[typeof(TItemData)])
             {
+                Func<TItemData, object> keySelector = typeof(TItemData).GetProperty(kvp.Key).GetValue;
                 if (isFirstProperty)
                 {
-                    if (_itemDatasSort[typeof(TItemData)][sortProperty])
-                    {
-                        ordereredItems = ordereredItems.OrderByDescending(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
-                    }
-                    else
-                    {
-                        ordereredItems = ordereredItems.OrderBy(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
-                    }
+                    ordereredItems = kvp.Value ? ordereredItems.OrderByDescending(keySelector)
+                        : ordereredItems.OrderBy(keySelector);
                 }
                 else
                 {
-                    if (_itemDatasSort[typeof(TItemData)][sortProperty])
-                    {
-                        ordereredItems = ordereredItems.ThenByDescending(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
-                    }
-                    else
-                    {
-                        ordereredItems = ordereredItems.ThenBy(t => typeof(TItemData).GetProperty(sortProperty).GetValue(t));
-                    }
+                    ordereredItems = kvp.Value ? ordereredItems.ThenByDescending(keySelector)
+                        : ordereredItems.ThenBy(keySelector);
                 }
                 isFirstProperty = false;
             }
@@ -402,13 +391,14 @@ namespace EyeOfTheTagger.ViewDatas
             }
 
             bool descendingSort = false;
-            if (_itemDatasSort[typeof(TItemData)].ContainsKey(propertyName))
+            if (_itemDatasSort[typeof(TItemData)].Any(kvp => kvp.Key == propertyName))
             {
-                descendingSort = !_itemDatasSort[typeof(TItemData)][propertyName];
-                _itemDatasSort[typeof(TItemData)].Remove(propertyName);
+                KeyValuePair<string, bool> propWithVal = _itemDatasSort[typeof(TItemData)].First(kvp => kvp.Key == propertyName);
+                descendingSort = !propWithVal.Value;
+                _itemDatasSort[typeof(TItemData)].Remove(propWithVal);
             }
 
-            _itemDatasSort[typeof(TItemData)].Add(propertyName, descendingSort);
+            _itemDatasSort[typeof(TItemData)].Insert(0, new KeyValuePair<string, bool>(propertyName, descendingSort));
         }
     }
 }
