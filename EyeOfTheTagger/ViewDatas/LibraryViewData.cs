@@ -43,10 +43,10 @@ namespace EyeOfTheTagger.ViewDatas
                 {
                     typeof(TrackItemData), new List<KeyValuePair<string, bool>>
                     {
-                        new KeyValuePair<string, bool>(nameof(TrackItemData.Name), false),
-                        new KeyValuePair<string, bool>(nameof(TrackItemData.Number), false),
+                        new KeyValuePair<string, bool>(nameof(TrackItemData.AlbumArtist), false),
                         new KeyValuePair<string, bool>(nameof(TrackItemData.Album), false),
-                        new KeyValuePair<string, bool>(nameof(TrackItemData.AlbumArtist), false)
+                        new KeyValuePair<string, bool>(nameof(TrackItemData.Number), false),
+                        new KeyValuePair<string, bool>(nameof(TrackItemData.Name), false)
                     }
                 }
             };
