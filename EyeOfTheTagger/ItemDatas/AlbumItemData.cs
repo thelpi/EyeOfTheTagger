@@ -118,5 +118,27 @@ namespace EyeOfTheTagger.ItemDatas
 
             return false;
         }
+
+        /// <summary>
+        /// Tries to set a new front cover picture on every tracks of the album.
+        /// </summary>
+        /// <param name="filePath">The path to the front cover image.</param>
+        /// <returns>Dictionary of errors; key is <see cref="TrackData.FilePath"/>, value is the exception.</returns>
+        public Dictionary<string, Exception> SetFrontCover(string filePath)
+        {
+            var errors = new Dictionary<string, Exception>();
+            foreach (var track in _tracks)
+            {
+                try
+                {
+                    track.SetFrontCover(filePath);
+                }
+                catch (Exception ex)
+                {
+                    errors.Add(track.FilePath, ex);
+                }
+            }
+            return errors;
+        }
     }
 }

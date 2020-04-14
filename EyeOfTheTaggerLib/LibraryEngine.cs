@@ -329,20 +329,7 @@ namespace EyeOfTheTaggerLib
                             }
                         }
 
-                        string frontCoverMimeType = string.Empty;
-                        List<byte> frontCoverDatas = new List<byte>();
-                        if (tag.Pictures != null && tag.Pictures.Length > 0)
-                        {
-                            TagLib.IPicture pic = tag.Pictures.FirstOrDefault(p => p != null && p.Type == TagLib.PictureType.FrontCover);
-                            if (pic != null)
-                            {
-                                frontCoverMimeType = GetMimeType(pic.MimeType);
-                                if (pic.Data?.Data != null)
-                                {
-                                    frontCoverDatas.AddRange(pic.Data.Data);
-                                }
-                            }
-                        }
+                        List<byte> frontCoverDatas = ExtractFrontCoverInformations(tag, out string frontCoverMimeType);
 
                         track = new TrackData(tag.Track, tag.Title ?? _NULL, album,
                             performers, genres, tag.Year,
@@ -366,6 +353,31 @@ namespace EyeOfTheTaggerLib
             {
                 LoadingLogHandler?.BeginInvoke(this, new LoadingLogEventArgs(new LogData($"Error while processing {file}.", LogLevel.Error, new KeyValuePair<string, string>("Error message", exLocal.Message)), i), null, null);
             }
+        }
+
+        /// <summary>
+        /// Extracts front cover informations on a <see cref="TagLib.Tag"/>.
+        /// </summary>
+        /// <param name="tag"><see cref=""/>TagLib.Tag</param>
+        /// <param name="frontCoverMimeType">Out; mime type.</param>
+        /// <returns>List of bytes; cannot be <c>Null</c>.</returns>
+        internal static List<byte> ExtractFrontCoverInformations(TagLib.Tag tag, out string frontCoverMimeType)
+        {
+            frontCoverMimeType = string.Empty;
+            var frontCoverDatas = new List<byte>();
+            if (tag?.Pictures != null && tag.Pictures.Length > 0)
+            {
+                TagLib.IPicture pic = tag.Pictures.FirstOrDefault(p => p != null && p.Type == TagLib.PictureType.FrontCover);
+                if (pic != null)
+                {
+                    frontCoverMimeType = GetMimeType(pic.MimeType);
+                    if (pic.Data?.Data != null)
+                    {
+                        frontCoverDatas.AddRange(pic.Data.Data);
+                    }
+                }
+            }
+            return frontCoverDatas;
         }
 
         private static string GetMimeType(string sourceMimeType)

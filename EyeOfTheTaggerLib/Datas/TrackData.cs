@@ -183,5 +183,42 @@ namespace EyeOfTheTaggerLib.Datas
             return _frontCoverDatas.Count() == other.Count()
                 && memcmp(_frontCoverDatas.ToArray(), other.ToArray(), other.Count()) == 0;
         }
+
+        /// <summary>
+        /// Sets a new front cover on the instance.
+        /// </summary>
+        /// <param name="imageFilePath">Path to the new front cover image file.</param>
+        /// <exception cref="ArgumentException">The specified <paramref name="imageFilePath"/> is invalid.</exception>
+        /// <exception cref="InvalidOperationException">Tags are in an invalid state on the track; the action cannot be performed.</exception>
+        public void SetFrontCover(string imageFilePath)
+        {
+            if (!System.IO.File.Exists(imageFilePath))
+            {
+                throw new ArgumentException($"The specified path is invalid.", nameof(imageFilePath));
+            }
+
+            TagLib.File file = TagLib.File.Create(FilePath);
+            if (file?.Tag == null)
+            {
+                throw new InvalidOperationException("Tags are in an invalid state on the track; the action cannot be performed.");
+            }
+
+            List<TagLib.IPicture> currentPictures = new List<TagLib.IPicture>();
+            if (file.Tag.Pictures != null)
+            {
+                currentPictures.AddRange(file.Tag.Pictures);
+                currentPictures.RemoveAll(p => p.Type == TagLib.PictureType.FrontCover);
+            }
+
+            currentPictures.Add(new TagLib.Picture(imageFilePath));
+
+            file.Tag.Pictures = currentPictures.ToArray();
+            file.Save();
+
+            // reload the instance informations.
+            _frontCoverDatas.Clear();
+            _frontCoverDatas.AddRange(LibraryEngine.ExtractFrontCoverInformations(file?.Tag, out string mimeType));
+            FrontCoverMimeType = mimeType;
+        }
     }
 }

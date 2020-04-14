@@ -198,7 +198,11 @@
                                 <GridViewColumn>
                                     <GridViewColumn.CellTemplate>
                                         <DataTemplate>
-                                            <Image Source="{Binding Path=FrontCoverDatas, Converter={StaticResource BytesToImageConverter}}" Width="50" Height="50" />
+                                            <Button Name="ChangeFrontCoverButton" Click="ChangeFrontCoverButton_Click" >
+                                                <Button.Content>
+                                                    <Image Source="{Binding Path=FrontCoverDatas, Converter={StaticResource BytesToImageConverter}}" Width="60" Height="60" />
+                                                </Button.Content>
+                                            </Button>
                                         </DataTemplate>
                                     </GridViewColumn.CellTemplate>
                                 </GridViewColumn>

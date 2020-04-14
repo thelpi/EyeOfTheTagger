@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Linq;
@@ -7,6 +8,7 @@ using System.Windows.Controls;
 using System.Windows.Documents;
 using EyeOfTheTagger.ItemDatas;
 using EyeOfTheTagger.ViewDatas;
+using Microsoft.Win32;
 
 namespace EyeOfTheTagger
 {
@@ -282,6 +284,34 @@ namespace EyeOfTheTagger
             InvalidFrontCoverTracksCheckBox.IsChecked = false;
             _libraryViewData.SetGlobalTracksFilters();
             SetTracksViewSource();
+        }
+
+        private void ChangeFrontCoverButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!((sender as Button)?.DataContext is AlbumItemData album))
+            {
+                return;
+            }
+
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Title = $"{Tools.GetAppName()} - Select an image as new front cover",
+                Multiselect = false,
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyPictures),
+                Filter = "Image Files(*.bmp;*.png;*.jpg;*.gif)|*.bmp;*.png;*.jpg;*.gif|All files (*.*)|*.*"
+            };
+            openFileDialog.ShowDialog();
+            string selectedFileName = openFileDialog.FileName;
+            if (!string.IsNullOrWhiteSpace(selectedFileName))
+            {
+                Dictionary<string, Exception> errors = album.SetFrontCover(selectedFileName);
+                foreach (string errorFile in errors.Keys)
+                {
+                    MessageBox.Show($"The following error has occured while saving the picture as a front cover:\r\n{errors[errorFile]}\r\nFile: {errorFile}", $"{Tools.GetAppName()} - error");
+                }
+                SetAlbumsViewSource();
+                SetTracksViewSource();
+            }
         }
 
         #endregion Window events
