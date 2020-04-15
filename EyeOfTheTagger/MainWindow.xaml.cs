@@ -309,7 +309,7 @@ namespace EyeOfTheTagger
                 {
                     MessageBox.Show($"The following error has occured while saving the picture as a front cover:\r\n{errors[errorFile]}\r\nFile: {errorFile}", $"{Tools.GetAppName()} - error");
                 }
-                SetAlbumsViewSource();
+                MatchAlbumToViewSource(album);
                 SetTracksViewSource();
             }
         }
@@ -407,6 +407,89 @@ namespace EyeOfTheTagger
                 DuplicateGenresTracksCheckBox.IsChecked == true,
                 InvalidYearTracksCheckBox.IsChecked == true,
                 InvalidFrontCoverTracksCheckBox.IsChecked == true);
+        }
+
+        private void MatchAlbumArtistToViewSource(AlbumArtistItemData albumArtistItem)
+        {
+            bool itemMatchFilter = _libraryViewData.CheckArtistAlbumFilters(albumArtistItem,
+                DuplicateAlbumArtistsCheckBox.IsChecked == true,
+                EmptyAlbumArtistsCheckBox.IsChecked == true);
+
+            if (!itemMatchFilter)
+            {
+                AlbumArtistsView.Items.Remove(albumArtistItem);
+            }
+        }
+
+        private void MatchAlbumToViewSource(AlbumItemData albumItem)
+        {
+            bool itemMatchFilter  = _libraryViewData.CheckAlbumsFilters(albumItem,
+                DuplicateAlbumsCheckBox.IsChecked == true,
+                EmptyAlbumsCheckBox.IsChecked == true,
+                InvalidFrontCoverCheckBox.IsChecked == true,
+                MultipleYearsCheckBox.IsChecked == true,
+                InvalidTracksOrderCheckBox.IsChecked == true);
+
+            if (!itemMatchFilter)
+            {
+                AlbumsView.Items.Remove(albumItem);
+            }
+        }
+
+        private void MatchGenreToViewSource(GenreItemData genreItem)
+        {
+            bool itemMatchFilter = _libraryViewData.CheckGenresFilters(genreItem,
+                DuplicateGenresCheckBox.IsChecked == true,
+                EmptyGenresCheckBox.IsChecked == true);
+
+            if (!itemMatchFilter)
+            {
+                GenresView.Items.Remove(genreItem);
+            }
+        }
+
+        private void MatchPerformerToViewSource(PerformerItemData performerItem)
+        {
+            bool itemMatchFilter = _libraryViewData.CheckPerformersFilters(performerItem,
+                DuplicatePerformersCheckBox.IsChecked == true,
+                EmptyPerformersCheckBox.IsChecked == true);
+
+            if (!itemMatchFilter)
+            {
+                PerformersView.Items.Remove(performerItem);
+            }
+        }
+
+        private void MatchYearToViewSource(YearItemData yearItem)
+        {
+            bool itemMatchFilter = _libraryViewData.CheckYearsFilters(yearItem,
+                EmptyYearsCheckBox.IsChecked == true);
+
+            if (!itemMatchFilter)
+            {
+                YearsView.Items.Remove(yearItem);
+            }
+        }
+
+        private void MatchTrackToViewSource(TrackItemData trackItem)
+        {
+            bool itemMatchFilter = _libraryViewData.CheckTracksFilters(trackItem,
+                InvalidNumberTracksCheckBox.IsChecked == true,
+                EmptyTracksCheckBox.IsChecked == true,
+                EmptyAlbumArtistTracksCheckBox.IsChecked == true,
+                SeveralAlbumArtistTracksCheckBox.IsChecked == true,
+                EmptyAlbumTracksCheckBox.IsChecked == true,
+                EmptyPerformerTracksCheckBox.IsChecked == true,
+                DuplicatePerformersTracksCheckBox.IsChecked == true,
+                EmptyGenreTracksCheckBox.IsChecked == true,
+                DuplicateGenresTracksCheckBox.IsChecked == true,
+                InvalidYearTracksCheckBox.IsChecked == true,
+                InvalidFrontCoverTracksCheckBox.IsChecked == true);
+
+            if (!itemMatchFilter)
+            {
+                TracksView.Items.Remove(trackItem);
+            }
         }
 
         #endregion Private helper methods
