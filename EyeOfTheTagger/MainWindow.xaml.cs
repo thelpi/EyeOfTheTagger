@@ -358,14 +358,14 @@ namespace EyeOfTheTagger
 
         private void SetAlbumArtistsViewSource()
         {
-            AlbumArtistsView.ItemsSource = _libraryViewData.ApplyArtistAlbumsFilters(
+            AlbumArtistsView.ItemsSource = _libraryViewData.GetAlbumArtists(
                 DuplicateAlbumArtistsCheckBox.IsChecked == true,
                 EmptyAlbumArtistsCheckBox.IsChecked == true);
         }
 
         private void SetAlbumsViewSource()
         {
-            AlbumsView.ItemsSource = _libraryViewData.ApplyAlbumsFilters(
+            AlbumsView.ItemsSource = _libraryViewData.GetAlbums(
                 DuplicateAlbumsCheckBox.IsChecked == true,
                 EmptyAlbumsCheckBox.IsChecked == true,
                 InvalidFrontCoverCheckBox.IsChecked == true,
@@ -375,27 +375,27 @@ namespace EyeOfTheTagger
 
         private void SetGenresViewSource()
         {
-            GenresView.ItemsSource = _libraryViewData.ApplyGenresFilters(
+            GenresView.ItemsSource = _libraryViewData.GetGenres(
                 DuplicateGenresCheckBox.IsChecked == true,
                 EmptyGenresCheckBox.IsChecked == true);
         }
 
         private void SetPerformersViewSource()
         {
-            PerformersView.ItemsSource = _libraryViewData.ApplyPerformersFilters(
+            PerformersView.ItemsSource = _libraryViewData.GetPerformers(
                 DuplicatePerformersCheckBox.IsChecked == true,
                 EmptyPerformersCheckBox.IsChecked == true);
         }
 
         private void SetYearsViewSource()
         {
-            YearsView.ItemsSource = _libraryViewData.ApplyYearsFilters(
+            YearsView.ItemsSource = _libraryViewData.GetYears(
                 EmptyYearsCheckBox.IsChecked == true);
         }
 
         private void SetTracksViewSource()
         {
-            TracksView.ItemsSource = _libraryViewData.ApplyTracksFilters(
+            TracksView.ItemsSource = _libraryViewData.GetTracks(
                 InvalidNumberTracksCheckBox.IsChecked == true,
                 EmptyTracksCheckBox.IsChecked == true,
                 EmptyAlbumArtistTracksCheckBox.IsChecked == true,
