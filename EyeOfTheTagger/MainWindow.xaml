@@ -6,11 +6,10 @@
         xmlns:cvt="clr-namespace:EyeOfTheTagger.Converters"
         mc:Ignorable="d"
         WindowStartupLocation="CenterScreen"
+        Background="Gainsboro"
         Height="450" Width="800">
     <Window.Resources>
         <BitmapImage x:Key="BookcaseImg" UriSource="Resources/bookcase.png" />
-        <cvt:LogToBackgroundConverter x:Key="LogToBackgroundConverter" />
-        <cvt:LogToForegroundConverter x:Key="LogToForegroundConverter" />
         <cvt:BytesToImageConverter x:Key="BytesToImageConverter" />
         <Style TargetType="ListViewItem">
             <Style.Triggers>
@@ -23,44 +22,34 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <DockPanel Margin="5">
-        <StackPanel Margin="5" DockPanel.Dock="Bottom" Orientation="Horizontal">
-            <Button Height="22" Width="100" Name="LoadingButton" Click="LoadingButton_Click" />
-            <ProgressBar Margin="10, 0, 0, 0" Width="200" IsIndeterminate="False" Height="20" Name="LoadingBar" Minimum="0" Maximum="100" />
-            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="ShowLogsButton" Click="ShowLogsButton_Click" />
-            <Button Margin="10, 0, 0, 0" Height="22" Width="100" Name="DumpLogsButton" Click="DumpLogsButton_Click" Content="Dump logs" />
-        </StackPanel>
-        <ListView DockPanel.Dock="Top" Name="LogsView">
-            <ListView.View>
-                <GridView AllowsColumnReorder="True">
-                    <GridViewColumn>
-                        <GridViewColumnHeader Content="Date" />
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Label Content="{Binding Date}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn>
-                        <GridViewColumnHeader Content="Level" />
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Label Content="{Binding Level}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                    <GridViewColumn>
-                        <GridViewColumnHeader Content="Message" />
-                        <GridViewColumn.CellTemplate>
-                            <DataTemplate>
-                                <Label Content="{Binding Message}" Background="{Binding Path=Level, Converter={StaticResource LogToBackgroundConverter}}" Foreground="{Binding Path=Level, Converter={StaticResource LogToForegroundConverter}}" />
-                            </DataTemplate>
-                        </GridViewColumn.CellTemplate>
-                    </GridViewColumn>
-                </GridView>
-            </ListView.View>
-        </ListView>
-        <TabControl DockPanel.Dock="Top" Name="MainView" >
+    <DockPanel>
+        <Menu Background="Gainsboro" DockPanel.Dock="Top">
+            <MenuItem Header="_Menu">
+                <MenuItem Header="_Scan" Name="ScanMenu" Click="ScanMenu_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/find.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Configuration" Name="ConfigurationMenu" Click="ConfigurationMenu_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/kcontrol.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="_Console" Name="ConsoleMenu" Click="ConsoleMenu_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/konsole.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="_Exit" Name="ExitMenu" Click="ExitMenu_Click">
+                    <MenuItem.Icon>
+                        <Image Source="Resources/exit.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+        <ProgressBar DockPanel.Dock="Bottom" VerticalAlignment="Center" HorizontalAlignment="Center" Width="200" IsIndeterminate="False" Height="20" Name="LoadingBar" Minimum="0" Maximum="100" />
+        <TabControl DockPanel.Dock="Bottom" Name="MainView">
             <TabItem Header="Album artists">
                 <DockPanel>
                     <Expander DockPanel.Dock="Top" IsExpanded="False" ExpandDirection="Down">

@@ -55,18 +55,27 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConsoleWindow.xaml.cs">
+      <DependentUpon>ConsoleWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\BytesToImageConverter.cs" />
     <Compile Include="Converters\LogToBackgroundConverter.cs" />
     <Compile Include="Converters\LogToForegroundConverter.cs" />
+    <Compile Include="Events\AddLogEvent.cs" />
     <Compile Include="ItemDatas\Abstractions\BaseItemData.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="ItemDatas\AlbumArtistItemData.cs" />
     <Compile Include="ItemDatas\AlbumItemData.cs" />
     <Compile Include="ItemDatas\GenreItemData.cs" />
+    <Compile Include="ViewDatas\ConsoleViewData.cs" />
     <Compile Include="ViewDatas\LibraryViewData.cs" />
     <Compile Include="ItemDatas\PerformerItemData.cs" />
     <Compile Include="ItemDatas\TrackItemData.cs" />
     <Compile Include="ItemDatas\YearItemData.cs" />
+    <Page Include="ConsoleWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -118,8 +127,29 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\cdaudio_unmount.png" />
+    <Resource Include="Resources\cdaudio_unmount.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Resources\kcontrol.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\konsole.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\exit.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\find.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

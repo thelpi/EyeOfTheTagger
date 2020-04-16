@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -45,10 +44,7 @@ namespace EyeOfTheTagger
             _bgw.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
             {
                 LoadingBar.Value = e.ProgressPercentage;
-                if (e.UserState != null)
-                {
-                    LogsView.Items.Add(e.UserState);
-                }
+                ConsoleViewData.Default.AddLog(e.UserState as EyeOfTheTaggerLib.Datas.LogData);
             };
             _bgw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
             {
@@ -69,48 +65,6 @@ namespace EyeOfTheTagger
                 DisplayWhileLoading();
                 _bgw.RunWorkerAsync();
             }
-        }
-
-        private void ShowLogsButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (LogsView.Visibility == Visibility.Visible)
-            {
-                LogsView.Visibility = Visibility.Collapsed;
-                MainView.Visibility = Visibility.Visible;
-                ShowLogsButton.Content = "Show logs";
-            }
-            else
-            {
-                LogsView.Visibility = Visibility.Visible;
-                MainView.Visibility = Visibility.Collapsed;
-                ShowLogsButton.Content = "Show library";
-            }
-        }
-
-        private void DumpLogsButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (LogsView.Items.Count == 0)
-            {
-                MessageBox.Show("No logs to dump.", $"{Tools.GetAppName()} - information");
-                return;
-            }
-            else if (!Directory.Exists(Properties.Settings.Default.DumpLogPath))
-            {
-                MessageBox.Show("Invalid log folder path. Please check your configuration.", $"{Tools.GetAppName()} - error");
-                return;
-            }
-            else if (!Tools.HasWriteAccessToFolder(Properties.Settings.Default.DumpLogPath))
-            {
-                MessageBox.Show("The current user can't write dump file into the specified folder. Please check your configuration.", $"{Tools.GetAppName()} - error");
-                return;
-            }
-
-            string filePath = Path.Combine(Properties.Settings.Default.DumpLogPath,
-                $"{Tools.GetAppName()}_{DateTime.Now.ToString("yyyyMMddHHmmss")}_logs.csv");
-
-            Tools.DumpLogsIntoFile(filePath, LogsView.Items.Cast<EyeOfTheTaggerLib.Datas.LogData>(),
-                () => MessageBox.Show($"Log file created:\r\n\r\n{filePath}", $"{Tools.GetAppName()} - information"),
-                (string msg) => MessageBox.Show($"The following error occured while dumping:\r\n\r\n{msg}", $"{Tools.GetAppName()} - error"));
         }
 
         private void AlbumArtistsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
@@ -314,6 +268,26 @@ namespace EyeOfTheTagger
             }
         }
 
+        private void ScanMenu_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ConfigurationMenu_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ConsoleMenu_Click(object sender, RoutedEventArgs e)
+        {
+            new ConsoleWindow().ShowDialog();
+        }
+
+        private void ExitMenu_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         #endregion Window events
 
         #region Private helper methods
@@ -321,7 +295,6 @@ namespace EyeOfTheTagger
         private void DisplayWhileNotLoading()
         {
             LoadingBar.Visibility = Visibility.Collapsed;
-            LogsView.Visibility = Visibility.Collapsed;
             MainView.Visibility = Visibility.Visible;
             SetTracksViewSource();
             SetAlbumArtistsViewSource();
@@ -329,11 +302,7 @@ namespace EyeOfTheTagger
             SetGenresViewSource();
             SetPerformersViewSource();
             SetYearsViewSource();
-            LoadingButton.IsEnabled = true;
-            LoadingButton.Content = "Reload";
-            ShowLogsButton.Content = "Show logs";
-            DumpLogsButton.IsEnabled = true;
-            ShowLogsButton.IsEnabled = true;
+            ScanMenu.IsEnabled = true;
             ClearTracksFiltersButton.IsEnabled = true;
         }
 
@@ -341,13 +310,8 @@ namespace EyeOfTheTagger
         {
             LoadingBar.Visibility = Visibility.Visible;
             LoadingBar.Value = 0;
-            LogsView.Visibility = Visibility.Visible;
             MainView.Visibility = Visibility.Collapsed;
-            LoadingButton.IsEnabled = false;
-            LoadingButton.Content = "Loading...";
-            ShowLogsButton.Content = "Show library";
-            DumpLogsButton.IsEnabled = false;
-            ShowLogsButton.IsEnabled = false;
+            ScanMenu.IsEnabled = false;
             ClearTracksFiltersButton.IsEnabled = false;
         }
 
