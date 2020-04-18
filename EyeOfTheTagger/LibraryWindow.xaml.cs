@@ -12,18 +12,18 @@ using Microsoft.Win32;
 namespace EyeOfTheTagger
 {
     /// <summary>
-    /// Interaction logic for <c>MainWindow.xaml</c>
+    /// Interaction logic for the library window.
     /// </summary>
     /// <seealso cref="Window"/>
-    public partial class MainWindow : Window
+    public partial class LibraryWindow : Window
     {
-        private LibraryViewData _libraryViewData;
-        private BackgroundWorker _bgw;
+        private readonly LibraryViewData _libraryViewData;
+        private readonly BackgroundWorker _bgw;
 
         /// <summary>
         /// Constructor.
         /// </summary>
-        public MainWindow()
+        public LibraryWindow()
         {
             InitializeComponent();
 
@@ -44,6 +44,7 @@ namespace EyeOfTheTagger
             _bgw.ProgressChanged += delegate (object sender, ProgressChangedEventArgs e)
             {
                 LoadingBar.Value = e.ProgressPercentage;
+                LoadingBar.IsIndeterminate = false;
                 ConsoleViewData.Default.AddLog(e.UserState as EyeOfTheTaggerLib.Datas.LogData);
             };
             _bgw.RunWorkerCompleted += delegate (object sender, RunWorkerCompletedEventArgs e)
@@ -53,19 +54,10 @@ namespace EyeOfTheTagger
 
             DisplayWhileNotLoading();
 
-            LoadingButton_Click(null, null);
+            ScanMenu_Click(null, null);
         }
 
         #region Window events
-
-        private void LoadingButton_Click(object sender, RoutedEventArgs e)
-        {
-            if (_bgw != null && !_bgw.IsBusy)
-            {
-                DisplayWhileLoading();
-                _bgw.RunWorkerAsync();
-            }
-        }
 
         private void AlbumArtistsView_GridViewColumnHeader_Click(object sender, RoutedEventArgs e)
         {
@@ -270,12 +262,20 @@ namespace EyeOfTheTagger
 
         private void ScanMenu_Click(object sender, RoutedEventArgs e)
         {
-
+            if (!_bgw.IsBusy)
+            {
+                DisplayWhileLoading();
+                _bgw.RunWorkerAsync();
+            }
+            else
+            {
+                MessageBox.Show("Please wait for the current scan to complete.", $"{Tools.GetAppName()} - warning");
+            }
         }
 
         private void ConfigurationMenu_Click(object sender, RoutedEventArgs e)
         {
-
+            new ConfigurationWindow().ShowDialog();
         }
 
         private void ConsoleMenu_Click(object sender, RoutedEventArgs e)
@@ -295,7 +295,8 @@ namespace EyeOfTheTagger
         private void DisplayWhileNotLoading()
         {
             LoadingBar.Visibility = Visibility.Collapsed;
-            MainView.Visibility = Visibility.Visible;
+            MainView.IsEnabled = true;
+            MainView.Opacity = 1;
             SetTracksViewSource();
             SetAlbumArtistsViewSource();
             SetAlbumsViewSource();
@@ -310,7 +311,9 @@ namespace EyeOfTheTagger
         {
             LoadingBar.Visibility = Visibility.Visible;
             LoadingBar.Value = 0;
-            MainView.Visibility = Visibility.Collapsed;
+            LoadingBar.IsIndeterminate = true;
+            MainView.IsEnabled = false;
+            MainView.Opacity = 0.5;
             ScanMenu.IsEnabled = false;
             ClearTracksFiltersButton.IsEnabled = false;
         }

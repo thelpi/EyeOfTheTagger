@@ -60,7 +60,7 @@ namespace EyeOfTheTagger.ViewDatas
             if (log != null)
             {
                 _logs.Add(log);
-                AddLogHandler?.BeginInvoke(this, new AddLogEvent(log), null, null);
+                AddLogHandler?.Invoke(this, new AddLogEvent(log));
             }
         }
 
@@ -70,7 +70,7 @@ namespace EyeOfTheTagger.ViewDatas
         public void ClearLogs()
         {
             _logs.Clear();
-            AddLogHandler?.BeginInvoke(this, null, null, null);
+            AddLogHandler?.Invoke(this, null);
         }
     }
 }
